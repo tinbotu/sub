@@ -10,8 +10,8 @@ import traceback
 
 
 class gyazo_scraper(object):
-    content = None
     import requests
+    content = None
 
     def __init__(self, url=None):
         self.gyazo_image_re = re.compile('<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />')
