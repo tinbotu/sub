@@ -54,6 +54,7 @@ class NotSubculture(object):
            u'JAL\s?123': u'なるほど',
            u'鐵道?(では)?$': u'おっ',
            u'拝承': u'拝復',
+           u'^(クソ|糞)すぎる$': u'ごめん',
            }
 
     def __init__(self):
