@@ -11,6 +11,7 @@ import traceback
 
 class gyazo_scraper(object):
     content = None
+    import requests
 
     def __init__(self, url=None):
         self.gyazo_image_re = re.compile('<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />')
@@ -18,7 +19,7 @@ class gyazo_scraper(object):
             self.fetch(url)
 
     def fetch(self, url):
-        self.content = "default"
+        self.content = '??????????'
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
@@ -28,8 +29,8 @@ class gyazo_scraper(object):
                 self.content = r.content
             else:
                 self.content = '?', str(r.status_code)
-        except:
-            self.content = '?'
+        except Exception:
+            self.content = traceback.format_exc()
 
     def getContent(self):
         return self.content
@@ -39,7 +40,7 @@ class gyazo_scraper(object):
         if m and m.group():
             return m.group(1)
         else:
-            return None
+            return self.content
 
 
 class notsubculture(object):
