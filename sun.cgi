@@ -67,10 +67,10 @@ class notsubculture(object):
             except Exception:
                 if self.debug:
                     self.httpheader()
-                    print self.httpheader, traceback.format_exc()
+                    print traceback.format_exc()
                     sys.exit(0)
-
                 else:
+                    self.httpheader()
                     print "json decode error"
                     sys.exit(0)
 
