@@ -7,61 +7,66 @@ import sys
 import json
 import re
 import traceback
+import requests
+import codecs
 
 
-class gyazo_scraper(object):
-    import requests
+class GyazoScraper(object):
     content = None
+    gyazo_image_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
 
     def __init__(self, url=None):
-        self.gyazo_image_re = re.compile('<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />')
+        self.gyazo_image_re = re.compile(self.gyazo_image_re)
         if url is not None:
             self.fetch(url)
 
     def fetch(self, url):
-        self.content = '??????????'
+        self.content = None
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = self.requests.get(url, headers=headers)
-            if r.status_code == self.requests.codes.ok:
+            r = requests.get(url, headers=headers)
+            if r.status_code == requests.codes.ok:
                 self.content = r.content
             else:
-                self.content = '?', str(r.status_code)
+                self.content = '?:' + str(r.status_code)
         except Exception:
             self.content = traceback.format_exc()
 
-    def getContent(self):
-        return self.content
-
-    def getImageUrl(self):
+    def get_image_url(self):
         m = self.gyazo_image_re.search(self.content)
         if m and m.group():
             return m.group(1)
         else:
-            return self.content
+            return None
 
 
-class notsubculture(object):
-
+class NotSubculture(object):
     debug = True
     body = None
     message = None
     texts = None
-    dic = {'subculture': 'No', u'サブ': '?', }
+    dic = {'^subculture$': 'No',
+           u'^サブ(では)?$': '?',
+           u'^はい$': u'はい',
+           u'さすが\s?kuzuha\s?(さん)?(は)?': u'わかるなー',
+           u'JAL\s?123': u'なるほど',
+           u'鐵道?(では)?$': u'おっ',
+           u'拝承': u'拝復',
+           }
 
     def __init__(self):
         self.httpheaderHasAlreadySent = False
 
-    def httpheader(self, header="Content-Type: text/plain\n"):
+    def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
         if self.httpheaderHasAlreadySent is False:
             print header
             self.httpheaderHasAlreadySent = True
 
-    def read_http_post(self):
-        if self.body is None and os.environ.get('REQUEST_METHOD') == 'POST':
-            self.body = sys.stdin.read()
+    def read_http_post(self, method, http_post_body):
+        if self.body is None and method == 'POST':
+            self.body = http_post_body
             try:
                 self.message = json.loads(self.body)
             except Exception:
@@ -71,8 +76,9 @@ class notsubculture(object):
                     sys.exit(0)
                 else:
                     self.httpheader()
-                    print "json decode error"
+                    print "json decode error:", self.body
                     sys.exit(0)
+            self.slice_message()
 
     def slice_message(self):
         if self.message is None:
@@ -84,30 +90,26 @@ class notsubculture(object):
 
     def response(self):
         self.httpheader()
-
         if self.texts is not None:
             for t in self.texts:
-                if "gyazo.com" in t:
-                    g = gyazo_scraper(t)
-                    print g.getImageUrl()
-                if t in self.dic:
-                    print self.dic.get(t)
-
-    def dump_text(self):
-        self.httpheader()
-        print len(self.texts)
-        if self.texts is not None:
-            for t in self.texts:
-                print t
-        else:
-            print "none"
+                if "http://gyazo.com/" in t:
+                    g = GyazoScraper(t)
+                    url = g.get_image_url()
+                    if url:
+                        yield url
+                else:
+                    for k, v in self.dic.iteritems():
+                        pattern = re.compile(k)
+                        m = pattern.search(t)
+                        if m:
+                            yield pattern.sub(v, t)
 
 
 if __name__ == '__main__':
-    no = notsubculture()
-    no.read_http_post()
-    no.slice_message()
-    no.response()
+    sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
-    #g = gyazo_scraper("http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2")
-    #print g.getImageUrl()
+    no = NotSubculture()
+    post_body = sys.stdin.read()
+    no.read_http_post(os.environ.get('REQUEST_METHOD'), post_body)
+    for r in no.response():
+        print r
