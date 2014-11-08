@@ -49,12 +49,15 @@ class NotSubculture(object):
     texts = None
     dic = {'^subculture$': 'No',
            '\(sun\)': u'☀',
-           u'^サブ(では)?$': '?',
-           u'^はい$': u'はい',
-           u'さすが\s?kuzuha\s?(さん)?(は)?': u'わかるなー',
+           u'^サブ(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
+           u'^はい(じゃないが)?$': u'はい',
+           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
            u'JAL\s?123': u'なるほど',
-           u'鐵道?(では)?$': u'おっ',
+           u'鐵道(では)?$': u'おっ',
            u'拝承': u'拝復',
+           u'^おもち$': u'http://limg3.ask.fm/assets/318/643/185/normal/15.png',
+           u'山$': u'やまいくぞ',
+           u'(は|の|とか)(きも|キモ)い(のでは)?$': u'?',
            u'^(クソ|糞)すぎる$': u'ごめん',
            }
 
@@ -104,7 +107,8 @@ class NotSubculture(object):
                         pattern = re.compile(k)
                         m = pattern.search(t)
                         if m:
-                            yield pattern.sub(v, t)
+                            # yield pattern.sub(v, t)
+                            yield v
 
 
 if __name__ == '__main__':
