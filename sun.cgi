@@ -11,7 +11,7 @@ import requests
 import codecs
 
 
-class GyazoScraper(object):
+class SubcultureGyazoScraper(object):
     content = None
     gyazo_image_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
 
@@ -34,7 +34,7 @@ class GyazoScraper(object):
         except Exception:
             self.content = traceback.format_exc()
 
-    def get_image_url(self):
+    def response(self):
         m = self.gyazo_image_re.search(self.content)
         if m and m.group():
             return m.group(1)
@@ -101,8 +101,8 @@ class NotSubculture(object):
         if self.texts is not None:
             for t in self.texts:
                 if "http://gyazo.com/" in t:
-                    g = GyazoScraper(t)
-                    url = g.get_image_url()
+                    g = SubcultureGyazoScraper(t)
+                    url = g.response()
                     if url:
                         yield url
                 else:

@@ -3,7 +3,7 @@
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
 import unittest
-from sun import GyazoScraper, NotSubculture
+from sun import SubcultureGyazoScraper, NotSubculture
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -11,10 +11,10 @@ class TestGyazoScraper(unittest.TestCase):
     gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
-        self.g = GyazoScraper()
+        self.g = SubcultureGyazoScraper()
 
     def test_instance(self):
-        self.assertIsInstance(self.g, GyazoScraper)
+        self.assertIsInstance(self.g, SubcultureGyazoScraper)
 
     def test_fetch(self):
         for url in self.gyazo_url:
@@ -29,12 +29,12 @@ class TestGyazoScraper(unittest.TestCase):
     def test_get_image_url(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
-            r = self.g.get_image_url()
+            r = self.g.response()
             self.assertRegexpMatches(r, r'http://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
 
         for url in self.gyazo_url_false:
             self.g.fetch(url)
-            r = self.g.get_image_url()
+            r = self.g.response()
             self.assertIsNone(r)
 
 
