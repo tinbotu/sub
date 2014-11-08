@@ -8,17 +8,18 @@ import json
 import re
 import traceback
 import requests
+import random
 import codecs
+import inspect
 
 
-class SubcultureGyazoScraper(object):
+class Subculture(object):
+    """ abstract """
     content = None
-    gyazo_image_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
+    pick_re = ''
 
-    def __init__(self, url=None):
-        self.gyazo_image_re = re.compile(self.gyazo_image_re)
-        if url is not None:
-            self.fetch(url)
+    def __init__(self, text=None):
+        self.pick_re = re.compile(self.pick_re)
 
     def fetch(self, url):
         self.content = None
@@ -35,14 +36,63 @@ class SubcultureGyazoScraper(object):
             self.content = traceback.format_exc()
 
     def response(self):
-        m = self.gyazo_image_re.search(self.content)
+        """ abstract """
+        return None
+
+
+class SubcultureGyazoScraper(Subculture):
+    """ gyazo image url extactor """
+    pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
+
+    def __init__(self, text=None):
+        self.pick_re = re.compile(self.pick_re)
+        if text is not None:
+            self.fetch(text)
+
+    def response(self):
+        m = self.pick_re.search(self.content)
         if m and m.group():
             return m.group(1)
         else:
             return None
 
 
+class SubcultureMETAR(Subculture):
+    """ Weather METARs """
+    url = 'http://api.openweathermap.org/data/2.5/weather?q=Tokyo,jp'
+
+    def __init__(self, text=None):
+        self.fetch(self.url)
+
+    def response(self):
+        try:
+            w = json.loads(self.content)
+            temp_c = float(w["main"]["temp"]) - 273.15
+            weather = w["weather"][0]["description"]
+            icon_url = 'http://openweathermap.org/img/w/' + w["weather"][0]["icon"] + '.png'
+
+            return u'%s (%.1f 度C)\n%s' % (weather, temp_c, icon_url)
+
+        except:
+            return traceback.format_exc()
+
+
+class SubcultureOmochi(Subculture):
+    """ omochi """
+    def response(self):
+        omochi = [
+                'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
+                'http://icondecotter.jp/data/11787/1253637750/3da1de4437114e091d35483a03824989.png',
+                'https://pbs.twimg.com/media/BcPKzauCQAEN7oR.png',
+                'http://www.ttrinity.jp/_img/product/21/21201/1489293/1689893/4764618/product_img_f_4764618.jpg',
+                'http://zigg.jp/wp-content/uploads/2014/05/00_Icon.png',
+                ]
+        random.seed()
+        return omochi[random.randrange(0, len(omochi))]
+
+
 class NotSubculture(object):
+    """ main """
     debug = True
     body = None
     message = None
@@ -55,13 +105,15 @@ class NotSubculture(object):
            u'JAL\s?123': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'拝承': u'拝復',
-           u'^おもち$': u'http://limg3.ask.fm/assets/318/643/185/normal/15.png',
+           u'^おもち$': SubcultureOmochi,
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
            u'もうだめだ$': u'どうすればいいんだ',
            u'(は|の|とか)(きも|キモ)い(のでは)?$': u'?',
-           u'^(クソ|糞)すぎる$': u'ごめん',
+           u'^(クソ|糞|くそ)すぎる$': u'ごめん',
+           'http://gyazo.com': SubcultureGyazoScraper,
+           u'^(今日|きょう)?(暑|寒|あつ|さむ)い(のかな|？|\?)$': SubcultureMETAR,
            }
 
     def __init__(self):
@@ -100,17 +152,16 @@ class NotSubculture(object):
         self.httpheader()
         if self.texts is not None:
             for t in self.texts:
-                if "http://gyazo.com/" in t:
-                    g = SubcultureGyazoScraper(t)
-                    url = g.response()
-                    if url:
-                        yield url
-                else:
-                    for k, v in self.dic.iteritems():
-                        pattern = re.compile(k)
-                        m = pattern.search(t)
-                        if m:
-                            # yield pattern.sub(v, t)
+                for k, v in self.dic.iteritems():
+                    pattern = re.compile(k)
+                    m = pattern.search(t)
+                    if m:
+                        if inspect.isclass(v):
+                            I = v(t)
+                            r = I.response()
+                            if r:
+                                yield r
+                        else:
                             yield v
 
 
