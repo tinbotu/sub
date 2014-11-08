@@ -56,7 +56,10 @@ class NotSubculture(object):
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'拝承': u'拝復',
            u'^おもち$': u'http://limg3.ask.fm/assets/318/643/185/normal/15.png',
-           u'山$': u'やまいくぞ',
+           u'山だ?$': u'やまいくぞ',
+           u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
+           u'ストールするぞ(ほんとに)?$': u'はい',
+           u'もうだめだ$': u'どうすればいいんだ',
            u'(は|の|とか)(きも|キモ)い(のでは)?$': u'?',
            u'^(クソ|糞)すぎる$': u'ごめん',
            }
