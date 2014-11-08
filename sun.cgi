@@ -81,12 +81,13 @@ class SubcultureOmochi(Subculture):
     """ omochi """
     def response(self):
         omochi = [
-                'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
-                'http://icondecotter.jp/data/11787/1253637750/3da1de4437114e091d35483a03824989.png',
-                'https://pbs.twimg.com/media/BcPKzauCQAEN7oR.png',
-                'http://www.ttrinity.jp/_img/product/21/21201/1489293/1689893/4764618/product_img_f_4764618.jpg',
-                'http://zigg.jp/wp-content/uploads/2014/05/00_Icon.png',
-                ]
+            'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
+            'http://icondecotter.jp/data/11787/1253637750/3da1de4437114e091d35483a03824989.png',
+            'https://pbs.twimg.com/media/BcPKzauCQAEN7oR.png',
+            'http://www.ttrinity.jp/_img/product/21/21201/1489293/1689893/4764618/product_img_f_4764618.jpg',
+            'http://zigg.jp/wp-content/uploads/2014/05/00_Icon.png',
+            'http://i.gyazo.com/5f7f28f4794fa6023afa3a0cab0c3ac0.png',
+            ]
         random.seed()
         return omochi[random.randrange(0, len(omochi))]
 
