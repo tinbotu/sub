@@ -48,6 +48,7 @@ class NotSubculture(object):
     message = None
     texts = None
     dic = {'^subculture$': 'No',
+           '\(sun\)': u'☀',
            u'^サブ(では)?$': '?',
            u'^はい$': u'はい',
            u'さすが\s?kuzuha\s?(さん)?(は)?': u'わかるなー',
