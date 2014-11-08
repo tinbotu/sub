@@ -3,7 +3,8 @@
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
 import unittest
-from sun import SubcultureGyazoScraper, NotSubculture
+import json
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -19,12 +20,12 @@ class TestGyazoScraper(unittest.TestCase):
     def test_fetch(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
-            self.assertRegexpMatches(self.g.content, self.g.gyazo_image_re)
+            self.assertRegexpMatches(self.g.content, self.g.pick_re)
 
     def test_fetch_false(self):
         for url in self.gyazo_url_false:
             self.g.fetch(url)
-            self.assertNotRegexpMatches(self.g.content, self.g.gyazo_image_re)
+            self.assertNotRegexpMatches(self.g.content, self.g.pick_re)
 
     def test_get_image_url(self):
         for url in self.gyazo_url:
@@ -36,6 +37,33 @@ class TestGyazoScraper(unittest.TestCase):
             self.g.fetch(url)
             r = self.g.response()
             self.assertIsNone(r)
+
+class TestSubcultureMETAR(unittest.TestCase):
+    json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""
+
+    def setUp(self):
+        self.r = SubcultureMETAR(None)
+
+    def test_fetch(self):
+        self.r.fetch(self.r.url)
+        o = json.loads(self.r.content)
+        self.assertIs(type(o), dict)
+
+    def test_response(self):
+        self.content = self.json_openweathermap
+        r = self.r.response()
+        self.assertEqual(r, u'light rain (12.5 度C)\nhttp://openweathermap.org/img/w/10n.png')
+
+
+class TestSubcultureOmochi(unittest.TestCase):
+
+    def setUp(self):
+        self.r = SubcultureOmochi(None)
+
+    def test_response(self):
+        for i in xrange(100):
+            r = self.r.response()
+            self.assertRegexpMatches(r, r'^https?://')
 
 
 class TestNotSubculture(unittest.TestCase):
