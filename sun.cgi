@@ -105,7 +105,7 @@ class NotSubculture(object):
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^はい(じゃないが)?$': u'はい',
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
-           u'JAL\s?123': u'なるほど',
+           u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'拝承': u'拝復',
            u'^おもち$': SubcultureOmochi,
