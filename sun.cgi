@@ -108,9 +108,10 @@ class NotSubculture(object):
     body = None
     message = None
     texts = None
-    dic = {'^subculture$': 'No',
+    dic = {'^(S|s)ub\s*((C|c)ulture)?$': 'No',
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
+           u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': u'はい',
            u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
