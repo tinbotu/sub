@@ -48,11 +48,17 @@ class TestSubcultureMETAR(unittest.TestCase):
         self.r.fetch(self.r.url)
         o = json.loads(self.r.content)
         self.assertIs(type(o), dict)
+        self.assertGreater(float(o["main"]["temp"]), 243.15)
+        self.assertLess(float(o["main"]["temp"]),318.15)
+        self.assertGreater(float(o["main"]["pressure"]), 800)
+        self.assertGreater(float(o["main"]["humidity"]), 1)
+        self.assertIs(type(o["weather"][0]["description"]), unicode)
+        self.assertIs(type(o["weather"][0]["icon"]), unicode)
 
     def test_response(self):
-        self.content = self.json_openweathermap
+        self.r.content = self.json_openweathermap
         r = self.r.response()
-        self.assertEqual(r, u'light rain (12.5 度C)\nhttp://openweathermap.org/img/w/10n.png')
+        self.assertEqual(r, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
 
 
 class TestSubcultureOmochi(unittest.TestCase):

@@ -70,8 +70,10 @@ class SubcultureMETAR(Subculture):
             temp_c = float(w["main"]["temp"]) - 273.15
             weather = w["weather"][0]["description"]
             icon_url = 'http://openweathermap.org/img/w/' + w["weather"][0]["icon"] + '.png'
+            pressure = int(w["main"]["pressure"])
+            humidity = int(w["main"]["humidity"])
 
-            return u'%s (%.1f 度C)\n%s' % (weather, temp_c, icon_url)
+            return u'%s (%.1f\u2103; %d\u3371; %d%%)\n%s' % (weather, temp_c, pressure, humidity, icon_url)
 
         except:
             return traceback.format_exc()
@@ -99,7 +101,7 @@ class NotSubculture(object):
     message = None
     texts = None
     dic = {'^subculture$': 'No',
-           '\(sun\)': u'☀',
+           u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^はい(じゃないが)?$': u'はい',
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
