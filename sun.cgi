@@ -121,7 +121,7 @@ class NotSubculture(object):
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
-           u'もうだめだ$': u'どうすればいいんだ',
+           u'(俺は|おれは)?もうだめだ$': u'どうすればいいんだ',
            u'(は|の|とか)(きも|キモ)い(のでは)?$': u'?',
            u'^(クソ|糞|くそ)すぎる$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
