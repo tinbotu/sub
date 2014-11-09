@@ -94,6 +94,14 @@ class SubcultureOmochi(Subculture):
         return omochi[random.randrange(0, len(omochi))]
 
 
+class AnotherIsMoreKnowerThanMe(Subculture):
+
+    def response(self):
+        knower = ['kuzuha', 'ykic', 'esehara']
+        random.seed()
+        return 'No, %s culture.' % knower[random.randint(0, len(knower))]
+        
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -104,7 +112,7 @@ class NotSubculture(object):
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^はい(じゃないが)?$': u'はい',
-           u'kumagai culture': u'No',
+           u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
