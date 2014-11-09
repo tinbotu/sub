@@ -94,6 +94,14 @@ class SubcultureOmochi(Subculture):
         return omochi[random.randrange(0, len(omochi))]
 
 
+class AnotherIsMoreKnowerThanMe(Subculture):
+
+    def response(self):
+        knower = ['kuzuha', 'ykic', 'esehara']
+        random.seed()
+        return 'No, %s culture.' % knower[random.randint(0, len(knower))]
+        
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -104,7 +112,7 @@ class NotSubculture(object):
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^はい(じゃないが)?$': u'はい',
-           u'kumagai culture': u'No',
+           u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
@@ -113,7 +121,7 @@ class NotSubculture(object):
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
-           u'(俺は|おれは)?もうだめだ$': u'どうすればいいんだ',
+           u'(俺は|おれは)?もう(だめ|ダメ)だ$': u'どうすればいいんだ',
            u'(は|の|とか)(きも|キモ)い(のでは)?$': u'?',
            u'^(クソ|糞|くそ)すぎる$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
