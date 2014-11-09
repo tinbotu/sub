@@ -104,6 +104,7 @@ class NotSubculture(object):
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^はい(じゃないが)?$': u'はい',
+           u'kumagai culture': u'No',
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
