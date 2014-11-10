@@ -89,6 +89,11 @@ class SubcultureOmochi(Subculture):
             'http://www.ttrinity.jp/_img/product/21/21201/1489293/1689893/4764618/product_img_f_4764618.jpg',
             'http://zigg.jp/wp-content/uploads/2014/05/00_Icon.png',
             'http://i.gyazo.com/5f7f28f4794fa6023afa3a0cab0c3ac0.png',
+            'http://i.gyazo.com/5f7f28f4794fa6023afa3a0cab0c3ac0.png',
+            'http://img-cdn.jg.jugem.jp/f29/2946929/20140106_445358.jpg',
+            'http://img-cdn.jg.jugem.jp/f29/2946929/20140106_445355.jpg',
+            'https://pbs.twimg.com/media/ByjWDq-CYAAeArB.jpg',
+            'https://pbs.twimg.com/media/BsuorQICUAA3nMw.jpg',
             ]
         random.seed()
         return omochi[random.randrange(0, len(omochi))]
