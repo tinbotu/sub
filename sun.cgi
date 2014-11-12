@@ -123,6 +123,7 @@ class NotSubculture(object):
            u'^はい(じゃないが)?$': u'はい',
            u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara)\s?(さん)?': u'わかるなー',
+           u'わかるなー$': u'おっ',
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車',
