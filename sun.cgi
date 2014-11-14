@@ -113,7 +113,7 @@ class NotSubculture(object):
     body = None
     message = None
     texts = None
-    dic = {'^(S|s)ub\s*((C|c)ulture)?$': 'No',
+    dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧',
            u'カエリンコ': u'いいですよ',
            u'^(Taro|太郎|Yaro|野郎)$': 'Taro is Absolutely No.',
