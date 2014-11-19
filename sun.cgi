@@ -128,6 +128,7 @@ class NotSubculture(object):
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車',
+           u'戦い': u'戰いでしょ',
            u'拝承': u'拝復',
            u'^おもち$': SubcultureOmochi,
            u'山だ?$': u'やまいくぞ',
