@@ -143,7 +143,7 @@ class NotSubculture(object):
            u'電車': u'鐵道または軌道車',
            u'戦い': u'戰いでしょ',
            u'拝承': u'拝復',
-           u'あなた': u'あなたとJAVA, 今すぐダウンロード\nhttps://www.java.com/ja/',
+           u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
