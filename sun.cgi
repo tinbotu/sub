@@ -98,6 +98,19 @@ class SubcultureOmochi(Subculture):
         random.seed()
         return omochi[random.randrange(0, len(omochi))]
 
+class SubcultureHitozuma(Subculture):
+    """ hitozuma """
+    def response(self):
+        random.seed()
+
+        res = None
+        if random.randrange(0, 100) == 0:
+            if random.randrange(0, 100) > 0:
+                res = u'はい'
+            else:
+                res = u'いいえ'
+
+        return res
 
 class AnotherIsMoreKnowerThanMe(Subculture):
 
@@ -139,6 +152,7 @@ class NotSubculture(object):
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
+           '.': SubcultureHitozuma,
            }
 
     def __init__(self):
