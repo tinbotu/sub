@@ -103,6 +103,14 @@ class SubcultureStone(Subculture):
     def response(self):
         stone = [
             'http://i.gyazo.com/4fd0d04bd674ae6179d2e5de6340161f.png',
+            'http://www.gohongi-beauty.jp/blog/wp-content/uploads/2013/08/stone_4.png',
+            'http://shonankit.blog.so-net.ne.jp/blog/_images/blog/_285/shonankit/9223616.jpg',
+            'http://shonankit.blog.so-net.ne.jp/blog/_images/blog/_285/shonankit/9223612.jpg',
+            'http://nyorokesseki.up.seesaa.net/image/kesseki400_300.jpg',
+            'http://shonankit.c.blog.so-net.ne.jp/_images/blog/_285/shonankit/02-3c13d.jpg?c=a1',
+            'http://livedoor.blogimg.jp/fknews/imgs/4/c/4c478d9b.jpg',
+            'http://i.gyazo.com/29a38b2b9202862189d8f7a4df1e8886.png',
+            'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
             ]
         random.seed()
         return stone[random.randrange(0, len(stone))]
