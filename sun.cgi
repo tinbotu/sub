@@ -98,6 +98,15 @@ class SubcultureOmochi(Subculture):
         random.seed()
         return omochi[random.randrange(0, len(omochi))]
 
+class SubcultureStone(Subculture):
+    """ stone """
+    def response(self):
+        stone = [
+            'http://i.gyazo.com/4fd0d04bd674ae6179d2e5de6340161f.png',
+            ]
+        random.seed()
+        return stone[random.randrange(0, len(stone))]
+
 class SubcultureHitozuma(Subculture):
     """ hitozuma """
     def response(self):
@@ -145,7 +154,7 @@ class NotSubculture(object):
            u'拝承': u'拝復',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
-           u'^石$': 'http://i.gyazo.com/4fd0d04bd674ae6179d2e5de6340161f.png',
+           u'^石$': SubcultureStone,
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
