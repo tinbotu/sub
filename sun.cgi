@@ -107,7 +107,7 @@ class SubcultureStone(Subculture):
             'http://shonankit.blog.so-net.ne.jp/blog/_images/blog/_285/shonankit/9223616.jpg',
             'http://shonankit.blog.so-net.ne.jp/blog/_images/blog/_285/shonankit/9223612.jpg',
             'http://nyorokesseki.up.seesaa.net/image/kesseki400_300.jpg',
-            'http://shonankit.c.blog.so-net.ne.jp/_images/blog/_285/shonankit/02-3c13d.jpg?c=a1',
+            'http://shonankit.c.blog.so-net.ne.jp/_images/blog/_285/shonankit/02-3c13d.jpg',
             'http://livedoor.blogimg.jp/fknews/imgs/4/c/4c478d9b.jpg',
             'http://i.gyazo.com/29a38b2b9202862189d8f7a4df1e8886.png',
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
