@@ -111,6 +111,7 @@ class SubcultureStone(Subculture):
             'http://livedoor.blogimg.jp/fknews/imgs/4/c/4c478d9b.jpg',
             'http://i.gyazo.com/29a38b2b9202862189d8f7a4df1e8886.png',
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
+            '西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
             ]
         random.seed()
         return stone[random.randrange(0, len(stone))]
