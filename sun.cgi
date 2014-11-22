@@ -31,7 +31,7 @@ class Subculture(object):
         if self.__conn is None:
             self.redis_connect()
 
-        key = '%s__%s' % (self.__class__.__name__, speaker)
+        key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         if self.__conn.get(key) is not None:
             return False
 
