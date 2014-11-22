@@ -11,15 +11,33 @@ import requests
 import random
 import codecs
 import inspect
+import redis
 
 
 class Subculture(object):
     """ abstract """
     content = None
-    pick_re = ''
+    __redis_db = 14  # don't change me if changes will cause collision other app
+    __conn = None
 
-    def __init__(self, text=None):
-        self.pick_re = re.compile(self.pick_re)
+    def __init__(self, text=None, speaker=None):
+        pass
+
+    def redis_connect(self):
+        self.__conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+
+    def check_flood(self, speaker='', sec=30):
+        if self.__conn is None:
+            self.redis_connect()
+
+        key = '%s__%s' % (self.__class__.__name__, speaker)
+        if self.__conn.get(key) is not None:
+            return False
+
+        self.__conn.set(key, '1')
+        self.__conn.expire(key, sec)
+
+        return True
 
     def fetch(self, url):
         self.content = None
@@ -44,7 +62,7 @@ class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
 
-    def __init__(self, text=None):
+    def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
         if text is not None:
             self.fetch(text)
@@ -61,7 +79,7 @@ class SubcultureMETAR(Subculture):
     """ Weather METARs """
     url = 'http://api.openweathermap.org/data/2.5/weather?q=Tokyo,jp'
 
-    def __init__(self, text=None):
+    def __init__(self, text=None, speaker=None):
         self.fetch(self.url)
 
     def response(self):
@@ -81,6 +99,11 @@ class SubcultureMETAR(Subculture):
 
 class SubcultureOmochi(Subculture):
     """ omochi """
+    speaker = None
+
+    def __init__(self, text=None, speaker=None):
+        self.speaker = speaker
+
     def response(self):
         omochi = [
             'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
@@ -95,8 +118,14 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/ByjWDq-CYAAeArB.jpg',
             'https://pbs.twimg.com/media/BsuorQICUAA3nMw.jpg',
             ]
+
+        # dont response within 30 seconds
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
         random.seed()
         return omochi[random.randrange(0, len(omochi))]
+
 
 class SubcultureStone(Subculture):
     """ stone """
@@ -153,6 +182,7 @@ class SubcultureStone(Subculture):
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
+
 class SubcultureHai(Subculture):
     """ hai """
     def response(self):
@@ -165,6 +195,8 @@ class SubcultureHai(Subculture):
             res = u'はいじゃないが'
 
         return res
+
+
 class SubcultureHitozuma(Subculture):
     """ hitozuma """
     def response(self):
@@ -179,13 +211,14 @@ class SubcultureHitozuma(Subculture):
 
         return res
 
+
 class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
         knower = ['kuzuha', 'ykic', 'esehara']
         random.seed()
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
-        
+
 
 class NotSubculture(object):
     """ main """
@@ -248,31 +281,26 @@ class NotSubculture(object):
                     self.httpheader()
                     print "json decode error:", self.body
                     sys.exit(0)
-            self.slice_message()
-
-    def slice_message(self):
-        if self.message is None:
-            return
-        self.texts = []
-        for n in self.message['events']:
-            if 'text' in n['message']:
-                self.texts.append(n['message']['text'])
 
     def response(self):
         self.httpheader()
-        if self.texts is not None:
-            for t in self.texts:
-                for k, v in self.dic.iteritems():
-                    pattern = re.compile(k)
-                    m = pattern.search(t)
-                    if m:
-                        if inspect.isclass(v):
-                            I = v(t)
+        if self.message is None:
+            return
+
+        for n in self.message['events']:
+            if 'text' in n['message']:
+                speaker = n['message']['speaker_id']
+                text = n['message']['text']
+                for dict_k, dict_res in self.dic.iteritems():
+                    pattern = re.compile(dict_k)
+                    if pattern.search(text):
+                        if inspect.isclass(dict_res):
+                            I = dict_res(text, speaker)
                             r = I.response()
                             if r:
                                 yield r
                         else:
-                            yield v
+                            yield dict_res
 
 
 if __name__ == '__main__':
