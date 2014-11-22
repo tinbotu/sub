@@ -17,11 +17,12 @@ import redis
 class Subculture(object):
     """ abstract """
     content = None
+    speaker = None
     __redis_db = 14  # don't change me if changes will cause collision other app
     __conn = None
 
     def __init__(self, text=None, speaker=None):
-        pass
+        self.speaker = speaker
 
     def redis_connect(self):
         self.__conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
@@ -99,11 +100,6 @@ class SubcultureMETAR(Subculture):
 
 class SubcultureOmochi(Subculture):
     """ omochi """
-    speaker = None
-
-    def __init__(self, text=None, speaker=None):
-        self.speaker = speaker
-
     def response(self):
         omochi = [
             'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
@@ -182,6 +178,7 @@ class SubcultureStone(Subculture):
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
+
 class SubcultureWaterFall(Subculture):
     """ water fall """
     def response(self):
@@ -189,7 +186,12 @@ class SubcultureWaterFall(Subculture):
             u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png',
             u'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
             ]
+
+        if self.check_flood(self.speaker, 10) is False:
+            return None
+
         return '\n'.join(urls)
+
 
 class SubcultureHai(Subculture):
     """ hai """
