@@ -64,7 +64,6 @@ class SubcultureKnowerLevel(Subculture):
     def response(self):
         self.__conn = redis.Redis(host='127.0.0.1', db=14)
         level = self.__conn.incr("knower-%s" % self.speaker, 1)
-        print level
         return u"おっ、分かり度 %d ですか" % level
 
 
