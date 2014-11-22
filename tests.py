@@ -38,6 +38,14 @@ class TestGyazoScraper(unittest.TestCase):
             r = self.g.response()
             self.assertIsNone(r)
 
+class TestSubcultureKnowerLevel(unittest.TestCase):
+
+    def setUp(self):
+        self.r = SubcultureKnowerLevel('kumagai')
+ 
+    def test_levelup(self):
+        self.assertIs(self.response(), u"おっ、分かり度 1 ですか")
+
 
 class TestSubcultureMETAR(unittest.TestCase):
     json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""

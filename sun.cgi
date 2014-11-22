@@ -59,6 +59,14 @@ class Subculture(object):
         return None
 
 
+class SubcultureKnowerLevel(Subculture):
+
+    def response(self):
+        self.__conn = redis.Redis(host='127.0.0.1', db=14)
+        level = self.__conn.incr("knower-%s" % self.speaker, 1)
+        return u"おっ、分かり度 %d ですか" % level
+
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
@@ -254,7 +262,7 @@ class NotSubculture(object):
            u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
-           u'わかるなー$': u'おっ',
+           u'わかるなー$': SubcultureKnowerLevel,
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車',
