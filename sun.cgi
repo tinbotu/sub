@@ -221,7 +221,8 @@ class NotSubculture(object):
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
-           u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
+           u'^(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)$': SubcultureMETAR,
+           u'流す': u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
            '.': SubcultureHitozuma,
            }
 
