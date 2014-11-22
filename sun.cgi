@@ -224,7 +224,7 @@ class HateSubcluture(Subculture):
 
     def response(self):
         random.seed()
-        return '　\n' * (random.randint(10) * 20)
+        return u'　\n' * (random.randint(10) * 20)
 
 
 class NotSubculture(object):
