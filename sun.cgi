@@ -230,7 +230,7 @@ class AnotherIsMoreKnowerThanMe(Subculture):
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
 
 
-class HateSubcluture(Subculture):
+class HateSubculture(Subculture):
 
     def response(self):
         random.seed()
