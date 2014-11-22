@@ -4,7 +4,7 @@
 
 import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -38,6 +38,7 @@ class TestGyazoScraper(unittest.TestCase):
             r = self.g.response()
             self.assertIsNone(r)
 
+
 class TestSubcultureMETAR(unittest.TestCase):
     json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""
 
@@ -49,7 +50,7 @@ class TestSubcultureMETAR(unittest.TestCase):
         o = json.loads(self.r.content)
         self.assertIs(type(o), dict)
         self.assertGreater(float(o["main"]["temp"]), 243.15)
-        self.assertLess(float(o["main"]["temp"]),318.15)
+        self.assertLess(float(o["main"]["temp"]), 318.15)
         self.assertGreater(float(o["main"]["pressure"]), 800)
         self.assertGreater(float(o["main"]["humidity"]), 1)
         self.assertIs(type(o["weather"][0]["description"]), unicode)
@@ -70,6 +71,48 @@ class TestSubcultureOmochi(unittest.TestCase):
         for i in xrange(100):
             r = self.r.response()
             self.assertRegexpMatches(r, r'^https?://')
+
+
+class TestSubcultureStone(unittest.TestCase):
+
+    def setUp(self):
+        self.r = SubcultureStone(None)
+
+    def test_response(self):
+        for i in xrange(500):
+            r = self.r.response()
+            self.assertRegexpMatches(r, r'(西山石|https?://)')
+
+
+class TestSubcultureHitozuma(unittest.TestCase):
+
+    def setUp(self):
+        self.r = SubcultureHitozuma(None)
+
+    def test_response(self):
+        y = False
+        n = False
+
+        for i in xrange(100 * 100 * 3):
+            r = self.r.response()
+            if r == u'はい':
+                y = True
+            elif r == u'いいえ':
+                n = True
+
+        self.assertTrue(y)
+        self.assertTrue(n)
+
+
+class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
+
+    def setUp(self):
+        self.r = AnotherIsMoreKnowerThanMe(None)
+
+    def test_response(self):
+        for i in xrange(100):
+            r = self.r.response()
+            self.assertRegexpMatches(r, '^No, [A-Za-z0-9]+ culture.')
 
 
 class TestNotSubculture(unittest.TestCase):
