@@ -172,7 +172,7 @@ class AnotherIsMoreKnowerThanMe(Subculture):
     def response(self):
         knower = ['kuzuha', 'ykic', 'esehara']
         random.seed()
-        return 'No, %s culture.' % knower[random.randint(0, len(knower))]
+        return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
         
 
 class NotSubculture(object):
