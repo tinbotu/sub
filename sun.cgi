@@ -127,6 +127,7 @@ class NotSubculture(object):
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
            u'^(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)$': SubcultureMETAR,
+           u'流す': u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'
            }
 
     def __init__(self):
