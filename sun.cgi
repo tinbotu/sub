@@ -182,6 +182,14 @@ class SubcultureStone(Subculture):
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
+class SubcultureWaterFall(Subculture):
+    """ water fall """
+    def response(self):
+        urls = [
+            u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png',
+            u'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
+            ]
+        return '\n'.join(urls)
 
 class SubcultureHai(Subculture):
     """ hai """
@@ -255,7 +263,7 @@ class NotSubculture(object):
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
            u'^(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)$': SubcultureMETAR,
-           u'^流す$': u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png\nhttp://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
+           u'^流す$': SubcultureWaterFall,
            '.': SubcultureHitozuma,
            }
 
