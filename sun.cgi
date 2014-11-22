@@ -67,6 +67,13 @@ class SubcultureKnowerLevel(Subculture):
         return u"おっ、分かり度 %d ですか" % level
 
 
+class SubcultureKnowerLevelUp(Subculture):
+
+    def response(self):
+        self.redis_connect()
+        self.conn.incr("knower-%s" % self.speaker, 1)
+        return None
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
@@ -282,6 +289,7 @@ class NotSubculture(object):
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
+           u'(わか|分か|なるほど|はい|おもち|かわいい|便利|タダメシ|機運|老|おっ|ですね|サブ|布|水)': SubcultureKnowerLevelUp,
            '.': SubcultureHitozuma,
            }
 
