@@ -19,24 +19,24 @@ class Subculture(object):
     content = None
     speaker = None
     __redis_db = 14  # don't change me if changes will cause collision other app
-    __conn = None
+    conn = None
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
 
     def redis_connect(self):
-        self.__conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+        self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
 
     def check_flood(self, speaker='', sec=30):
-        if self.__conn is None:
+        if self.conn is None:
             self.redis_connect()
 
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
-        if self.__conn.get(key) is not None:
+        if self.conn.get(key) is not None:
             return False
 
-        self.__conn.set(key, '1')
-        self.__conn.expire(key, sec)
+        self.conn.set(key, '1')
+        self.conn.expire(key, sec)
 
         return True
 
@@ -63,7 +63,7 @@ class SubcultureKnowerLevel(Subculture):
 
     def response(self):
         self.redis_connect()
-        level = self.__conn.incr("knower-%s" % self.speaker, 1)
+        level = self.conn.incr("knower-%s" % self.speaker, 1)
         return u"おっ、分かり度 %d ですか" % level
 
 

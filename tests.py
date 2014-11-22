@@ -4,7 +4,7 @@
 
 import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -41,10 +41,10 @@ class TestGyazoScraper(unittest.TestCase):
 class TestSubcultureKnowerLevel(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureKnowerLevel('kumagai')
+        self.r = SubcultureKnowerLevel('', 'tests')
  
     def test_levelup(self):
-        self.assertIs(self.response(), u"おっ、分かり度 1 ですか")
+        self.assertRegexpMatches(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
 
 
 class TestSubcultureMETAR(unittest.TestCase):
