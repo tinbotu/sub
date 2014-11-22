@@ -220,6 +220,13 @@ class AnotherIsMoreKnowerThanMe(Subculture):
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
 
 
+class HateSubcluture(Subculture):
+
+    def response(self):
+        random.seed()
+        return '　\n' * (random.randint(10) * 20)
+
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -255,7 +262,8 @@ class NotSubculture(object):
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
            'http://gyazo.com': SubcultureGyazoScraper,
            u'^(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)$': SubcultureMETAR,
-           u'^流す$': u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png\nhttp://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
+           u'^消毒$': u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png\nhttp://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
+           u'^流す$': HateSubculture,
            '.': SubcultureHitozuma,
            }
 
