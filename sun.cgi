@@ -153,6 +153,18 @@ class SubcultureStone(Subculture):
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
+class SubcultureHai(Subculture):
+    """ hai """
+    def response(self):
+        random.seed()
+
+        res = None
+        if random.randrange(0, 100) > 50:
+            res = u'はい'
+        else:
+            res = u'はいじゃないが'
+
+        return res
 class SubcultureHitozuma(Subculture):
     """ hitozuma """
     def response(self):
@@ -188,7 +200,7 @@ class NotSubculture(object):
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
-           u'^はい(じゃないが)?$': u'はい',
+           u'^はい(じゃないが)?$': SubcultureHai,
            u'kumagai culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
