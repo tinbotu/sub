@@ -51,7 +51,7 @@ class TestSubcultureMETAR(unittest.TestCase):
     json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""
 
     def setUp(self):
-        self.r = SubcultureMETAR(None)
+        self.r = SubcultureMETAR('', 'tests')
 
     def test_fetch(self):
         self.r.fetch(self.r.url)
@@ -66,46 +66,66 @@ class TestSubcultureMETAR(unittest.TestCase):
 
     def test_response(self):
         self.r.content = self.json_openweathermap
-        r = self.r.response()
-        self.assertEqual(r, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
+        res = self.r.response()
+        self.assertEqual(res, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
 
 
 class TestSubcultureOmochi(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureOmochi(None)
+        self.r = SubcultureOmochi('', 'tests')
+
+    def test_response_flood(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = True
+
+        res = self.r.response()
+        self.assertRegexpMatches(res, r'^https?://')
+        res = self.r.response()
+        self.assertIs(res, None)
 
     def test_response(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = False
         for i in xrange(100):
-            r = self.r.response()
-            self.assertRegexpMatches(r, r'^https?://')
-
+            res = self.r.response()
+            self.assertRegexpMatches(res, r'^https?://')
 
 class TestSubcultureStone(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureStone(None)
+        self.r = SubcultureStone('', 'tests')
+
+    def test_response_flood(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = True
+        res = self.r.response()
+        self.assertRegexpMatches(res, u'(西山石|https?://)')
+        res = self.r.response()
+        self.assertIs(res, None)
 
     def test_response(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = False
         for i in xrange(500):
-            r = self.r.response()
-            self.assertRegexpMatches(r, r'(西山石|https?://)')
+            res = self.r.response()
+            self.assertRegexpMatches(res, u'(西山石|https?://)')
 
 
 class TestSubcultureHitozuma(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureHitozuma(None)
+        self.r = SubcultureHitozuma('', 'tests')
 
     def test_response(self):
         y = False
         n = False
 
         for i in xrange(100 * 100 * 3):
-            r = self.r.response()
-            if r == u'はい':
+            res = self.r.response()
+            if res == u'はい':
                 y = True
-            elif r == u'いいえ':
+            elif res == u'いいえ':
                 n = True
 
         self.assertTrue(y)
@@ -115,12 +135,12 @@ class TestSubcultureHitozuma(unittest.TestCase):
 class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
     def setUp(self):
-        self.r = AnotherIsMoreKnowerThanMe(None)
+        self.r = AnotherIsMoreKnowerThanMe('', 'tests')
 
     def test_response(self):
         for i in xrange(100):
-            r = self.r.response()
-            self.assertRegexpMatches(r, '^No, [A-Za-z0-9]+ culture.')
+            res = self.r.response()
+            self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
 
 
 class TestNotSubculture(unittest.TestCase):
