@@ -25,11 +25,11 @@ class Subculture(object):
         self.speaker = speaker
 
     def redis_connect(self):
-        self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+        if self.conn is None:
+            self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
 
     def check_flood(self, speaker='', sec=30):
-        if self.conn is None:
-            self.redis_connect()
+        self.redis_connect()
 
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         if self.conn.get(key) is not None:
@@ -190,6 +190,10 @@ class SubcultureStone(Subculture):
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
             u'西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
             ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
