@@ -307,7 +307,7 @@ class NotSubculture(object):
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
-           u'(わか|分か|なるほど|はい|おもち|かわいい|便利|タダメシ|機運|老|おっ|ですね|サブ|布|水)': SubcultureKnowerLevelUp,
+           u'(わか|わ か|わ\/か|分か|なるほど|はい|おもち|かわいい|便利|タダメシ|機運|老|若|おっ|ですね|サブ|布|水)': SubcultureKnowerLevelUp,
            '.': SubcultureHitozuma,
            }
 
