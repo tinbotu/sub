@@ -83,6 +83,7 @@ class SubcultureKnowerLevelUp(Subculture):
         self.conn.incr("knower-%s" % self.speaker, 1)
         return None
 
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
@@ -283,10 +284,10 @@ class NotSubculture(object):
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
-           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|pha|布) culture': AnotherIsMoreKnowerThanMe,
-           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima)\s?(さん)?': u'わかるなー',
+           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布) culture': AnotherIsMoreKnowerThanMe,
+           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
-           u'わかるなー$': SubcultureKnowerLevel,
+           u'わかるなー*$': SubcultureKnowerLevel,
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車',
