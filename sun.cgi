@@ -245,6 +245,10 @@ class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
         knower = ['kuzuha', 'ykic', 'esehara']
+
+        K = SubcultureKnowerLevelUp('', self.speaker)
+        K.response()
+
         random.seed()
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
 
@@ -270,7 +274,7 @@ class NotSubculture(object):
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
-           u'kumagai culture': AnotherIsMoreKnowerThanMe,
+           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|pha|布) culture': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
            u'わかるなー$': SubcultureKnowerLevel,
