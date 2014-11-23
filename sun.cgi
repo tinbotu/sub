@@ -20,6 +20,7 @@ class Subculture(object):
     speaker = None
     __redis_db = 14  # don't change me if changes will cause collision other app
     conn = None
+    enable_flood_check = True
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -29,6 +30,9 @@ class Subculture(object):
             self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
 
     def check_flood(self, speaker='', sec=30):
+        if self.enable_flood_check is False:
+            return True
+
         self.redis_connect()
 
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
@@ -39,6 +43,11 @@ class Subculture(object):
         self.conn.expire(key, sec)
 
         return True
+
+    def clear_flood(self, speaker='', sec=30):
+        self.redis_connect()
+        key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
+        self.conn.delete(key)
 
     def fetch(self, url):
         self.content = None
