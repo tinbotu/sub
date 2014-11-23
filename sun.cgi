@@ -44,7 +44,7 @@ class Subculture(object):
 
         return True
 
-    def clear_flood(self, speaker='', sec=30):
+    def clear_flood_status(self, speaker='', sec=30):
         self.redis_connect()
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         self.conn.delete(key)
