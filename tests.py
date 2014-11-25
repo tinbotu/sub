@@ -145,7 +145,7 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
 class TestNotSubculture(unittest.TestCase):
 
-    dic = {u'サブでは': '?', u'はい': u'はい', }
+    dic = {u'サブでは': '?', u'はい': u'はい', u'拝承': u'拝復', }
 
     json_official_sample = """{"status":"ok",
  "counter":208,
