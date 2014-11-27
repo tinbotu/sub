@@ -84,6 +84,21 @@ class SubcultureKnowerLevelUp(Subculture):
         return None
 
 
+class SubcultureKnowerLevelGet(Subculture):
+
+    def response(self):
+        speakers_blacklist = ["knower-tests", "knower-None",]
+        self.redis_connect()
+        res = ''
+        speakers = self.conn.keys("knower-*")
+
+        for s in speakers:
+            if s not in speakers_blacklist:
+                res += "%s: %s\n" % (s, self.conn.get(s))
+
+        return res
+
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
@@ -307,6 +322,7 @@ class NotSubculture(object):
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
+           u'^他人のわかり': SubcultureKnowerLevelGet,
            u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
            '.': SubcultureHitozuma,
