@@ -77,11 +77,7 @@ class SubcultureKnowerLevel(Subculture):
 
 
 class SubcultureKnowerLevelUp(Subculture):
-
-    def response(self):
-        self.redis_connect()
-        self.conn.incr("knower-%s" % self.speaker, 1)
-        return None
+    pass
 
 
 class SubcultureKnowerLevelGet(Subculture):
