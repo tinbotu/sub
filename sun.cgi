@@ -321,6 +321,7 @@ class NotSubculture(object):
            u'^他人のわかり': SubcultureKnowerLevelGet,
            u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
+           u'(Mac|マック|OSX|osx))': u'マックパワー',
            '.': SubcultureHitozuma,
            }
 
