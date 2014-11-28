@@ -119,6 +119,7 @@ class SubcultureGyazoScraper(Subculture):
 class SubcultureGaishutsu(Subculture):
     """ url gaishutsu checker """
     anti_double = True
+    url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def build_message(self, url, body):
         r = pickle.loads(body)
@@ -152,6 +153,13 @@ class SubcultureGaishutsu(Subculture):
         res = ''
         urls = url_re.findall(self.text)
         for url in urls:
+            skip = False
+            for black in self.url_blacklist:
+                if black in url:
+                    skip = True
+            if skip:
+                continue
+
             key = self.get_key(url)
             value = self.conn.get(key)
             if value is not None:
