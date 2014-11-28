@@ -155,7 +155,7 @@ class SubcultureGaishutsu(Subculture):
         for url in urls:
             skip = False
             for black in self.url_blacklist:
-                if black in url:
+                if black in url or len(url) > 1024:
                     skip = True
             if skip:
                 continue
