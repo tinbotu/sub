@@ -12,18 +12,22 @@ import random
 import codecs
 import inspect
 import redis
+import pickle
+import time
 
 
 class Subculture(object):
     """ abstract """
     content = None
     speaker = None
+    text = None
     __redis_db = 14  # don't change me if changes will cause collision other app
     conn = None
     enable_flood_check = True
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
+        self.text = text
 
     def redis_connect(self):
         if self.conn is None:
@@ -83,7 +87,7 @@ class SubcultureKnowerLevelUp(Subculture):
 class SubcultureKnowerLevelGet(Subculture):
 
     def response(self):
-        speakers_blacklist = ["knower-tests", "knower-None",]
+        speakers_blacklist = ["knower-tests", "knower-None", ]
         self.redis_connect()
         res = ''
         speakers = self.conn.keys("knower-*")
@@ -110,6 +114,52 @@ class SubcultureGyazoScraper(Subculture):
             return m.group(1)
         else:
             return None
+
+
+class SubcultureGaishutsu(Subculture):
+    """ url gaishutsu checker """
+    anti_double = True
+
+    def build_message(self, url, body):
+        r = pickle.loads(body)
+        ago = ''
+        if r.get("first_seen"):
+            ago_sec = time.time() - float(r.get("first_seen"))
+            if self.anti_double and ago_sec < 30:
+                return ""  # dont respond within 30 sec
+            ago = u' %.1f 日くらい前に' % (ago_sec / (60*60*24))
+        return u'おっ その %s は%s %s により既出ですね' % (url, ago, r.get('speaker'))
+
+    def update(self, key, count=1):
+        r = {}
+        r['speaker'] = self.speaker
+        r['first_seen'] = time.time()
+        r['last_seen'] = time.time()
+        r['count'] = count
+        self.conn.set(key, pickle.dumps(r))
+
+    def delete(self, url):
+        self.conn.delete(self.get_key(url))
+
+    def get_key(self, url):
+        # plase dont pollute url
+        return "%s__URI__%s" % (self.__class__.__name__, url)
+
+    def response(self):
+        self.redis_connect()
+        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*)')
+
+        res = ''
+        urls = url_re.findall(self.text)
+        for url in urls:
+            key = self.get_key(url)
+            value = self.conn.get(key)
+            if value is not None:
+                res += self.build_message(url, value)
+            else:
+                self.update(key)
+
+        return res
 
 
 class SubcultureMETAR(Subculture):
@@ -329,6 +379,7 @@ class NotSubculture(object):
            u'^他人のわかり': SubcultureKnowerLevelGet,
            u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
+           'http': SubcultureGaishutsu,
            '.': SubcultureHitozuma,
            }
 
