@@ -4,7 +4,7 @@
 
 import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu, SubcultureSilent
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -143,6 +143,25 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
         for i in xrange(100):
             res = self.r.response()
             self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
+
+
+class TestSubcultureSilent(unittest.TestCase):
+    dic = {
+        u'会いたい': u'私も会いたいな',
+        u'コピペしたい': u'私もコピペしたいな',
+        u'観測をしたい': u'私も観測をしたいな',
+        u'何がしたいんだ': None,
+        u'言わんとしたいことはわかる': None,
+    }
+
+    def setUp(self):
+        self.r = SubcultureSilent('', 'tests')
+
+    def test_response(self):
+        self.r.force = True
+        for c, r in self.dic.iteritems():
+            self.r.text = c
+            self.assertEqual(r, self.r.response())
 
 
 class TestSubcultureGaishutsu(unittest.TestCase):

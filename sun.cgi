@@ -14,6 +14,7 @@ import inspect
 import redis
 import pickle
 import time
+import MeCab
 
 
 class Subculture(object):
@@ -82,6 +83,110 @@ class SubcultureKnowerLevel(Subculture):
 
 class SubcultureKnowerLevelUp(Subculture):
     pass
+
+
+class SubcultureSilent(Subculture):
+    """ me too """
+    force = False
+
+    backward_dic = [
+        {
+            'wordclass': '動詞',
+            'conj1': 'サ変・スル',
+        },
+        {
+            'wordclass': '動詞',
+            'wordclass1': '接尾',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '格助詞',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '係助詞',
+        },
+        {
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+        },
+    ]
+
+    breakword_dic = [
+        {
+            'word': 'ん',
+        },
+        {
+            'word': 'の',
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+            'wordclass2': '一般',
+        },
+        {
+            'word': 'こと',
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+        },
+    ]
+
+    def divide_wordclass(self, text):
+        word = {}
+        if text is None or text == "" or text == "EOS":
+            return {"word": text}
+        wordclass = ["wordclass", "wordclass1", "wordclass2", "wordclass3", "conj1", "conj2", "conj3", "yomi", "pron"]
+        word["word"] = text.split("\t")[0]
+        feature = text.split("\t")[1].split(",")
+
+        if len(feature) == len(wordclass):
+            for n in feature:
+                word[wordclass.pop(0)] = n
+        return word
+
+    def check_forward(self, word, i):
+        if len(word) <= i:
+            return False
+        for d in self.breakword_dic:
+            if (d.get("word") is None or word[i+1].get("word") == d["word"]) and \
+               (d.get("wordclass") is None or word[i+1].get("wordclass") == d["wordclass"]) and \
+               (d.get("wordclass1") is None or word[i+1].get("wordclass1") == d["wordclass1"]) and \
+               (d.get("conj1") is None or word[i+1].get("conj1") == d["conj1"]):
+                return True
+
+    def check_backward(self, word, i):
+        backward = False
+        for d in self.backward_dic:
+            if (d.get("word") is None or word[i-1].get("word") == d["word"]) and \
+               (d.get("wordclass") is None or word[i-1].get("wordclass") == d["wordclass"]) and \
+               (d.get("wordclass1") is None or word[i-1].get("wordclass1") == d["wordclass1"]) and \
+               (d.get("conj1") is None or word[i-1].get("conj1") == d["conj1"]):
+                backward = True
+        if backward:
+            do = self.check_backward(word, i-1) + word[i-1].get("word")
+        else:
+            do = word[i-1].get("word")
+        return do
+
+    def response(self):
+
+        random.seed()
+        if self.force is not True and random.randrange(0, 100) > 40:
+            return None
+
+        m = MeCab.Tagger()
+        node = m.parse(self.text.encode('utf_8'))
+        node = node.split("\n")
+        word = []
+        for l in node:
+            word.append(self.divide_wordclass(l))
+
+        for i in xrange(len(word)):
+            do = None
+            if word[i].get("word") == 'たい' and word[i].get("wordclass") == '助動詞' and word[i].get("conj1") == '特殊・タイ':
+                do = self.check_backward(word, i)
+                if self.check_forward(word, i):
+                    continue
+            if do:
+                return u'私も%sたいな' % do.decode('utf_8')
 
 
 class SubcultureKnowerLevelGet(Subculture):
@@ -387,6 +492,7 @@ class NotSubculture(object):
            u'^他人のわかり': SubcultureKnowerLevelGet,
            u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
+           u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
            '.': SubcultureHitozuma,
            }
