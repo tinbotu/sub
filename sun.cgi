@@ -112,7 +112,7 @@ class SubcultureSilent(Subculture):
         },
     ]
 
-    breakword_dic = [
+    break_dic = [
         {
             'word': 'ん',
         },
@@ -127,11 +127,15 @@ class SubcultureSilent(Subculture):
             'wordclass': '名詞',
             'wordclass1': '非自立',
         },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '副助詞／並立助詞／終助詞',
+        },
     ]
 
     def divide_wordclass(self, text):
         word = {}
-        if text is None or text == "" or text == "EOS":
+        if text is None or text == '' or text == "EOS":
             return {"word": text}
         wordclass = ["wordclass", "wordclass1", "wordclass2", "wordclass3", "conj1", "conj2", "conj3", "yomi", "pron"]
         word["word"] = text.split("\t")[0]
@@ -145,7 +149,7 @@ class SubcultureSilent(Subculture):
     def check_forward(self, word, i):
         if len(word) <= i:
             return False
-        for d in self.breakword_dic:
+        for d in self.break_dic:
             if (d.get("word") is None or word[i+1].get("word") == d["word"]) and \
                (d.get("wordclass") is None or word[i+1].get("wordclass") == d["wordclass"]) and \
                (d.get("wordclass1") is None or word[i+1].get("wordclass1") == d["wordclass1"]) and \
