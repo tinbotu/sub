@@ -87,7 +87,7 @@ class SubcultureKnowerLevelUp(Subculture):
 
 class SubcultureSilent(Subculture):
     """ me too """
-    force = False
+    force = True
 
     backward_dic = [
         {
@@ -109,6 +109,10 @@ class SubcultureSilent(Subculture):
         {
             'wordclass': '名詞',
             'wordclass1': '非自立',
+        },
+        {
+            'wordclass': '助動詞',
+            'conj1': '文語・リ',
         },
     ]
 
