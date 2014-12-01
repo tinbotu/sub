@@ -175,7 +175,12 @@ class TestSubcultureNogata(unittest.TestCase):
 
     def test_response(self):
         word = self.nogata.response()
-        self.assertEqual(word, '姫')
+        self.assertEqual(word, u'姫')
+
+    def test_nogata(self):
+        self.nogata.text = u'おっ'
+        word = self.nogata.response()
+        self.assertIs(word, None)
 
 class TestSubcultureGaishutsu(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'

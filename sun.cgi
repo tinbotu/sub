@@ -104,7 +104,9 @@ class SubcultureNogata(Subculture):
             if wordclass[0] == "名詞":
                 noword.append(word)
         random.shuffle(noword)
-        return noword.pop()
+        if len(noword) > 0:
+            return (noword.pop()).decode('utf-8')
+        return None
 
 class SubcultureSilent(Subculture):
     """ me too """
