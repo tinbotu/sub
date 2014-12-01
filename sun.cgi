@@ -498,6 +498,7 @@ class NotSubculture(object):
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
+           u'うひー': u'うひーとかやめてくれる',
            '.': SubcultureHitozuma,
            }
 
