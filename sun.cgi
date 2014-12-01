@@ -491,7 +491,7 @@ class NotSubculture(object):
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧',
            u'カエリンコ': u'いいですよ',
-           u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'Esehara Likes Taro and Yaro.',
+           u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
