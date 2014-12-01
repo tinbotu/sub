@@ -12,24 +12,33 @@ import random
 import codecs
 import inspect
 import redis
+import pickle
+import time
+import MeCab
 
 
 class Subculture(object):
     """ abstract """
     content = None
     speaker = None
+    text = None
     __redis_db = 14  # don't change me if changes will cause collision other app
     conn = None
+    enable_flood_check = True
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
+        self.text = text
 
     def redis_connect(self):
-        self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+        if self.conn is None:
+            self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
 
     def check_flood(self, speaker='', sec=30):
-        if self.conn is None:
-            self.redis_connect()
+        if self.enable_flood_check is False:
+            return True
+
+        self.redis_connect()
 
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         if self.conn.get(key) is not None:
@@ -39,6 +48,11 @@ class Subculture(object):
         self.conn.expire(key, sec)
 
         return True
+
+    def clear_flood_status(self, speaker='', sec=30):
+        self.redis_connect()
+        key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
+        self.conn.delete(key)
 
     def fetch(self, url):
         self.content = None
@@ -67,6 +81,138 @@ class SubcultureKnowerLevel(Subculture):
         return u"おっ、分かり度 %d ですか" % level
 
 
+class SubcultureKnowerLevelUp(Subculture):
+    pass
+
+
+class SubcultureSilent(Subculture):
+    """ me too """
+    force = True
+
+    backward_dic = [
+        {
+            'wordclass': '動詞',
+            'conj1': 'サ変・スル',
+        },
+        {
+            'wordclass': '動詞',
+            'wordclass1': '接尾',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '格助詞',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '係助詞',
+        },
+        {
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+        },
+        {
+            'wordclass': '助動詞',
+            'conj1': '文語・リ',
+        },
+    ]
+
+    break_dic = [
+        {
+            'word': 'ん',
+        },
+        {
+            'word': 'の',
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+            'wordclass2': '一般',
+        },
+        {
+            'word': 'こと',
+            'wordclass': '名詞',
+            'wordclass1': '非自立',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '副助詞／並立助詞／終助詞',
+        },
+    ]
+
+    def divide_wordclass(self, text):
+        word = {}
+        if text is None or text == '' or text == "EOS":
+            return {"word": text}
+        wordclass = ["wordclass", "wordclass1", "wordclass2", "wordclass3", "conj1", "conj2", "conj3", "yomi", "pron"]
+        word["word"] = text.split("\t")[0]
+        feature = text.split("\t")[1].split(",")
+
+        if len(feature) == len(wordclass):
+            for n in feature:
+                word[wordclass.pop(0)] = n
+        return word
+
+    def check_forward(self, word, i):
+        if len(word) <= i:
+            return False
+        for d in self.break_dic:
+            if (d.get("word") is None or word[i+1].get("word") == d["word"]) and \
+               (d.get("wordclass") is None or word[i+1].get("wordclass") == d["wordclass"]) and \
+               (d.get("wordclass1") is None or word[i+1].get("wordclass1") == d["wordclass1"]) and \
+               (d.get("conj1") is None or word[i+1].get("conj1") == d["conj1"]):
+                return True
+
+    def check_backward(self, word, i):
+        backward = False
+        for d in self.backward_dic:
+            if (d.get("word") is None or word[i-1].get("word") == d["word"]) and \
+               (d.get("wordclass") is None or word[i-1].get("wordclass") == d["wordclass"]) and \
+               (d.get("wordclass1") is None or word[i-1].get("wordclass1") == d["wordclass1"]) and \
+               (d.get("conj1") is None or word[i-1].get("conj1") == d["conj1"]):
+                backward = True
+        if backward:
+            do = self.check_backward(word, i-1) + word[i-1].get("word")
+        else:
+            do = word[i-1].get("word")
+        return do
+
+    def response(self):
+
+        random.seed()
+        if self.force is not True and random.randrange(0, 100) > 40:
+            return None
+
+        m = MeCab.Tagger()
+        node = m.parse(self.text.encode('utf_8'))
+        node = node.split("\n")
+        word = []
+        for l in node:
+            word.append(self.divide_wordclass(l))
+
+        for i in xrange(len(word)):
+            do = None
+            if word[i].get("word") == 'たい' and word[i].get("wordclass") == '助動詞' and word[i].get("conj1") == '特殊・タイ':
+                do = self.check_backward(word, i)
+                if self.check_forward(word, i):
+                    continue
+            if do:
+                me = [u'私も', u'私も', u'また', ]
+                return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
+
+
+class SubcultureKnowerLevelGet(Subculture):
+
+    def response(self):
+        speakers_blacklist = ["knower-tests", "knower-None", ]
+        self.redis_connect()
+        res = ''
+        speakers = self.conn.keys("knower-*")
+
+        for s in speakers:
+            if s not in speakers_blacklist:
+                res += "%s: %s\n" % (s, self.conn.get(s))
+
+        return res
+
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
@@ -82,6 +228,60 @@ class SubcultureGyazoScraper(Subculture):
             return m.group(1)
         else:
             return None
+
+
+class SubcultureGaishutsu(Subculture):
+    """ url gaishutsu checker """
+    anti_double = True
+    url_blacklist = ['gyazo.com', '.png', '.jpg', ]
+
+    def build_message(self, url, body):
+        r = pickle.loads(body)
+        ago = ''
+        if r.get("first_seen"):
+            ago_sec = time.time() - float(r.get("first_seen"))
+            if self.anti_double and ago_sec < 30:
+                return ""  # dont respond within 30 sec
+            ago = u' %.1f 日くらい前に' % (ago_sec / (60*60*24))
+        return u'おっ その %s は%s %s により既出ですね' % (url, ago, r.get('speaker'))
+
+    def update(self, key, count=1):
+        r = {}
+        r['speaker'] = self.speaker
+        r['first_seen'] = time.time()
+        r['last_seen'] = time.time()
+        r['count'] = count
+        self.conn.set(key, pickle.dumps(r))
+
+    def delete(self, url):
+        self.conn.delete(self.get_key(url))
+
+    def get_key(self, url):
+        # plase dont pollute url
+        return "%s__URI__%s" % (self.__class__.__name__, url)
+
+    def response(self):
+        self.redis_connect()
+        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*)')
+
+        res = ''
+        urls = url_re.findall(self.text)
+        for url in urls:
+            skip = False
+            for black in self.url_blacklist:
+                if black in url or len(url) > 1024:
+                    skip = True
+            if skip:
+                continue
+
+            key = self.get_key(url)
+            value = self.conn.get(key)
+            if value is not None:
+                res += self.build_message(url, value)
+            else:
+                self.update(key)
+
+        return res
 
 
 class SubcultureMETAR(Subculture):
@@ -121,6 +321,14 @@ class SubcultureOmochi(Subculture):
             'http://img-cdn.jg.jugem.jp/f29/2946929/20140106_445355.jpg',
             'https://pbs.twimg.com/media/ByjWDq-CYAAeArB.jpg',
             'https://pbs.twimg.com/media/BsuorQICUAA3nMw.jpg',
+            'http://rubese.net/twisoq/img/a73f190ee0575ac592fba009b0d8cc77.jpg',
+            'http://33.media.tumblr.com/aa2a0b8f93a7499b1899c510536ce4a5/tumblr_n9l06rLgmw1qkllbso1_500.gif',
+            'http://40.media.tumblr.com/277d6031c2a25ac4cc160acfc984fa8f/tumblr_myzslsgJMh1qkllbso1_500.png',
+            'http://livedoor.blogimg.jp/nasuka7777/imgs/c/c/cc8c7ebb.jpg',
+            'https://pbs.twimg.com/media/B3grzV5CEAAiCoz.jpg',
+            'https://pbs.twimg.com/media/B2YEuvFCUAAe1Ba.jpg',
+            'https://pbs.twimg.com/media/Bzv0UUxCEAAWhEh.jpg',
+            'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
             ]
 
         # dont response within 30 seconds
@@ -183,6 +391,10 @@ class SubcultureStone(Subculture):
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
             u'西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
             ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
         random.seed()
         return stone[random.randrange(0, len(stone))]
 
@@ -234,6 +446,10 @@ class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
         knower = ['kuzuha', 'ykic', 'esehara']
+
+        K = SubcultureKnowerLevelUp('', self.speaker)
+        K.response()
+
         random.seed()
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
 
@@ -259,10 +475,10 @@ class NotSubculture(object):
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
-           u'kumagai culture': AnotherIsMoreKnowerThanMe,
-           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima)\s?(さん)?': u'わかるなー',
+           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布) culture': AnotherIsMoreKnowerThanMe,
+           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
-           u'わかるなー$': SubcultureKnowerLevel,
+           u'わかるなー*$': SubcultureKnowerLevel,
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車',
@@ -278,10 +494,17 @@ class NotSubculture(object):
            u'どうすればいいんだ': u'おれはもうだめだ',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
-           'http://gyazo.com': SubcultureGyazoScraper,
-           u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ)い(のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
+           # 'http://gyazo.com': SubcultureGyazoScraper,
+           u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
+           u'^他人のわかり': SubcultureKnowerLevelGet,
+           u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
+           u'オレオ': u'オレオ',
+           u'たい': SubcultureSilent,
+           'http': SubcultureGaishutsu,
+           u'うひー': u'うひーとかやめてくれる',
+           u'(Mac|マック|OSX|osx)': u'マックパワー',
            '.': SubcultureHitozuma,
            }
 

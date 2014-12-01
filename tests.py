@@ -4,7 +4,7 @@
 
 import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu, SubcultureSilent
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -38,11 +38,12 @@ class TestGyazoScraper(unittest.TestCase):
             r = self.g.response()
             self.assertIsNone(r)
 
+
 class TestSubcultureKnowerLevel(unittest.TestCase):
 
     def setUp(self):
         self.r = SubcultureKnowerLevel('', 'tests')
- 
+
     def test_levelup(self):
         self.assertRegexpMatches(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
 
@@ -51,7 +52,7 @@ class TestSubcultureMETAR(unittest.TestCase):
     json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""
 
     def setUp(self):
-        self.r = SubcultureMETAR(None)
+        self.r = SubcultureMETAR('', 'tests')
 
     def test_fetch(self):
         self.r.fetch(self.r.url)
@@ -66,46 +67,67 @@ class TestSubcultureMETAR(unittest.TestCase):
 
     def test_response(self):
         self.r.content = self.json_openweathermap
-        r = self.r.response()
-        self.assertEqual(r, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
+        res = self.r.response()
+        self.assertEqual(res, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
 
 
 class TestSubcultureOmochi(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureOmochi(None)
+        self.r = SubcultureOmochi('', 'tests')
+
+    def test_response_flood(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = True
+
+        res = self.r.response()
+        self.assertRegexpMatches(res, r'^https?://')
+        res = self.r.response()
+        self.assertIs(res, None)
 
     def test_response(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = False
         for i in xrange(100):
-            r = self.r.response()
-            self.assertRegexpMatches(r, r'^https?://')
+            res = self.r.response()
+            self.assertRegexpMatches(res, r'^https?://')
 
 
 class TestSubcultureStone(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureStone(None)
+        self.r = SubcultureStone('', 'tests')
+
+    def test_response_flood(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = True
+        res = self.r.response()
+        self.assertRegexpMatches(res, u'(西山石|https?://)')
+        res = self.r.response()
+        self.assertIs(res, None)
 
     def test_response(self):
+        self.r.clear_flood_status(self.r.speaker)
+        self.r.enable_flood_check = False
         for i in xrange(500):
-            r = self.r.response()
-            self.assertRegexpMatches(r, r'(西山石|https?://)')
+            res = self.r.response()
+            self.assertRegexpMatches(res, u'(西山石|https?://)')
 
 
 class TestSubcultureHitozuma(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureHitozuma(None)
+        self.r = SubcultureHitozuma('', 'tests')
 
     def test_response(self):
         y = False
         n = False
 
         for i in xrange(100 * 100 * 3):
-            r = self.r.response()
-            if r == u'はい':
+            res = self.r.response()
+            if res == u'はい':
                 y = True
-            elif r == u'いいえ':
+            elif res == u'いいえ':
                 n = True
 
         self.assertTrue(y)
@@ -115,17 +137,64 @@ class TestSubcultureHitozuma(unittest.TestCase):
 class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
     def setUp(self):
-        self.r = AnotherIsMoreKnowerThanMe(None)
+        self.r = AnotherIsMoreKnowerThanMe('', 'tests')
 
     def test_response(self):
         for i in xrange(100):
-            r = self.r.response()
-            self.assertRegexpMatches(r, '^No, [A-Za-z0-9]+ culture.')
+            res = self.r.response()
+            self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
+
+
+class TestSubcultureSilent(unittest.TestCase):
+    dic = {
+        u'会いたい': u'^(:?私も|また)?会いたいな$',
+        u'コピペしたい': u'^(:?私も|また)?コピペしたいな$',
+        u'観測をしたい': u'^(:?私も|また)?観測をしたいな$',
+        u'何がしたいんだ': None,
+        u'言わんとしたいことはわかる': None,
+    }
+
+    def setUp(self):
+        self.r = SubcultureSilent('', 'tests')
+
+    def test_response(self):
+        self.r.force = True
+        for c, r in self.dic.iteritems():
+            self.r.text = c
+            if r is None:
+                self.assertIsNone(self.r.response())
+            else:
+                self.assertRegexpMatches(self.r.response(), r)
+
+
+
+
+class TestSubcultureGaishutsu(unittest.TestCase):
+    url = 'http://docs.python.jp/2/howto/regex.html'
+    text = u'テスト http://docs.python.jp/2/howto/regex.html'
+
+    def setUp(self):
+        self.r = SubcultureGaishutsu(self.text, 'tests')
+        self.r.redis_connect()
+
+    def test_response_first(self):
+        self.r.delete(self.url)
+
+        self.r.text = self.text
+        self.assertIs(self.r.response(), '')
+
+        self.r.anti_double = True
+        self.assertIs(self.r.response(), '')
+
+    def test_response_say(self):
+        self.r.anti_double = False
+        res = self.r.response()
+        self.assertRegexpMatches(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
 
 
 class TestNotSubculture(unittest.TestCase):
 
-    dic = {u'サブでは': '?', u'はい': u'はい', }
+    dic = {u'サブでは': '?', u'はい': u'はい', u'拝承': u'拝復', }
 
     json_official_sample = """{"status":"ok",
  "counter":208,
