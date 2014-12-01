@@ -4,7 +4,7 @@
 
 import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu, SubcultureSilent
+from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu, SubcultureSilent, SubcultureNogata
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -167,7 +167,15 @@ class TestSubcultureSilent(unittest.TestCase):
                 self.assertRegexpMatches(self.r.response(), r)
 
 
+class TestSubcultureNogata(unittest.TestCase):
+    text = u'姫'
+    def setUp(self):
+        self.nogata = SubcultureNogata(self.text)
+        self.nogata.PROBABLY = 200
 
+    def test_response(self):
+        word = self.nogata.response()
+        self.assertEqual(word, '姫')
 
 class TestSubcultureGaishutsu(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'

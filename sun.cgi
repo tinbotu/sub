@@ -85,6 +85,27 @@ class SubcultureKnowerLevelUp(Subculture):
     pass
 
 
+class SubcultureNogata(Subculture):
+    u""" 姫 """
+
+    PROBABLY = 50
+
+    def response(self):
+        if random.randint(0, 100) > self.PROBABLY:
+            return None
+        mecab = MeCab.Tagger().parse(self.text.encode('utf-8'))
+        node = mecab.split("\n")
+        noword = []
+        for l in node:
+            if l == 'EOS' or l == '':
+                break
+            word, wordclass = l.split("\t")
+            wordclass = wordclass.split(",")
+            if wordclass[0] == "名詞":
+                noword.append(word)
+        random.shuffle(noword)
+        return noword.pop()
+
 class SubcultureSilent(Subculture):
     """ me too """
     force = True
@@ -506,6 +527,7 @@ class NotSubculture(object):
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー',
            '.': SubcultureHitozuma,
+           '.': SubcultureNogata,
            }
 
     def __init__(self):
