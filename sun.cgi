@@ -88,7 +88,7 @@ class SubcultureKnowerLevelUp(Subculture):
 class SubcultureNogata(Subculture):
     u""" 姫 """
 
-    PROBABLY = 50
+    PROBABLY = 10
 
     def response(self):
         if random.randint(0, 100) > self.PROBABLY:
