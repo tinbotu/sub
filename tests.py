@@ -147,9 +147,9 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
 class TestSubcultureSilent(unittest.TestCase):
     dic = {
-        u'会いたい': u'私も会いたいな',
-        u'コピペしたい': u'私もコピペしたいな',
-        u'観測をしたい': u'私も観測をしたいな',
+        u'会いたい': u'^(:?私も|また)?会いたいな$',
+        u'コピペしたい': u'^(:?私も|また)?コピペしたいな$',
+        u'観測をしたい': u'^(:?私も|また)?観測をしたいな$',
         u'何がしたいんだ': None,
         u'言わんとしたいことはわかる': None,
     }
@@ -161,7 +161,12 @@ class TestSubcultureSilent(unittest.TestCase):
         self.r.force = True
         for c, r in self.dic.iteritems():
             self.r.text = c
-            self.assertEqual(r, self.r.response())
+            if r is None:
+                self.assertIsNone(self.r.response())
+            else:
+                self.assertRegexpMatches(self.r.response(), r)
+
+
 
 
 class TestSubcultureGaishutsu(unittest.TestCase):
