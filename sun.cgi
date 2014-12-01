@@ -194,7 +194,8 @@ class SubcultureSilent(Subculture):
                 if self.check_forward(word, i):
                     continue
             if do:
-                return u'私も%sたいな' % do.decode('utf_8')
+                me = [u'私も', u'私も', u'また', ]
+                return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
 class SubcultureKnowerLevelGet(Subculture):
