@@ -162,7 +162,7 @@ class SubcultureAtencion(Subculture):
                     n1 = self.atencion + float(score)
                     self.atencion = self.lpf(self.atencion, n1, self.atencion_T)
             else:
-                self.atencion = float(self.atencion) -.3
+                self.atencion = float(self.atencion) - .3
 
             me_factor = 1 + math.log(self.atencion + 1)
             for dict_k, score in self.soku_dic.iteritems():
@@ -170,19 +170,24 @@ class SubcultureAtencion(Subculture):
                     n1 = self.soku + float(score) * me_factor
                     self.soku = self.lpf(self.soku, n1, self.soku_T)
             else:
-                self.soku = float(self.soku) -.3
+                self.soku = float(self.soku) - .3
 
         if self.soku < 0:
             self.soku = 0
         if self.atencion < 0:
             self.atencion = 0
 
+        inu_soku = 1 + math.log(self.soku + 1)
+        self.conn.set("inu_soku", inu_soku)
         self.conn.set("inu_internal_atencion", self.atencion)
         self.conn.set("inu_internal_soku", self.soku)
-        self.conn.set("inu_soku", 1 + math.log(self.soku + 1))
+        self.conn.expire("inu_soku", 60*10)
         self.conn.expire("inu_internal_atencion", 60*10)
         self.conn.expire("inu_internal_soku", 60*10)
-        self.conn.expire("inu_soku", 60*10)
+
+        random.seed()
+        if random.randrange(1, 50) < inu_soku:
+            return u'おっ'
 
 
 class SubcultureSilent(Subculture):
