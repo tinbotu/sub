@@ -2,10 +2,20 @@
 NotSubculture bot
 =================
 
-Setup
------
+DevServer Setup
+---------------
 
-    make setup
+Requirements
+
+- Vagrant > 1.6
+
+::
+
+    main-machine: ~/work/sub$ vagrant up
+    main-machine: ~/work/sub$ vagrant ssh
+    subculture: ~$ cd /vagrant
+    subculture:/vagrant$ make test
+
 
 for Lingr
 ---------
