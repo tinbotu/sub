@@ -2,6 +2,11 @@
 NotSubculture bot
 =================
 
+Setup
+-----
+
+    make setup
+
 for Lingr
 ---------
 
