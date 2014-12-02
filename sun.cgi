@@ -186,7 +186,7 @@ class SubcultureAtencion(Subculture):
         self.conn.expire("inu_internal_soku", 60*10)
 
         random.seed()
-        if random.randrange(1, 50) < inu_soku:
+        if random.randrange(1, 200) < inu_soku:
             return u'おっ'
 
 
