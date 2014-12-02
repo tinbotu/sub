@@ -528,6 +528,7 @@ class NotSubculture(object):
            'http': SubcultureGaishutsu,
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー',
+           u'弁当': u'便當だろ',
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            }
