@@ -15,6 +15,7 @@ import redis
 import pickle
 import time
 import MeCab
+import math
 
 
 class Subculture(object):
@@ -107,6 +108,82 @@ class SubcultureNogata(Subculture):
         if len(noword) > 0:
             return (noword.pop()).decode('utf-8')
         return None
+
+
+class SubcultureAtencion(Subculture):
+    """ me? """
+    atencion = 0
+    soku = 0
+
+    atencion_T = .1
+    soku_T = .5
+
+    atencion_dic = {
+        u'犬': 30,
+        u'イヌ': 20,
+        'main': 6,
+        'bot': 3,
+        u'メイン': 6,
+        u'サブ': 4,
+    }
+    soku_dic = {
+        u'犬': 10,
+        u'うぜー': -100,
+        u'糞': -55,
+        u'クソ': -100,
+        u'黙れ': -100,
+        u'はい$': 10,
+        u'はいじゃないが': -20,
+        u'おっ': 15,
+    }
+
+    def lpf(self, n0, n1, T=.3):
+        return (n0 + (n1 - n0) * (.1 / (1 / (2*3.142*T))))
+
+    def response(self):
+        self.redis_connect()
+        self.atencion = self.conn.get("inu_internal_atencion")
+        if self.atencion is None:
+            self.atencion = 0
+        else:
+            self.atencion = float(self.atencion)
+
+        if self.text == u'犬寝ろ':
+            self.atencion = self.soku = 0
+        else:
+            self.soku = self.conn.get("inu_internal_soku")
+            if self.soku is None:
+                self.soku = 0
+            else:
+                self.soku = float(self.soku)
+
+            for dict_k, score in self.atencion_dic.iteritems():
+                if re.compile(dict_k).search(self.text):
+                    n1 = self.atencion + float(score)
+                    self.atencion = self.lpf(self.atencion, n1, self.atencion_T)
+            else:
+                self.atencion = float(self.atencion) -.3
+
+            me_factor = 1 + math.log(self.atencion + 1)
+            for dict_k, score in self.soku_dic.iteritems():
+                if re.compile(dict_k).search(self.text):
+                    n1 = self.soku + float(score) * me_factor
+                    self.soku = self.lpf(self.soku, n1, self.soku_T)
+            else:
+                self.soku = float(self.soku) -.3
+
+        if self.soku < 0:
+            self.soku = 0
+        if self.atencion < 0:
+            self.atencion = 0
+
+        self.conn.set("inu_internal_atencion", self.atencion)
+        self.conn.set("inu_internal_soku", self.soku)
+        self.conn.set("inu_soku", 1 + math.log(self.soku + 1))
+        self.conn.expire("inu_internal_atencion", 60*10)
+        self.conn.expire("inu_internal_soku", 60*10)
+        self.conn.expire("inu_soku", 60*10)
+
 
 class SubcultureSilent(Subculture):
     """ me too """
@@ -531,6 +608,7 @@ class NotSubculture(object):
            u'弁当': u'便當だろ',
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
+           '.': SubcultureAtencion,
            }
 
     def __init__(self):
