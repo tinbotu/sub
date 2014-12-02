@@ -115,7 +115,7 @@ class SubcultureAtencion(Subculture):
     atencion = 0
     soku = 0
 
-    atencion_T = .1
+    atencion_T = .2
     soku_T = .5
 
     atencion_dic = {
@@ -162,7 +162,7 @@ class SubcultureAtencion(Subculture):
                     n1 = self.atencion + float(score)
                     self.atencion = self.lpf(self.atencion, n1, self.atencion_T)
             else:
-                self.atencion = float(self.atencion) - .3
+                self.atencion = float(self.atencion) - 1
 
             me_factor = 1 + math.log(self.atencion + 1)
             for dict_k, score in self.soku_dic.iteritems():
@@ -170,7 +170,7 @@ class SubcultureAtencion(Subculture):
                     n1 = self.soku + float(score) * me_factor
                     self.soku = self.lpf(self.soku, n1, self.soku_T)
             else:
-                self.soku = float(self.soku) - .3
+                self.soku = float(self.soku) - 1
 
         if self.soku < 0:
             self.soku = 0
