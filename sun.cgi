@@ -88,7 +88,7 @@ class SubcultureKnowerLevelUp(Subculture):
 class SubcultureNogata(Subculture):
     u""" 姫 """
 
-    PROBABLY = 2
+    PROBABLY = 1
 
     def response(self):
         if random.randint(0, 100) > self.PROBABLY:
@@ -110,7 +110,7 @@ class SubcultureNogata(Subculture):
 
 class SubcultureSilent(Subculture):
     """ me too """
-    force = True
+    force = False
 
     backward_dic = [
         {
