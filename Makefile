@@ -2,8 +2,11 @@ clean:
 	find . -name "*.py[co]" -delete
 
 setup:
-	virtualenv .
-	./bin/pip install -r requirements.txt
+	# Install python packages to system python
+	pip install -r requirements.txt
+
+status:
+	service redis-server status
 
 test:
-	./bin/python tests.py
+	python tests.py

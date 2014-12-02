@@ -56,3 +56,6 @@ target/
 # virtualenv
 bin/
 include/
+
+# vagrant
+.vagrant
