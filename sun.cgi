@@ -580,15 +580,21 @@ class HateSubculture(Subculture):
         random.seed()
         return u'川\n' * (random.randint(0, 10) + 20)
 
+
+class DogeAwayMessage(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+
 class SubcultureDogeGoAway(Subculture):
 
     def response(self):
         if u'逃がす' in self.text:
             self.doge_away()
-            return u'自由'
+            raise DogeAwayMessage(u'自由')
         elif u'捕' in self.text:
             self.doge_away(False)
-            return u'不自由で邪悪'
+            raise DogeAwayMessage(u'不自由で邪悪')
 
 
 class NotSubculture(object):
@@ -680,13 +686,16 @@ class NotSubculture(object):
                 for dict_k, dict_res in self.dic.iteritems():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
-                        if inspect.isclass(dict_res):
-                            I = dict_res(text, speaker)
-                            r = I.response()
-                            if sub.doge_is_away is not True and r:
-                                yield r
-                        elif sub.doge_is_away is not True:
-                            yield dict_res
+                        try:
+                            if inspect.isclass(dict_res):
+                                I = dict_res(text, speaker)
+                                r = I.response()
+                                if sub.doge_is_away is not True and r:
+                                    yield r
+                            elif sub.doge_is_away is not True:
+                                yield dict_res
+                        except DogeAwayMessage as e:
+                            yield e.msg
 
 
 if __name__ == '__main__':
