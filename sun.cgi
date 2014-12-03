@@ -597,6 +597,11 @@ class SubcultureDogeGoAway(Subculture):
             raise DogeAwayMessage(u'不自由で邪悪')
 
 
+class SubcultureDogeHouseStatus(Subculture):
+
+    def response(self):
+        raise DogeAwayMessage(u'犬' + (u'は逃げました' if self.doge_is_away else u'はいる'))
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -646,6 +651,7 @@ class NotSubculture(object):
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
            u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
+           u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
            }
 
     def __init__(self):
