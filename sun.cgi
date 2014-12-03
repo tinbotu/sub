@@ -223,6 +223,13 @@ class SubcultureAtencion(Subculture):
             return u'おっ'
 
 
+class SubcultureDogeDetailStatus(Subculture):
+    def response(self):
+        ret = u'クゥーン\n'
+        for k in ['inu_soku', 'inu_internal_atencion', 'inu_internal_soku']:
+            ret += u"%s: %s\n" % (k, self.conn.get(k))
+        return ret
+
 
 class SubcultureSilent(Subculture):
     """ me too """
@@ -673,6 +680,7 @@ class NotSubculture(object):
            '.': SubcultureAtencion,
            u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
+           u'^(コラッ)$': SubcultureDogeDetailStatus
            }
 
     def __init__(self):
