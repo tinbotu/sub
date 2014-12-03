@@ -588,7 +588,7 @@ class SubcultureDogeGoAway(Subculture):
             return u'自由'
         elif u'捕' in self.text:
             self.doge_away(False)
-            return u'はい'
+            return u'不自由で邪悪'
 
 
 class NotSubculture(object):
