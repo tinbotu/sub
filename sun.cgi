@@ -169,6 +169,7 @@ class SubcultureAtencion(Subculture):
         u'なるほど': 10,
         u'おもち': -10,
         u'(ない|ねーよ?)$': -30,
+        u'絡み方が悪質': 50,
     }
 
     def lpf(self, n0, n1, T=.3):
