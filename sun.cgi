@@ -465,7 +465,7 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/B2YEuvFCUAAe1Ba.jpg',
             'https://pbs.twimg.com/media/Bzv0UUxCEAAWhEh.jpg',
             'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
-            ]
+        ]
 
         # dont response within 30 seconds
         if self.check_flood(self.speaker, 30) is False:
@@ -526,7 +526,7 @@ class SubcultureStone(Subculture):
             'http://i.gyazo.com/29a38b2b9202862189d8f7a4df1e8886.png',
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
             u'西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
-            ]
+        ]
 
         if self.check_flood(self.speaker, 30) is False:
             return None
@@ -541,7 +541,7 @@ class SubcultureWaterFall(Subculture):
         urls = [
             u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png',
             u'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
-            ]
+        ]
 
         if self.check_flood(self.speaker, 10) is False:
             return None
