@@ -164,7 +164,7 @@ class SubcultureAtencion(Subculture):
             else:
                 self.atencion = float(self.atencion) - 1
 
-            me_factor = 1 + math.sqrt(self.atencion)
+            me_factor = 1 + math.sqrt(abs(self.atencion))
             for dict_k, score in self.soku_dic.iteritems():
                 if re.compile(dict_k).search(self.text):
                     n1 = self.soku + float(score) * me_factor
