@@ -2,20 +2,21 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
-import os
-import sys
-import json
-import re
-import traceback
-import requests
-import random
 import codecs
 import inspect
-import redis
-import pickle
-import time
-import MeCab
+import json
 import math
+import os
+import pickle
+import random
+import re
+import sys
+import time
+import traceback
+
+import requests
+import redis
+import MeCab
 
 
 class Subculture(object):
@@ -221,6 +222,13 @@ class SubcultureAtencion(Subculture):
             # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
             return u'おっ'
 
+
+class SubcultureDogeDetailStatus(Subculture):
+    def response(self):
+        ret = u'クゥーン\n'
+        for k in ['inu_soku', 'inu_internal_atencion', 'inu_internal_soku']:
+            ret += u"%s: %s\n" % (k, self.conn.get(k))
+        return ret
 
 
 class SubcultureSilent(Subculture):
@@ -672,6 +680,7 @@ class NotSubculture(object):
            '.': SubcultureAtencion,
            u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
+           u'^(コラッ)$': SubcultureDogeDetailStatus
            }
 
     def __init__(self):

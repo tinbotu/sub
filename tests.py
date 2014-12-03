@@ -2,9 +2,24 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
-import unittest
 import json
-from sun import NotSubculture, Subculture, SubcultureGyazoScraper, SubcultureMETAR, SubcultureOmochi, SubcultureStone, SubcultureHitozuma, AnotherIsMoreKnowerThanMe, SubcultureKnowerLevel, SubcultureGaishutsu, SubcultureSilent, SubcultureNogata
+import unittest
+
+from sun import (
+    NotSubculture,
+    Subculture,
+    SubcultureGyazoScraper,
+    SubcultureMETAR,
+    SubcultureOmochi,
+    SubcultureStone,
+    SubcultureHitozuma,
+    AnotherIsMoreKnowerThanMe,
+    SubcultureKnowerLevel,
+    SubcultureGaishutsu,
+    SubcultureSilent,
+    SubcultureNogata,
+    SubcultureDogeDetailStatus
+)
 
 
 class TestGyazoScraper(unittest.TestCase):
@@ -165,6 +180,14 @@ class TestSubcultureSilent(unittest.TestCase):
                 self.assertIsNone(self.r.response())
             else:
                 self.assertRegexpMatches(self.r.response(), r)
+
+
+class TestSubcultureDogeDetailStatus(unittest.TestCase):
+    def setUp(self):
+        self.r = SubcultureDogeDetailStatus('', 'tests')
+
+    def test_return_status(self):
+        self.assertEqual(self.r.response(), u'クゥーン\ninu_soku: 1.0\ninu_internal_atencion: 0\ninu_internal_soku: 0\n')
 
 
 class TestSubcultureNogata(unittest.TestCase):
