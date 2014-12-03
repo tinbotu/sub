@@ -643,17 +643,17 @@ class SubcultureDogeGoAway(Subculture):
         if u'逃がす' in self.text:
             if self.check_doge_away() is False:
                 self.doge_away()
-                raise DogeAwayMessage(u'自由')
+                raise DogeAwayMessage(u'(自由)')
         elif u'捕' in self.text:
             self.doge_away(False)
-            raise DogeAwayMessage(u'不自由で邪悪')
+            raise DogeAwayMessage(u'(不自由で邪悪)')
 
 
 class SubcultureDogeHouseStatus(Subculture):
 
     def response(self):
         self.check_doge_away()
-        raise DogeAwayMessage(u'犬' + (u'は逃げました' if self.doge_is_away else u'はいる'))
+        raise DogeAwayMessage(u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)'))
 
 
 class NotSubculture(object):
@@ -705,10 +705,10 @@ class NotSubculture(object):
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
-           u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
+           u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
-           u'^(コラッ)$': SubcultureDogeDetailStatus,
-           u'^犬$': SubcultureShowDogeSoku,
+           u'^\(コラッ\)$': SubcultureDogeDetailStatus,
+           u'\(犬\)': SubcultureShowDogeSoku,
 
            }
 
