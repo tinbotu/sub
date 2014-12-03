@@ -639,7 +639,7 @@ class NotSubculture(object):
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
-           u'^\(?犬?(逃がす|捕まえる)\)?$': SubcultureDogeGoAway,
+           u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
            }
 
     def __init__(self):
