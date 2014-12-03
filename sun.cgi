@@ -60,6 +60,8 @@ class Subculture(object):
         self.redis_connect()
         if self.conn.get('doge_away') == "1":
             self.doge_is_away = True
+        else:
+            self.doge_is_away = False
         return self.doge_is_away
 
     def doge_away(self, goaway=True, expire_sec=60*15):
@@ -590,8 +592,9 @@ class SubcultureDogeGoAway(Subculture):
 
     def response(self):
         if u'逃がす' in self.text:
-            self.doge_away()
-            raise DogeAwayMessage(u'自由')
+            if self.check_doge_away() is False:
+                self.doge_away()
+                raise DogeAwayMessage(u'自由')
         elif u'捕' in self.text:
             self.doge_away(False)
             raise DogeAwayMessage(u'不自由で邪悪')
@@ -602,6 +605,7 @@ class SubcultureDogeHouseStatus(Subculture):
     def response(self):
         self.check_doge_away()
         raise DogeAwayMessage(u'犬' + (u'は逃げました' if self.doge_is_away else u'はいる'))
+
 
 class NotSubculture(object):
     """ main """
