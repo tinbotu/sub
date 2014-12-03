@@ -115,8 +115,8 @@ class SubcultureAtencion(Subculture):
     atencion = 0
     soku = 0
 
-    atencion_T = .2
-    soku_T = .5
+    atencion_T = .1
+    soku_T = .2
 
     atencion_dic = {
         u'犬': 30,
