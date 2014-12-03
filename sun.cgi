@@ -26,6 +26,7 @@ class Subculture(object):
     __redis_db = 14  # don't change me if changes will cause collision other app
     conn = None
     enable_flood_check = True
+    doge_is_away = False
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -54,6 +55,20 @@ class Subculture(object):
         self.redis_connect()
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         self.conn.delete(key)
+
+    def check_doge_away(self):
+        self.redis_connect()
+        if self.conn.get('doge_away') == "1":
+            self.doge_is_away = True
+        return self.doge_is_away
+
+    def doge_away(self, goaway=True, expire_sec=60*15):
+        self.redis_connect()
+        if goaway:
+            self.conn.set('doge_away', "1")
+            self.conn.expire('doge_away', expire_sec)
+        else:
+            self.conn.delete('doge_away')
 
     def fetch(self, url):
         self.content = None
@@ -565,6 +580,16 @@ class HateSubculture(Subculture):
         random.seed()
         return u'川\n' * (random.randint(0, 10) + 20)
 
+class SubcultureDogeGoAway(Subculture):
+
+    def response(self):
+        if u'逃がす' in self.text:
+            self.doge_away()
+            return u'自由'
+        elif u'捕' in self.text:
+            self.doge_away(False)
+            return u'はい'
+
 
 class NotSubculture(object):
     """ main """
@@ -614,6 +639,7 @@ class NotSubculture(object):
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
+           u'^\(?犬?(逃がす|捕まえる)\)?$': SubcultureDogeGoAway,
            }
 
     def __init__(self):
@@ -644,6 +670,9 @@ class NotSubculture(object):
         if self.message is None:
             return
 
+        sub = Subculture()
+        sub.check_doge_away()
+
         for n in self.message['events']:
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']
@@ -654,9 +683,9 @@ class NotSubculture(object):
                         if inspect.isclass(dict_res):
                             I = dict_res(text, speaker)
                             r = I.response()
-                            if r:
+                            if sub.doge_is_away is not True and r:
                                 yield r
-                        else:
+                        elif sub.doge_is_away is not True:
                             yield dict_res
 
 
