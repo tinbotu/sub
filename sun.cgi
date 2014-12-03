@@ -132,7 +132,7 @@ class SubcultureAtencion(Subculture):
     atencion = 0
     soku = 0
 
-    atencion_T = .1
+    atencion_T = .02
     soku_T = .2
 
     atencion_dic = {
@@ -151,7 +151,7 @@ class SubcultureAtencion(Subculture):
         u'黙れ': -100,
         u'はい$': 10,
         u'はいじゃないが': -20,
-        u'おっ': 15,
+        u'おっ': 30,
     }
 
     def lpf(self, n0, n1, T=.3):
