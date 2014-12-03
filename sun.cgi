@@ -177,7 +177,7 @@ class SubcultureAtencion(Subculture):
         if self.atencion < 0:
             self.atencion = 0
 
-        inu_soku = 1 + math.log(self.soku + 1)
+        inu_soku = 1 + math.sqrt(self.soku)
         self.conn.set("inu_soku", inu_soku)
         self.conn.set("inu_internal_atencion", self.atencion)
         self.conn.set("inu_internal_soku", self.soku)
