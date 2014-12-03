@@ -132,26 +132,43 @@ class SubcultureAtencion(Subculture):
     atencion = 0
     soku = 0
 
-    atencion_T = .02
+    atencion_T = .1
     soku_T = .2
 
     atencion_dic = {
-        u'犬': 30,
-        u'イヌ': 20,
-        'main': 6,
-        'bot': 3,
-        u'メイン': 6,
+        u'犬': 150,
+        u'イヌ': 100,
+        u'^お前': 30,
+        'main': 10,
+        'bot': 10,
+        u'メイン': 40,
         u'サブ': 4,
     }
     soku_dic = {
         u'犬': 10,
         u'うぜー': -100,
-        u'糞': -55,
+        u'糞': -80,
         u'クソ': -100,
-        u'黙れ': -100,
+        u'黙れ': -150,
         u'はい$': 10,
         u'はいじゃないが': -20,
         u'おっ': 30,
+        u'いいですね': 10,
+        u'寿司': 5,
+        u'[分|わ]か[らりるっん]': 20,
+        u'かわいい': 10,
+        u' T ': 50,
+        u'だる': -10,
+        u'姫': 20,
+        u'サ[ブヴ]': 30,
+        u'ゴミ': 10,
+        u'(馬鹿|バカ)': 50,
+        u'機運': 20,
+        u'ウッ': 10,
+        u'危険': 10,
+        u'なるほど': 10,
+        u'おもち': -10,
+        u'(ない|ねーよ?)$': -30,
     }
 
     def lpf(self, n0, n1, T=.3):
@@ -160,6 +177,8 @@ class SubcultureAtencion(Subculture):
     def response(self):
         self.redis_connect()
         self.atencion = self.conn.get("inu_internal_atencion")
+        self.soku = self.conn.get("inu_internal_soku")
+        inu_soku = self.conn.get("inu_soku")
         if self.atencion is None:
             self.atencion = 0
         else:
@@ -168,7 +187,6 @@ class SubcultureAtencion(Subculture):
         if self.text == u'犬寝ろ':
             self.atencion = self.soku = 0
         else:
-            self.soku = self.conn.get("inu_internal_soku")
             if self.soku is None:
                 self.soku = 0
             else:
@@ -204,7 +222,9 @@ class SubcultureAtencion(Subculture):
 
         random.seed()
         if random.randrange(1, 200) < inu_soku:
+            # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
             return u'おっ'
+
 
 
 class SubcultureSilent(Subculture):
