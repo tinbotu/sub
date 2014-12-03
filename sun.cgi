@@ -600,6 +600,7 @@ class SubcultureDogeGoAway(Subculture):
 class SubcultureDogeHouseStatus(Subculture):
 
     def response(self):
+        self.check_doge_away()
         raise DogeAwayMessage(u'犬' + (u'は逃げました' if self.doge_is_away else u'はいる'))
 
 class NotSubculture(object):
