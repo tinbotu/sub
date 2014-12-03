@@ -18,7 +18,8 @@ from sun import (
     SubcultureGaishutsu,
     SubcultureSilent,
     SubcultureNogata,
-    SubcultureDogeDetailStatus
+    SubcultureDogeDetailStatus,
+    SubcultureShowDogeSoku,
 )
 
 
@@ -188,6 +189,14 @@ class TestSubcultureDogeDetailStatus(unittest.TestCase):
 
     def test_return_status(self):
         self.assertEqual(self.r.response(), u'クゥーン\ninu_soku: 1.0\ninu_internal_atencion: 0\ninu_internal_soku: 0\n')
+
+
+class TestSubcultureShowDogeSoku(unittest.TestCase):
+    def setUp(self):
+        self.r = SubcultureShowDogeSoku('', 'tests')
+
+    def test_response(self):
+        self.assertRegexpMatches(self.r.response(), '^https?://')
 
 
 class TestSubcultureNogata(unittest.TestCase):

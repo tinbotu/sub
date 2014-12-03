@@ -231,6 +231,33 @@ class SubcultureDogeDetailStatus(Subculture):
         return ret
 
 
+class SubcultureShowDogeSoku(Subculture):
+    def response(self):
+        doge2048 = [
+            "doge-wink-114.gif",
+            "doge-shake-space-114.gif",
+            "doge-peepers-114.gif",
+            "doge-prizza-114.gif",
+            "doge-hat-114.gif",
+            "doge-gradient-114.gif",
+            "doge-fat-114.gif",
+            "doge-rainbow-114.gif",
+            "doge-sunglasses-114.gif",
+            "doge-derp-114.gif",
+        ]
+        ret = None
+        try:
+            doge_soku = float(self.conn.get("inu_soku"))
+            doge_index = int(doge_soku/2.)
+            if doge_index >= 0 and doge_index < len(doge2048):
+                ret = "http://doge2048.com/img/114/%s" % (doge2048[doge_index])
+            else:
+                ret = "http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg\n%d" % (doge_soku)
+        except Exception:
+            ret = "http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg"
+        return ret
+
+
 class SubcultureSilent(Subculture):
     """ me too """
     force = False
@@ -680,7 +707,9 @@ class NotSubculture(object):
            '.': SubcultureAtencion,
            u'^\(?犬?(逃が?す|捕まえる)\)?$': SubcultureDogeGoAway,
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
-           u'^(コラッ)$': SubcultureDogeDetailStatus
+           u'^(コラッ)$': SubcultureDogeDetailStatus,
+           u'^犬$': SubcultureShowDogeSoku,
+
            }
 
     def __init__(self):
