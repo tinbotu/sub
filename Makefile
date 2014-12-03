@@ -8,5 +8,8 @@ setup:
 status:
 	service redis-server status
 
+lint:
+	./bin/flake8 sun.cgi
+
 test:
 	./bin/python tests.py
