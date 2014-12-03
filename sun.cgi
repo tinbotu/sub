@@ -24,7 +24,7 @@ class Subculture(object):
     speaker = None
     text = None
     __redis_db = 14  # don't change me if changes will cause collision other app
-    conn = None
+    _conn = None
     enable_flood_check = True
     doge_is_away = False
 
@@ -32,15 +32,15 @@ class Subculture(object):
         self.speaker = speaker
         self.text = text
 
-    def redis_connect(self):
-        if self.conn is None:
-            self.conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+    @property
+    def conn(self):
+        if self._conn is None:
+            self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+        return self._conn
 
     def check_flood(self, speaker='', sec=30):
         if self.enable_flood_check is False:
             return True
-
-        self.redis_connect()
 
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         if self.conn.get(key) is not None:
@@ -52,12 +52,10 @@ class Subculture(object):
         return True
 
     def clear_flood_status(self, speaker='', sec=30):
-        self.redis_connect()
         key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
         self.conn.delete(key)
 
     def check_doge_away(self):
-        self.redis_connect()
         if self.conn.get('doge_away') == "1":
             self.doge_is_away = True
         else:
@@ -65,7 +63,6 @@ class Subculture(object):
         return self.doge_is_away
 
     def doge_away(self, goaway=True, expire_sec=60*15):
-        self.redis_connect()
         if goaway:
             self.conn.set('doge_away', "1")
             self.conn.expire('doge_away', expire_sec)
@@ -94,7 +91,6 @@ class Subculture(object):
 class SubcultureKnowerLevel(Subculture):
 
     def response(self):
-        self.redis_connect()
         level = self.conn.incr("knower-%s" % self.speaker, 1)
         return u"おっ、分かり度 %d ですか" % level
 
@@ -158,7 +154,6 @@ class SubcultureAtencion(Subculture):
         return (n0 + (n1 - n0) * (.1 / (1 / (2*3.142*T))))
 
     def response(self):
-        self.redis_connect()
         self.atencion = self.conn.get("inu_internal_atencion")
         if self.atencion is None:
             self.atencion = 0
@@ -324,7 +319,6 @@ class SubcultureKnowerLevelGet(Subculture):
 
     def response(self):
         speakers_blacklist = ["knower-tests", "knower-None", ]
-        self.redis_connect()
         res = ''
         speakers = self.conn.keys("knower-*")
 
@@ -383,7 +377,6 @@ class SubcultureGaishutsu(Subculture):
         return "%s__URI__%s" % (self.__class__.__name__, url)
 
     def response(self):
-        self.redis_connect()
         url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*)')
 
         res = ''

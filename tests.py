@@ -188,7 +188,6 @@ class TestSubcultureGaishutsu(unittest.TestCase):
 
     def setUp(self):
         self.r = SubcultureGaishutsu(self.text, 'tests')
-        self.r.redis_connect()
 
     def test_response_first(self):
         self.r.delete(self.url)
