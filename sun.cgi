@@ -2,20 +2,21 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
-import os
-import sys
-import json
-import re
-import traceback
-import requests
-import random
 import codecs
 import inspect
-import redis
-import pickle
-import time
-import MeCab
+import json
 import math
+import os
+import pickle
+import random
+import re
+import sys
+import time
+import traceback
+
+import requests
+import redis
+import MeCab
 
 
 class Subculture(object):
