@@ -187,8 +187,17 @@ class TestSubcultureDogeDetailStatus(unittest.TestCase):
     def setUp(self):
         self.r = SubcultureDogeDetailStatus('', 'tests')
 
+    def test_return_status_expired(self):
+        self.r.conn.delete('inu_soku')
+        self.r.conn.delete('inu_internal_atencion')
+        self.r.conn.delete('inu_internal_soku')
+        self.assertEqual(self.r.response(), u'クゥーン(soku: 0.00, internal_atencion: 0.00, internal_soku: 0.00)')
+
     def test_return_status(self):
-        self.assertEqual(self.r.response(), u'クゥーン\ninu_soku: 1.0\ninu_internal_atencion: 0\ninu_internal_soku: 0\n')
+        self.r.conn.set('inu_soku', 5.219039183)
+        self.r.conn.set('inu_internal_atencion', 1.2345678)
+        self.r.conn.set('inu_internal_soku', 9.87654)
+        self.assertEqual(self.r.response(), u'クゥーン(soku: 5.22, internal_atencion: 1.23, internal_soku: 9.88)')
 
 
 class TestSubcultureShowDogeSoku(unittest.TestCase):

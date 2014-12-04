@@ -224,11 +224,15 @@ class SubcultureAtencion(Subculture):
 
 
 class SubcultureDogeDetailStatus(Subculture):
+    """ Show doge status """
     def response(self):
-        ret = u'クゥーン\n'
-        for k in ['inu_soku', 'inu_internal_atencion', 'inu_internal_soku']:
-            ret += u"%s: %s\n" % (k, self.conn.get(k))
-        return ret
+        # Expireしている場合はNoneが得られるため、maxで数値にしている
+        inu_soku = float(max(self.conn.get('inu_soku'), 0))
+        inu_internal_atencion = float(max(self.conn.get('inu_internal_atencion'), 0))
+        inu_internal_soku = float(max(self.conn.get('inu_internal_soku'), 0))
+
+        return u'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
+            inu_soku, inu_internal_atencion, inu_internal_soku)
 
 
 class SubcultureShowDogeSoku(Subculture):
