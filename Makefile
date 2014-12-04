@@ -6,7 +6,7 @@ setup:
 	./bin/pip install -r requirements.txt
 
 status:
-	service redis-server status
+	sudo service redis-server status
 
 lint:
 	./bin/flake8 sun.cgi
