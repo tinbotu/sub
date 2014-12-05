@@ -182,7 +182,7 @@ class SubcultureAtencion(Subculture):
             self.atencion = float(self.atencion)
 
         if self.text == u'犬寝ろ':
-            self.atencion = self.soku = 0
+            pass
         else:
             if self.soku is None:
                 self.soku = 0
