@@ -705,7 +705,7 @@ class NotSubculture(object):
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー',
            u'弁当': u'便當だろ',
-           u'(ヤバ|やば)(イ|い)': u'WHOOP! WHOOP!\nPULL UP!!!',
+           u'((ヤバ|やば)(イ|い)|yabai)': u'WHOOP! WHOOP!\nPULL UP!!!',
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
