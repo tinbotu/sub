@@ -2,6 +2,8 @@
 NotSubculture bot
 =================
 
+[![Build Status](https://travis-ci.org/tinbotu/sub.svg)](https://travis-ci.org/tinbotu/sub)
+
 DevServer Setup
 ---------------
 
@@ -11,6 +13,7 @@ Requirements
 
 ::
 
+    main-machine: ~/work$ git clone ${THIS_REPOSITORY}
     main-machine: ~/work/sub$ vagrant up
     main-machine: ~/work/sub$ vagrant ssh
     subculture: ~$ cd /vagrant
@@ -20,11 +23,9 @@ Requirements
 for Lingr
 ---------
 
-requisites
-----------
+Server Requirements
+-------------------
 
-- Python 2.7.6
-- requests==2.2.1
-- redis==2.7.2
+Ubuntu 14.04
 
-+ redis 2.8.4
+Packages are listed on scripts/devserver_provisioning.sh
