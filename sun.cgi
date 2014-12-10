@@ -478,7 +478,8 @@ class SubcultureMETAR(Subculture):
             return u'%s (%.1f\u2103; %d\u3371; %d%%)\n%s' % (weather, temp_c, pressure, humidity, icon_url)
 
         except:
-            return traceback.format_exc()
+            #return traceback.format_exc()
+            raise
 
 
 class SubcultureOmochi(Subculture):
