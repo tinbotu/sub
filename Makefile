@@ -2,7 +2,7 @@ clean:
 	find . -name "*.py[co]" -delete
 
 setup:
-	virtualenv . --system-site-packages
+	virtualenv .
 	./bin/pip install -r requirements.txt
 
 status:
