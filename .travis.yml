@@ -16,7 +16,8 @@ install:
   - "pip install -r requirements.txt"
 script: "python tests.py"
 notifications:
-    emails:
-        - doge@0x00.be
+  email:
+    recipients:
+      - doge@0x00.be
     on_success: always
     on_failure: always
