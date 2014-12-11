@@ -744,7 +744,7 @@ class NotSubculture(object):
 
     def response(self):
         self.httpheader()
-        if self.message is None:
+        if self.message is None or os.path.exists("quiet"):
             return
 
         sub = Subculture()
