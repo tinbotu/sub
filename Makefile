@@ -1,3 +1,6 @@
+test:
+	./bin/python tests.py
+
 clean:
 	find . -name "*.py[co]" -delete
 
@@ -11,5 +14,3 @@ status:
 lint:
 	./bin/flake8 sun.cgi
 
-test:
-	./bin/python tests.py
