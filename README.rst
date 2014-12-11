@@ -2,7 +2,8 @@
 NotSubculture bot
 =================
 
-[![Build Status](https://travis-ci.org/tinbotu/sub.svg)](https://travis-ci.org/tinbotu/sub)
+
+`Build Status <https://travis-ci.org/tinbotu/sub>`_
 
 .. image:: https://api.travis-ci.org/tinbotu/sub.svg
 
