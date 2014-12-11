@@ -750,10 +750,13 @@ class NotSubculture(object):
         sub = Subculture()
         sub.check_doge_away()
 
+        allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
         for n in self.message['events']:
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']
                 text = n['message']['text']
+                if n['message']['room'] not in allowed_channel_list:
+                    raise UserWarning()
                 for dict_k, dict_res in self.dic.iteritems():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
