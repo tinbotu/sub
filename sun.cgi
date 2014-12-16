@@ -716,6 +716,7 @@ class NotSubculture(object):
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
            u'^\(コラッ\)$': SubcultureDogeDetailStatus,
            u'\(犬\)': SubcultureShowDogeSoku,
+           u'かわいい': u'ちーちゃんかわいいね',
 
            }
 
