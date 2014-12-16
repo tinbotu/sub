@@ -272,7 +272,7 @@ class SubcultureSilent(Subculture):
             'conj1': 'サ変・スル',
         },
         {
-            'wordclass': '動詞',
+            # 'wordclass': '動詞',
             'wordclass1': '接尾',
         },
         {
@@ -284,12 +284,16 @@ class SubcultureSilent(Subculture):
             'wordclass1': '係助詞',
         },
         {
-            'wordclass': '名詞',
+            # 'wordclass': '名詞',
             'wordclass1': '非自立',
         },
         {
             'wordclass': '助動詞',
             'conj1': '文語・リ',
+        },
+        {
+            'wordclass': '助詞',
+            'wordclass1': '接続助詞',
         },
     ]
 
@@ -371,7 +375,7 @@ class SubcultureSilent(Subculture):
                 if self.check_forward(word, i):
                     continue
             if do:
-                me = [u'私も', u'私も', u'また', ]
+                me = [u'私も', u'私も',  u'私も', u'また', ]
                 return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
@@ -708,7 +712,7 @@ class NotSubculture(object):
            u'弁当': u'便當だろ',
            u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
-           u'((ヤバ|やば)(イ|い)|yabai)': u'WHOOP! WHOOP!\nPULL UP!!!',
+           u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP!\nPULL UP!!!',
            '.': SubcultureHitozuma,
            '.': SubcultureNogata,
            '.': SubcultureAtencion,
