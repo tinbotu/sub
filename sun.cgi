@@ -235,6 +235,12 @@ class SubcultureDogeDetailStatus(Subculture):
             inu_soku, inu_internal_atencion, inu_internal_soku)
 
 
+class SubcultureSelfUpdate(Subculture):
+    def response(self):
+        os.system("make deploy > deploy.log")
+        return codecs.open('deploy.log', 'r', 'utf-8').read()
+
+
 class SubcultureShowDogeSoku(Subculture):
     def response(self):
         doge2048 = [
@@ -720,6 +726,7 @@ class NotSubculture(object):
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
            u'^\(コラッ\)$': SubcultureDogeDetailStatus,
            u'\(犬\)': SubcultureShowDogeSoku,
+           u'\(犬転生\)': SubcultureSelfUpdate,
            u'かわいい': u'ちーちゃんかわいいね',
 
            }

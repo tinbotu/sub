@@ -8,5 +8,6 @@ sudo apt-get install mecab-ipadic-utf8 -y
 sudo apt-get install libmecab-dev -y
 sudo apt-get install redis-server -y
 
+sudo apt-get install git -y
 
 cd /vagrant; sudo make setup;
