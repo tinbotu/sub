@@ -249,7 +249,7 @@ class SubcultureSelfUpdate(Subculture):
             return '?'
         else:
             os.system("make update_packages 1>deploy.log 2>&1")
-            return u'%s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
+            return u'ニャーン %s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
 
 
 class SubcultureShowDogeSoku(Subculture):
