@@ -20,6 +20,7 @@ from sun import (
     SubcultureNogata,
     SubcultureDogeDetailStatus,
     SubcultureShowDogeSoku,
+    SubcultureSelfUpdate
 )
 
 
@@ -319,6 +320,17 @@ class TestNotSubculture(unittest.TestCase):
         self.n.read_http_post('POST', self.json_subculture)
         for r in self.n.response():
             self.assertEqual(r, 'No')
+
+
+class TestSubcultureSelfUpdate(unittest.TestCase):
+    def test_create_instance(self):
+        instance = SubcultureSelfUpdate('', u'(犬転生)')
+        self.assertIsInstance(instance, SubcultureSelfUpdate)
+
+    def test_import_git(self):
+        import git
+        self.assertIsInstance(git.Repo('.'), git.Repo)
+
 
 if __name__ == '__main__':
     unittest.main()
