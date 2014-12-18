@@ -10,12 +10,7 @@ setup:
 	virtualenv .
 	./bin/pip install -r requirements.txt
 
-deploy:
-	@echo -----------------------------------------------
-	git pull -v origin master
-	@echo -----------------------------------------------
-	@git log -2
-	@echo -----------------------------------------------
+update_packages:
 	./bin/pip install -r requirements.txt
 
 status:

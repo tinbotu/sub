@@ -14,6 +14,7 @@ import sys
 import time
 import traceback
 
+import git
 import requests
 import redis
 import MeCab
@@ -237,8 +238,18 @@ class SubcultureDogeDetailStatus(Subculture):
 
 class SubcultureSelfUpdate(Subculture):
     def response(self):
-        os.system("make deploy 1>deploy.log 2>&1")
-        return codecs.open('deploy.log', 'r', 'utf-8').read()
+        repo = git.Repo('.')
+        if repo.is_dirty():
+            return u'私は穢れている'
+
+        previous_head = repo.head.commit.hexsha
+        repo.remotes.origin.pull()
+
+        if repo.head.commit.hexsha == previous_head:
+            return '?'
+        else:
+            os.system("make update_packages 1>deploy.log 2>&1")
+            return u'%s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
 
 
 class SubcultureShowDogeSoku(Subculture):
