@@ -237,7 +237,7 @@ class SubcultureDogeDetailStatus(Subculture):
 
 class SubcultureSelfUpdate(Subculture):
     def response(self):
-        os.system("make deploy > deploy.log")
+        os.system("make deploy 1>deploy.log 2>&1")
         return codecs.open('deploy.log', 'r', 'utf-8').read()
 
 
