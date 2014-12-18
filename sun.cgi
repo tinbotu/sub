@@ -14,6 +14,7 @@ import sys
 import time
 import traceback
 
+import git
 import requests
 import redis
 import MeCab
@@ -233,6 +234,22 @@ class SubcultureDogeDetailStatus(Subculture):
 
         return u'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
             inu_soku, inu_internal_atencion, inu_internal_soku)
+
+
+class SubcultureSelfUpdate(Subculture):
+    def response(self):
+        repo = git.Repo('.')
+        if repo.is_dirty():
+            return u'私は穢れている'
+
+        previous_head = repo.head.commit.hexsha
+        repo.remotes.origin.pull('master')
+
+        if repo.head.commit.hexsha == previous_head:
+            return '?'
+        else:
+            os.system("make update_packages 1>deploy.log 2>&1")
+            return u'ニャーン %s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
 
 
 class SubcultureShowDogeSoku(Subculture):
@@ -720,6 +737,7 @@ class NotSubculture(object):
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
            u'^\(コラッ\)$': SubcultureDogeDetailStatus,
            u'\(犬\)': SubcultureShowDogeSoku,
+           u'\(犬転生\)': SubcultureSelfUpdate,
            u'かわいい': u'ちーちゃんかわいいね',
 
            }

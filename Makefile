@@ -1,3 +1,5 @@
+.PHONY: test clean setup deploy status lint
+
 test:
 	./bin/python tests.py
 
@@ -6,6 +8,9 @@ clean:
 
 setup:
 	virtualenv .
+	./bin/pip install -r requirements.txt
+
+update_packages:
 	./bin/pip install -r requirements.txt
 
 status:
