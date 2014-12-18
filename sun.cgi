@@ -243,7 +243,7 @@ class SubcultureSelfUpdate(Subculture):
             return u'私は穢れている'
 
         previous_head = repo.head.commit.hexsha
-        repo.remotes.origin.pull()
+        repo.remotes.origin.pull('master')
 
         if repo.head.commit.hexsha == previous_head:
             return '?'
