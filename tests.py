@@ -4,6 +4,7 @@
 
 import json
 import unittest
+import os
 
 from sun import (
     NotSubculture,
@@ -330,6 +331,12 @@ class TestSubcultureSelfUpdate(unittest.TestCase):
     def test_import_git(self):
         import git
         self.assertIsInstance(git.Repo('.'), git.Repo)
+
+
+class TestPermission(unittest.TestCase):
+    def test_permission(self):
+        s = os.stat("sun.cgi")
+        self.assertEqual(s.st_mode, 33261)  # -rwxr-xr-x
 
 
 if __name__ == '__main__':
