@@ -306,7 +306,6 @@ class SubcultureSilent(Subculture):
         },
         {
             'wordclass': '助動詞',
-            #'conj1': '文語・リ',
         },
         {
             'wordclass': '助詞',
@@ -396,7 +395,7 @@ class SubcultureSilent(Subculture):
                 if self.check_forward(word, i):
                     continue
             if do:
-                me = [u'私も', u'私も',  u'私も', u'また', ]
+                me = [u'私も', u'私も', u'私も', u'また', ]
                 return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
@@ -492,19 +491,15 @@ class SubcultureMETAR(Subculture):
         self.fetch(self.url)
 
     def response(self):
-        try:
-            w = json.loads(self.content)
-            temp_c = float(w["main"]["temp"]) - 273.15
-            weather = w["weather"][0]["description"]
-            icon_url = 'http://openweathermap.org/img/w/' + w["weather"][0]["icon"] + '.png'
-            pressure = int(w["main"]["pressure"])
-            humidity = int(w["main"]["humidity"])
+        w = json.loads(self.content)
+        temp_c = float(w["main"]["temp"]) - 273.15
+        weather = w["weather"][0]["description"]
+        icon_url = 'http://openweathermap.org/img/w/' + w["weather"][0]["icon"] + '.png'
+        pressure = int(w["main"]["pressure"])
+        humidity = int(w["main"]["humidity"])
 
-            return u'%s (%.1f\u2103; %d\u3371; %d%%)\n%s' % (weather, temp_c, pressure, humidity, icon_url)
+        return u'%s (%.1f\u2103; %d\u3371; %d%%)\n%s' % (weather, temp_c, pressure, humidity, icon_url)
 
-        except:
-            #return traceback.format_exc()
-            raise
 
 
 class SubcultureOmochi(Subculture):
