@@ -306,7 +306,7 @@ class SubcultureSilent(Subculture):
         },
         {
             'wordclass': '助動詞',
-            'conj1': '文語・リ',
+            #'conj1': '文語・リ',
         },
         {
             'wordclass': '助詞',
