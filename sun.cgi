@@ -744,6 +744,7 @@ class NotSubculture(object):
            u'\(犬転生\)': SubcultureSelfUpdate,
            u'かわいい': u'ちーちゃんかわいいね',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
+           u'(高野さん|うひー)': u'http://0x00.be/photo/takano32.jpg',
 
            }
 
