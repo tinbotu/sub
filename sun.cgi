@@ -13,11 +13,13 @@ import re
 import sys
 import time
 import traceback
+import hashlib
 
 import git
 import requests
 import redis
 import MeCab
+import yaml
 
 
 class Subculture(object):
@@ -29,6 +31,7 @@ class Subculture(object):
     _conn = None
     enable_flood_check = True
     doge_is_away = False
+    api_secret = None
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -71,13 +74,13 @@ class Subculture(object):
         else:
             self.conn.delete('doge_away')
 
-    def fetch(self, url):
+    def fetch(self, url, params=None):
         self.content = None
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = requests.get(url, headers=headers)
+            r = requests.get(url, headers=headers, params=params)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
             else:
@@ -88,6 +91,36 @@ class Subculture(object):
     def response(self):
         """ abstract """
         return None
+
+    def read_bot_api(self, filename='bot_secret.yaml'):
+        if self.api_secret is not None:
+            return
+        content = open(filename).read()
+        self.api_secret = yaml.safe_load(content)
+
+    def build_say_payload(self, room, bot, text, apikey):
+        return {
+            'room': room,
+            'bot': bot,
+            'text': text,
+            'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
+        }
+
+    def say(self, message, anti_double_sec=15):
+        if self.api_secret is None:
+            self.read_bot_api()
+
+        if self.api_secret.get("bot_secret") is None or \
+           self.api_secret.get("bot_id") is None or \
+           self.api_secret.get("room") is None:
+            return
+
+        if self.check_flood("__say", anti_double_sec) is False:
+            return
+
+        payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
+
+        self.fetch('http://lingr.com/api/room/say', payload)
 
 
 class SubcultureKnowerLevel(Subculture):
@@ -687,6 +720,7 @@ class NotSubculture(object):
     body = None
     message = None
     texts = None
+
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧',
            u'(カエリンコ|かえりんこ)': u'いいですよ',
@@ -768,13 +802,24 @@ class NotSubculture(object):
 
     def response(self):
         self.httpheader()
-        if self.message is None or os.path.exists("quiet"):
+        if os.path.exists("quiet") or type(self.message) is not dict:
             return
 
         sub = Subculture()
         sub.check_doge_away()
 
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
+
+        if self.message.get('events') is None and sub.doge_is_away is not True:
+            t = 15
+            try:
+                t = int(self.message.get('anti_double_sec'))
+            except:
+                pass
+
+            sub.say(self.message.get('spontaneous_message'), t)
+            return
+
         for n in self.message['events']:
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']

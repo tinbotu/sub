@@ -225,6 +225,7 @@ class TestSubcultureNogata(unittest.TestCase):
         word = self.nogata.response()
         self.assertIs(word, None)
 
+
 class TestSubcultureGaishutsu(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'
     text = u'テスト http://docs.python.jp/2/howto/regex.html'
@@ -337,6 +338,33 @@ class TestPermission(unittest.TestCase):
     def test_permission(self):
         s = os.stat("sun.cgi")
         self.assertEqual(s.st_mode, 33261)  # -rwxr-xr-x
+
+
+class TestSubcultureSpontaneity(unittest.TestCase):
+    def setUp(self):
+        self.s = Subculture()
+
+    def test_build_payload(self):
+        room = "tinbotu"
+        bot = "dummy___"
+        text = "text"
+        key = "8fzyJKABFxtfmXuaeakfQbDasJN"
+
+        r = self.s.build_say_payload(room, bot, text, key)
+        self.assertEqual(r["room"], room)
+        self.assertEqual(r["bot"], bot)
+        self.assertEqual(r["text"], text)
+        self.assertEqual(r["bot_verifier"], '621d424bdaeb065e18800ccf720e2860ba204bcd')
+
+
+    def test_read_bot_api_secret(self):
+        self.s.read_bot_api("bot_secret.yaml.skel")
+        self.assertIsNotNone(self.s.api_secret.get("bot_secret"))
+        self.assertIsNotNone(self.s.api_secret.get("bot_id"))
+        self.assertIsNotNone(self.s.api_secret.get("room"))
+
+    def test_say(self):
+        pass
 
 
 if __name__ == '__main__':

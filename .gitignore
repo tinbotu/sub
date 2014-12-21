@@ -61,3 +61,6 @@ share/
 
 # vagrant
 .vagrant
+
+# settings
+bot_secret.yaml
