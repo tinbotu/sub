@@ -471,6 +471,9 @@ class SubcultureGaishutsu(Subculture):
     def build_message(self, url, body):
         r = pickle.loads(body)
         ago = ''
+        if r.get('speaker') == self.speaker and self.speaker != 'tests':
+            return ""
+
         if r.get("first_seen"):
             ago_sec = time.time() - float(r.get("first_seen"))
             if self.anti_double and ago_sec < 30:
