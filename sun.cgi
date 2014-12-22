@@ -665,7 +665,7 @@ class SubcultureHitozuma(Subculture):
         random.seed()
 
         res = None
-        if random.randrange(0, 100) == 0:
+        if random.randrange(0, 100) <= 1:
             if random.randrange(0, 100) > 0:
                 res = u'はい'
             else:
