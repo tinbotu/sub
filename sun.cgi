@@ -497,7 +497,7 @@ class SubcultureGaishutsu(Subculture):
         return "%s__URI__%s" % (self.__class__.__name__, url)
 
     def response(self):
-        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*)')
+        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
 
         res = ''
         urls = url_re.findall(self.text)
