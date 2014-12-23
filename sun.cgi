@@ -3,6 +3,7 @@
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
 import codecs
+import hashlib
 import inspect
 import json
 import math
@@ -13,7 +14,6 @@ import re
 import sys
 import time
 import traceback
-import hashlib
 
 import git
 import requests
@@ -411,7 +411,7 @@ class SubcultureSilent(Subculture):
     def response(self):
 
         random.seed()
-        if self.force is not True and random.randrange(0, 100) > 40:
+        if self.force is not True and random.randrange(0, 100) > 60:
             return None
 
         m = MeCab.Tagger()
