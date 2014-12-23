@@ -106,7 +106,7 @@ class Subculture(object):
             'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
         }
 
-    def say(self, message, anti_double_sec=15):
+    def say(self, message, speaker='doge', anti_double_sec=15):
         if self.api_secret is None:
             self.read_bot_api()
 
@@ -115,7 +115,7 @@ class Subculture(object):
            self.api_secret.get("room") is None:
             return
 
-        if self.check_flood("__say", anti_double_sec) is False:
+        if self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
             return
 
         payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
@@ -820,7 +820,7 @@ class NotSubculture(object):
             except:
                 pass
 
-            sub.say(self.message.get('spontaneous_message'), t)
+            sub.say(self.message.get('spontaneous_message'), self.message.get('app'), t)
             return
 
         for n in self.message['events']:
