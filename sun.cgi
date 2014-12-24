@@ -743,6 +743,7 @@ class NotSubculture(object):
            u'拝承': u'拝復',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
+           u'^気持ち$': 'http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png',
            u'^石$': SubcultureStone,
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
