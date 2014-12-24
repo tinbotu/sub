@@ -728,7 +728,7 @@ class NotSubculture(object):
            u'ベンゾ': u'曖昧',
            u'(カエリンコ|かえりんこ)': u'いいですよ',
            u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
-           u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
+           u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
