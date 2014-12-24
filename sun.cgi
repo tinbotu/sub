@@ -717,6 +717,15 @@ class SubcultureDogeHouseStatus(Subculture):
         raise DogeAwayMessage(u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)'))
 
 
+class SubcultureKimoti(Subculture):
+
+    def response(self):
+        otoko_no_bigaku = ["http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png",
+                          "http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png"]
+        random.seed()
+        return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
+
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -743,7 +752,7 @@ class NotSubculture(object):
            u'拝承': u'拝復',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
-           u'^気持ち$': 'http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png',
+           u'^(気持ち|きもち)$': SubcultureKimoti,
            u'^石$': SubcultureStone,
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
