@@ -721,7 +721,7 @@ class SubcultureKimoti(Subculture):
 
     def response(self):
         otoko_no_bigaku = ["http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png",
-                          "http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png"]
+                          "http://i.gyazo.com/a22873a222cdd6366d644298627a3717.png"]
         random.seed()
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
