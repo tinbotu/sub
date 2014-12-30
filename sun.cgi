@@ -703,7 +703,7 @@ class SubcultureDogeGoAway(Subculture):
     def response(self):
         if u'逃がす' in self.text:
             if self.check_doge_away() is False:
-                self.doge_away(expire_sec=60*30)
+                self.doge_away(expire_sec=60*60)
                 raise DogeAwayMessage(u'(自由)')
         elif u'捕' in self.text:
             self.doge_away(False)
