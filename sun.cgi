@@ -879,6 +879,8 @@ class NotSubculture(object):
                                 if prob_m:
                                     dict_res = prob_m.groups()[0]
                                     for m in list(prob_m.groups()[1]):
+                                        if not m in response_modifier:
+                                            continue
                                         if m.islower():
                                             threshold *= response_modifier[m]
                                         else:
