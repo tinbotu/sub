@@ -753,9 +753,9 @@ class NotSubculture(object):
            u'わかるなー*$': SubcultureKnowerLevel,
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
-           u'電車': u'鐵道または軌道車',
+           u'電車': u'鐵道または軌道車/c',
            u'戦い': u'戰いでしょ',
-           u'拝承': u'拝復',
+           u'拝承': u'拝復/d',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
            u'^(気持ち|きもち)$': SubcultureKimoti,
@@ -777,11 +777,11 @@ class NotSubculture(object):
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
            u'うひー': u'うひーとかやめてくれる',
-           u'(Mac|マック|OSX|osx)': u'マックパワー',
+           u'(Mac|マック|OSX|osx)': u'マックパワー/b',
            u'弁当': u'便當だろ',
            u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
-           u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!',
+           u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/b',
            '.+': SubcultureHitozuma,
            '.?': SubcultureNogata,
            '.*': SubcultureAtencion,  # 同じキーはだめ
@@ -828,8 +828,19 @@ class NotSubculture(object):
         sub = Subculture()
         sub.check_doge_away()
 
+        response_modifier = {
+            'a': .01,  # 1/100
+            'b': .1,
+            'c': .3,
+            'd': .5,
+            'e': .8,
+            'D': 2,  # Doge's soku multiplier (not implemented)
+            'E': 4,
+        }
+
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
 
+        # 自発的発言
         if self.message.get('events') is None and sub.doge_is_away is not True:
             t = 15
             try:
@@ -840,15 +851,21 @@ class NotSubculture(object):
             sub.say(self.message.get('spontaneous_message'), self.message.get('app'), t)
             return
 
+
+        response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
+        doge_soku = 1
+
         for n in self.message['events']:
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']
                 text = n['message']['text']
                 if n['message']['room'] not in allowed_channel_list:
                     raise UserWarning()
+
                 for dict_k, dict_res in self.dic.iteritems():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
+
                         try:
                             if inspect.isclass(dict_res):
                                 I = dict_res(text, speaker)
@@ -856,7 +873,19 @@ class NotSubculture(object):
                                 if sub.doge_is_away is not True and r:
                                     yield r
                             elif sub.doge_is_away is not True:
-                                yield dict_res
+                                # 修飾子を見て返事するか決める
+                                threshold = 1.
+                                prob_m = response_modifier_re.search(dict_res)
+                                if prob_m:
+                                    dict_res = prob_m.groups()[0]
+                                    for m in list(prob_m.groups()[1]):
+                                        if m.islower():
+                                            threshold *= response_modifier[m]
+                                        else:
+                                            threshold *= response_modifier[m] * doge_soku
+
+                                if threshold > (random.random()-.1):
+                                    yield dict_res
                         except DogeAwayMessage as e:
                             yield e.msg
 
