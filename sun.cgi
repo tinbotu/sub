@@ -140,7 +140,7 @@ class SubcultureNogata(Subculture):
     PROBABLY = 1
 
     def response(self):
-        if random.randint(0, 100) > self.PROBABLY:
+        if random.randint(0, 200) > self.PROBABLY:
             return None
         mecab = MeCab.Tagger().parse(self.text.encode('utf-8'))
         node = mecab.split("\n")
@@ -754,7 +754,7 @@ class NotSubculture(object):
            u'(doge2048|JAL\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車/c',
-           u'戦い': u'戰いでしょ',
+           u'戦い': u'戰いでしょ/c',
            u'拝承': u'拝復/d',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
@@ -790,9 +790,9 @@ class NotSubculture(object):
            u'^\(コラッ\)$': SubcultureDogeDetailStatus,
            u'\(犬\)': SubcultureShowDogeSoku,
            u'\(犬転生\)': SubcultureSelfUpdate,
-           u'かわいい': u'ちーちゃんかわいいね',
+           u'かわいい': u'ちーちゃんかわいいね/d',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
-           u'(高野さん|うひー)$': u'http://0x00.be/photo/takano32.jpg',
+           u'(高野さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/d',
            u'うぜー': u'オマエモナー',
 
            }
