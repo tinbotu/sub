@@ -772,7 +772,7 @@ class NotSubculture(object):
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
            u'^他人のわかり': SubcultureKnowerLevelGet,
-           u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
+           # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
@@ -834,8 +834,14 @@ class NotSubculture(object):
             'c': .3,
             'd': .5,
             'e': .8,
-            'D': 2,  # Doge's soku multiplier (not implemented)
-            'E': 4,
+            'A': .01,  # Doge's soku multiplier (not implemented)
+            'B': .1,
+            'C': .3,
+            'D': .5,
+            'E': .8,
+            'F': 2,
+            'G': 4,
+            'H': 8,
         }
 
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
@@ -855,6 +861,7 @@ class NotSubculture(object):
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
         doge_soku = 1
 
+        random.seed()
         for n in self.message['events']:
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']
