@@ -122,6 +122,9 @@ class Subculture(object):
 
         self.fetch('http://lingr.com/api/room/say', payload)
 
+    def doge_soku(self):
+        return float(max(self.conn.get('inu_soku'), 0))
+
 
 class SubcultureKnowerLevel(Subculture):
 
@@ -777,11 +780,11 @@ class NotSubculture(object):
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
            u'うひー': u'うひーとかやめてくれる',
-           u'(Mac|マック|OSX|osx)': u'マックパワー/b',
+           u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            u'弁当': u'便當だろ',
            u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
-           u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/b',
+           u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/abA',
            '.+': SubcultureHitozuma,
            '.?': SubcultureNogata,
            '.*': SubcultureAtencion,  # 同じキーはだめ
@@ -792,8 +795,8 @@ class NotSubculture(object):
            u'\(犬転生\)': SubcultureSelfUpdate,
            u'かわいい': u'ちーちゃんかわいいね/d',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
-           u'(高野さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/d',
-           u'うぜー': u'オマエモナー',
+           u'(高野さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
+           u'うぜー': u'オマエモナー/cC',
 
            }
 
@@ -834,14 +837,15 @@ class NotSubculture(object):
             'c': .3,
             'd': .5,
             'e': .8,
-            'A': .01,  # Doge's soku multiplier (not implemented)
-            'B': .1,
-            'C': .3,
-            'D': .5,
-            'E': .8,
-            'F': 2,
-            'G': 4,
-            'H': 8,
+            'f': 1/2.,
+            'A': 1/.01,  # Doge's soku multiplier
+            'B': 1/.1,
+            'C': 1/.3,
+            'D': 1/.5,
+            'E': 1/.8,
+            'F': 1/2.,
+            'G': 1/4.,
+            'H': 1/8.,
         }
 
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
@@ -859,7 +863,9 @@ class NotSubculture(object):
 
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
-        doge_soku = 1
+        doge_soku = sub.doge_soku()
+        if doge_soku < 1:
+            doge_soku = 1
 
         random.seed()
         for n in self.message['events']:
@@ -893,7 +899,9 @@ class NotSubculture(object):
                                         else:
                                             threshold *= response_modifier[m] * doge_soku
 
-                                if threshold > (random.random()-.1):
+                                r = random.random()-.1
+                                # print "thres: %f > %f, doge:%f" % (threshold, r, doge_soku)
+                                if threshold > r:
                                     yield dict_res
                         except DogeAwayMessage as e:
                             yield e.msg
