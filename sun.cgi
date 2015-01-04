@@ -837,7 +837,8 @@ class NotSubculture(object):
             'c': .3,
             'd': .5,
             'e': .8,
-            'f': 1/2.,
+            'f': 2.,
+            'g': 4.,
             'A': 1/.01,  # Doge's soku multiplier
             'B': 1/.1,
             'C': 1/.3,
