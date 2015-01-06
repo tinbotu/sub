@@ -766,7 +766,7 @@ class NotSubculture(object):
            u'山だ?$': u'やまいくぞ',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
-           u'(俺は|おれは)?もう(だめ|ダメ)だ$': u'どうすればいいんだ',
+           u'(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': u'どうすればいいんだ',
            u'どうすればいいんだ': u'おれはもうだめだ',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
@@ -795,7 +795,7 @@ class NotSubculture(object):
            u'\(犬転生\)': SubcultureSelfUpdate,
            u'かわいい': u'ちーちゃんかわいいね/d',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
-           u'(高野さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
+           u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'うぜー': u'オマエモナー/cC',
 
            }
