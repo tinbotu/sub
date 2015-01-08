@@ -731,6 +731,10 @@ class SubcultureKimoti(Subculture):
             "http://i.gyazo.com/222e2cbba284710e0e9d289dfcc5f217.jpg",
             "http://i.gyazo.com/6d673a77640232ff0584c3ccce6f5e2f.jpg",
         ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
         random.seed()
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
@@ -786,7 +790,7 @@ class NotSubculture(object):
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
            u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/abA',
            '.+': SubcultureHitozuma,
-           '.?': SubcultureNogata,
+           '^(?!.*http).*$': SubcultureNogata,  # except http
            '.*': SubcultureAtencion,  # 同じキーはだめ
            u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
            u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
