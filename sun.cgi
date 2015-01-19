@@ -704,13 +704,17 @@ class DogeAwayMessage(Exception):
 class SubcultureDogeGoAway(Subculture):
 
     def response(self):
+        random.seed()
         if u'逃がす' in self.text:
             if self.check_doge_away() is False:
                 self.doge_away(expire_sec=60*60)
                 raise DogeAwayMessage(u'(自由)')
         elif u'捕' in self.text:
-            self.doge_away(False)
-            raise DogeAwayMessage(u'(不自由で邪悪)')
+            if random.randrange(0, 100) > 50:
+                self.doge_away(False)
+                raise DogeAwayMessage(u'(不自由で邪悪)')
+            else:
+                raise DogeAwayMessage('http://i.gyazo.com/d8f75febb9d57057731fc38f4f0288d5.png')
 
 
 class SubcultureDogeHouseStatus(Subculture):
