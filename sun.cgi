@@ -810,6 +810,7 @@ class NotSubculture(object):
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'うぜー': u'オマエモナー/cC',
+           u'^No$': u'No じゃないが',
 
            }
 
