@@ -32,6 +32,7 @@ class Subculture(object):
     enable_flood_check = True
     doge_is_away = False
     api_secret = None
+    settings = None
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -41,6 +42,14 @@ class Subculture(object):
     def conn(self):
         if self._conn is None:
             self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+            try:
+                self._conn.ping()
+            except redis.exceptions.ResponseError as e:
+                if e.message == 'NOAUTH Authentication required.':
+                    self.read_settings()
+                    self._conn.execute_command("AUTH", self.settings["redis_auth"])
+                else:
+                    raise
         return self._conn
 
     def check_flood(self, speaker='', sec=30):
@@ -97,6 +106,12 @@ class Subculture(object):
             return
         content = open(filename).read()
         self.api_secret = yaml.safe_load(content)
+
+    def read_settings(self, filename='settings.yaml'):
+        if self.settings is not None:
+            return
+        fp = open(filename).read()
+        self.settings = yaml.safe_load(fp)
 
     def build_say_payload(self, room, bot, text, apikey):
         return {
