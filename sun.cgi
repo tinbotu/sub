@@ -465,7 +465,7 @@ class SubcultureKnowerLevelGet(Subculture):
 
 
 class SubcultureTwitterScraper(Subculture):
-    pick_re = '<img src="(https://pbs.twimg.com/media/(.+\.png))" alt="埋め込み画像への固定リンク"'
+    pick_re = '<img src="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))" alt="埋め込み画像への固定リンク"'
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
         if text is not None:
