@@ -27,7 +27,9 @@ from sun import (
 
 
 class TestTwitterScraper(unittest.TestCase):
-    twitter_url = ['https://twitter.com/esehara/status/567342138640171009']
+    twitter_url = [
+        'https://twitter.com/esehara/status/567342138640171009',
+        'https://twitter.com/miminashi/status/566437373056016384']
     twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
 
     def setUp(self):
