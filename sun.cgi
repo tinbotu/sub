@@ -470,16 +470,16 @@ class SubcultureTwitterScraper(Subculture):
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
         if text is not None:
-            self.fetch(text)
+            self.fetch(self.get_twitter_url(text))
 
-    def get_twitter_url(self):
+    def get_twitter_url(self, text):
         self.url_re = re.compile(self.url_re)
-        m = self.url_re.search(self.content)
+        m = self.url_re.search(text)
         if m and m.group():
             return m.group(1)
 
     def response(self):
-        m = self.pick_re.search(self.get_twitter_url())
+        m = self.pick_re.search(self.content)
         if m and m.group():
             return m.group(1)
         else:
