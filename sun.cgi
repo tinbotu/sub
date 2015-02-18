@@ -841,7 +841,7 @@ class NotSubculture(object):
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'うぜー': u'オマエモナー/cC',
            u'^No$': u'No じゃないが',
-           u'(.*)https://twitter.com/': SubcultureTwitterScraper,
+           u'https://twitter.com/': SubcultureTwitterScraper,
            }
 
     def __init__(self):
