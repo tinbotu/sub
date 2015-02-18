@@ -40,6 +40,15 @@ class TestTwitterScraper(unittest.TestCase):
             self.g.fetch(url)
             self.assertRegexpMatches(self.g.content, self.g.pick_re)
 
+    def test_inner_url(self):
+        contents = [
+            "@niryuu https://twitter.com/ah_hpc/status/567754030638964736",
+            "https://twitter.com/ah_hpc/status/567754030638964736",
+            "https://twitter.com/ah_hpc/status/567754030638964736 @niryuu"]
+        for content in contents:
+            self.g.content = content
+            self.assertRegexpMatches(self.g.get_twitter_url(), self.g.url_re)
+
 
 class TestGyazoScraper(unittest.TestCase):
     gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', ]
