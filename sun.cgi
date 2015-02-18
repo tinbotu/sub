@@ -429,7 +429,7 @@ class SubcultureSilent(Subculture):
     def response(self):
 
         random.seed()
-        if self.force is not True and random.randrange(0, 100) > 60:
+        if self.force is not True and random.randrange(0, 100) > 20:
             return None
 
         m = MeCab.Tagger()
