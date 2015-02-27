@@ -165,7 +165,7 @@ class TestSubcultureHitozuma(unittest.TestCase):
         y = False
         n = False
 
-        for i in xrange(100 * 100 * 5):
+        for i in xrange(100 * 100 * 10):
             res = self.r.response()
             if res == u'はい':
                 y = True
