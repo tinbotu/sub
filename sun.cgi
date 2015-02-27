@@ -465,7 +465,7 @@ class SubcultureKnowerLevelGet(Subculture):
 
 
 class SubcultureTwitterScraper(Subculture):
-    pick_re = '<img src="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))" alt="埋め込み画像への固定リンク"'
+    pick_re = '<img src="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))" alt="'
     url_re = "(https://twitter.com/([0-9a-z_/.]+))"
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
@@ -849,6 +849,7 @@ class NotSubculture(object):
            u'うぜー': u'オマエモナー/cC',
            u'^No$': u'No じゃないが',
            u'https://twitter.com/': SubcultureTwitterScraper,
+           u'([Cc][Hh][Oo][Mm][Aa][Dd][Oo]|[ち]ょまど|[チ]ョマド|ちょ\u307e\u3093\u3053|チョ\u30de\u30f3\u30b3)': u'ちょↂ',
            }
 
     def __init__(self):
