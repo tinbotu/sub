@@ -333,7 +333,7 @@ class SubcultureShowDogeSoku(Subculture):
 class SubcultureSilent(Subculture):
     """ me too """
     force = False
-    PROBABLY = 20
+    PROBABLY = 5
 
     backward_dic = [
         {
