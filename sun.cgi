@@ -428,10 +428,14 @@ class SubcultureSilent(Subculture):
         return do
 
     @property
-    def is_not_response(self):
+    def probably(self):
         random.seed()
         return (self.force is not True
                 and random.randrange(0, 100) > self.PROBABLY)
+
+    @property
+    def is_not_response(self):
+        return self.probably and self.speaker in ["niryuu", "tinbotu"]
 
     def response(self):
 
