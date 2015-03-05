@@ -333,7 +333,7 @@ class SubcultureShowDogeSoku(Subculture):
 class SubcultureSilent(Subculture):
     """ me too """
     force = False
-    PROBABLY = 5
+    PROBABLY = 20
 
     backward_dic = [
         {
@@ -431,7 +431,7 @@ class SubcultureSilent(Subculture):
     def is_not_response(self):
         random.seed()
         return (self.force is not True
-                and random.randrange(0, 100) > self.PROBABLY)
+                and random.randrange(0, 100) < self.PROBABLY)
 
     def response(self):
 
