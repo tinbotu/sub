@@ -333,6 +333,7 @@ class SubcultureShowDogeSoku(Subculture):
 class SubcultureSilent(Subculture):
     """ me too """
     force = False
+    PROBABLY = 5
 
     backward_dic = [
         {
@@ -429,7 +430,7 @@ class SubcultureSilent(Subculture):
     def response(self):
 
         random.seed()
-        if self.force is not True and random.randrange(0, 100) > 20:
+        if self.force is not True and random.randrange(0, 100) > self.PROBABLY:
             return None
 
         m = MeCab.Tagger()
