@@ -435,7 +435,7 @@ class SubcultureSilent(Subculture):
 
     @property
     def is_not_response(self):
-        return self.probably and self.speaker in ["niryuu", "tinbotu"]
+        return self.probably and (not self.speaker in ["niryuu", "tinbotu"])
 
     def response(self):
 
