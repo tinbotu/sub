@@ -427,10 +427,15 @@ class SubcultureSilent(Subculture):
             do = word[i-1].get("word")
         return do
 
+    @property
+    def is_not_response(self):
+        random.seed()
+        return (self.force is not True
+                and random.randrange(0, 100) > self.PROBABLY)
+
     def response(self):
 
-        random.seed()
-        if self.force is not True and random.randrange(0, 100) > self.PROBABLY:
+        if self.is_not_response:
             return None
 
         m = MeCab.Tagger()
