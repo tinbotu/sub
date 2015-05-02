@@ -458,7 +458,7 @@ class SubcultureSilent(Subculture):
                 if self.check_forward(word, i):
                     continue
             if do:
-                me = [u'私も', u'私も', u'私も', u'また', ]
+                me = [u'私も', u'私も', u'私も', u'また', u'私も', ]
                 return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
@@ -479,6 +479,7 @@ class SubcultureKnowerLevelGet(Subculture):
 class SubcultureTwitterScraper(Subculture):
     pick_re = '<img src="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))" alt="'
     url_re = "(https://twitter.com/([0-9a-z_/.]+))"
+
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
         if text is not None:
@@ -703,7 +704,7 @@ class SubcultureHai(Subculture):
         random.seed()
 
         res = None
-        if random.randrange(0, 100) > 50:
+        if random.randrange(0, 100) > 40:
             res = u'はい'
         else:
             res = u'はいじゃないが'
@@ -805,7 +806,7 @@ class NotSubculture(object):
     texts = None
 
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
-           u'ベンゾ': u'曖昧',
+           u'ベンゾ': u'曖昧/d',
            u'(カエリンコ|かえりんこ)': u'いいですよ',
            u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
            u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
@@ -855,11 +856,11 @@ class NotSubculture(object):
            u'^\(コラッ\)$': SubcultureDogeDetailStatus,
            u'\(犬\)': SubcultureShowDogeSoku,
            u'\(犬転生\)': SubcultureSelfUpdate,
-           u'かわいい': u'ちーちゃんかわいいね/d',
+           u'かわいい': u'ちーちゃんかわいいね/c',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'うぜー': u'オマエモナー/cC',
-           u'^No$': u'No じゃないが',
+           u'^No$': u'No じゃないが/c',
            u'https://twitter.com/': SubcultureTwitterScraper,
            }
 
