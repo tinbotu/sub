@@ -864,7 +864,7 @@ class NotSubculture(object):
            u'https://twitter.com/': SubcultureTwitterScraper,
            u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
            u'性欲': u'性欲を持て余す',
-           u'(ネムイ|ねむい|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg',
+           u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg',
            }
 
     def __init__(self):
