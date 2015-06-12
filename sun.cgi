@@ -18,6 +18,7 @@ import traceback
 import git
 import requests
 import redis
+import HTMLParser
 import MeCab
 import yaml
 
@@ -527,9 +528,10 @@ class SubcultureTitleExtract(Subculture):
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def get_element_title(self):
+        h = HTMLParser.HTMLParser()
         m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
         if m and m.group():
-            return m.group(1).decode(self.content_encoding.lower())
+            return h.unescape(m.group(1).decode(self.content_encoding.lower()))
 
     def response(self):
         url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
@@ -538,7 +540,7 @@ class SubcultureTitleExtract(Subculture):
         for url in urls:
             skip = False
             for black in self.url_blacklist:
-                if black not in url or len(url) < 1024:
+                if black in url or len(url) > 1024:
                     skip = True
             if skip:
                 continue
