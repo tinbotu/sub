@@ -521,7 +521,6 @@ class SubcultureGyazoScraper(Subculture):
 class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
     """
-    todo: merge SubcultureGaishutsu
     todo: formatting twitter
     todo: error-handling
     """
@@ -532,20 +531,21 @@ class SubcultureTitleExtract(Subculture):
             return m.group(1).decode(self.content_encoding.lower())
 
     def response(self):
-        self.fetch(self.text)
-        if "text/html" in self.content_headers.get("content-type") or True:
-            return self.get_element_title()
+        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
+        res = ''
+        urls = url_re.findall(self.text)
+        for url in urls:
+            self.fetch(url)
+            if "text/html" in self.content_headers.get("content-type") or True:
+                res += self.get_element_title() + "\n"
+        return res.rstrip()
 
 
 class SubcultureGaishutsu(Subculture):
     """ url gaishutsu checker """
+    """ title extractor """
     anti_double = True
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
-
-    def get_element_title(self):
-        m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
-        if m and m.group():
-            return m.group(1).decode(self.content_encoding.lower())
 
     def build_message(self, url, body):
         r = pickle.loads(body)
@@ -588,17 +588,12 @@ class SubcultureGaishutsu(Subculture):
             if skip:
                 continue
 
-            self.fetch(url)
-            if "text/html" in self.content_headers.get("content-type") or True:
-                res += "Title: " + self.get_element_title() + "\n"
-
             key = self.get_key(url)
             value = self.conn.get(key)
             if value is not None:
                 res += self.build_message(url, value)
             else:
                 self.update(key)
-
 
         return res
 
@@ -873,7 +868,7 @@ class NotSubculture(object):
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
-           #'^http': SubcultureTitleExtract,
+           '^http': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',

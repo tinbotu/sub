@@ -392,14 +392,5 @@ class TestSubcultureSpontaneity(unittest.TestCase):
         pass
 
 
-class TestSubcultureTitleExtract(unittest.TestCase):
-    def setUp(self):
-        self.s = SubcultureTitleExtract()
-
-    def test_get_not_utf8(self):
-        self.s.fetch('http://homepage2.nifty.com/jr-kun/hidemaru_qa/HME0074B.html')
-        print self.s.response()
-        self.assertEqual(self.s.response(), u'[HME0074B]●ファイルがなぜかEUCコードとして開かれる - 秀丸エディタＱ＆Ａ集')
-
 if __name__ == '__main__':
     unittest.main()
