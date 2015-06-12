@@ -536,7 +536,7 @@ class SubcultureTitleExtract(Subculture):
         urls = url_re.findall(self.text)
         for url in urls:
             self.fetch(url)
-            if "text/html" in self.content_headers.get("content-type") or True:
+            if "text/html" in self.content_headers.get("content-type"):
                 res += self.get_element_title() + "\n"
         return res.rstrip()
 
