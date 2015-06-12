@@ -516,6 +516,33 @@ class SubcultureGyazoScraper(Subculture):
             return None
 
 
+class SubcultureTitleExtract(Subculture):
+    """ <title> extract very quickhack """
+    """
+    todo: refer content-type 
+    todo: merge SubcultureGaishutsu
+    todo: formatting twitter
+    todo: error-handling
+    """
+
+    def guess_encode(self):
+        m = re.search(r'charset=([a-zA-Z0-9_\-]+)', self.content, re.IGNORECASE)
+        guessed_encode = "utf-8"
+        if m and m.group():
+            guessed_encode = m.group(1)
+        return guessed_encode
+
+    def get_element_title(self):
+        enc = self.guess_encode()
+        m = re.search(r'<title>(.+?)</title', self.content, re.IGNORECASE)
+        if m and m.group():
+            return m.group(1).decode(enc)
+
+    def response(self):
+        self.fetch(self.text)
+        return self.get_element_title()
+
+
 class SubcultureGaishutsu(Subculture):
     """ url gaishutsu checker """
     anti_double = True
@@ -842,6 +869,7 @@ class NotSubculture(object):
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
+           '^http': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',
