@@ -524,6 +524,7 @@ class SubcultureTitleExtract(Subculture):
     todo: formatting twitter
     todo: error-handling
     """
+    url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def get_element_title(self):
         m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
@@ -535,6 +536,12 @@ class SubcultureTitleExtract(Subculture):
         res = ''
         urls = url_re.findall(self.text)
         for url in urls:
+            skip = False
+            for black in self.url_blacklist:
+                if black not in url or len(url) < 1024:
+                    skip = True
+            if skip:
+                continue
             self.fetch(url)
             if "text/html" in self.content_headers.get("content-type"):
                 res += self.get_element_title() + "\n"
