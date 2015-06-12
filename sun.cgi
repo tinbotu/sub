@@ -542,6 +542,11 @@ class SubcultureGaishutsu(Subculture):
     anti_double = True
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
+    def get_element_title(self):
+        m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
+        if m and m.group():
+            return m.group(1).decode(self.content_encoding.lower())
+
     def build_message(self, url, body):
         r = pickle.loads(body)
         ago = ''
@@ -583,12 +588,17 @@ class SubcultureGaishutsu(Subculture):
             if skip:
                 continue
 
+            self.fetch(url)
+            if "text/html" in self.content_headers.get("content-type") or True:
+                res += "Title: " + self.get_element_title() + "\n"
+
             key = self.get_key(url)
             value = self.conn.get(key)
             if value is not None:
                 res += self.build_message(url, value)
             else:
                 self.update(key)
+
 
         return res
 
@@ -863,7 +873,7 @@ class NotSubculture(object):
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
-           '^http': SubcultureTitleExtract,
+           #'^http': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',
