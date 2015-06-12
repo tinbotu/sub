@@ -92,6 +92,8 @@ class Subculture(object):
             r = requests.get(url, headers=headers, params=params)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
+                self.content_encoding = r.encoding
+                self.content_headers = r.headers
             else:
                 self.content = '?:' + str(r.status_code)
         except Exception:
@@ -519,28 +521,21 @@ class SubcultureGyazoScraper(Subculture):
 class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
     """
-    todo: refer content-type 
     todo: merge SubcultureGaishutsu
     todo: formatting twitter
     todo: error-handling
     """
 
-    def guess_encode(self):
-        m = re.search(r'charset=([a-zA-Z0-9_\-]+)', self.content, re.IGNORECASE)
-        guessed_encode = "utf-8"
-        if m and m.group():
-            guessed_encode = m.group(1)
-        return guessed_encode
-
     def get_element_title(self):
         enc = self.guess_encode()
-        m = re.search(r'<title>(.+?)</title', self.content, re.IGNORECASE)
+        m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
         if m and m.group():
-            return m.group(1).decode(enc)
+            return m.group(1).decode(self.content_encoding.lower())
 
     def response(self):
         self.fetch(self.text)
-        return self.get_element_title()
+        if "text/html" in self.content_headers.get("content-type") or True:
+            return self.get_element_title()
 
 
 class SubcultureGaishutsu(Subculture):
