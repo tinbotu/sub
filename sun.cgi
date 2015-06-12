@@ -527,7 +527,6 @@ class SubcultureTitleExtract(Subculture):
     """
 
     def get_element_title(self):
-        enc = self.guess_encode()
         m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
         if m and m.group():
             return m.group(1).decode(self.content_encoding.lower())
