@@ -833,7 +833,7 @@ class NotSubculture(object):
            u'どうすればいいんだ': u'おれはもうだめだ',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
-           # 'http://gyazo.com': SubcultureGyazoScraper,
+           'http://gyazo.com': SubcultureGyazoScraper,
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
