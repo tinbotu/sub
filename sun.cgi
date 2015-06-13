@@ -84,7 +84,7 @@ class Subculture(object):
         else:
             self.conn.delete('doge_away')
 
-    def fetch(self, url, params=None):
+    def fetch(self, url, params=None, guess_encoding=False):
         self.content = None
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
@@ -93,8 +93,11 @@ class Subculture(object):
             r = requests.get(url, headers=headers, params=params)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
-                self.content_encoding = r.encoding
                 self.content_headers = r.headers
+                if guess_encoding:
+                    self.content_encoding = r.apparent_encoding
+                else:
+                    self.content_encoding = r.encoding
             else:
                 self.content = '?:' + str(r.status_code)
         except Exception:
@@ -544,7 +547,7 @@ class SubcultureTitleExtract(Subculture):
                     skip = True
             if skip:
                 continue
-            self.fetch(url)
+            self.fetch(url, guess_encoding=True)
             if "text/html" in self.content_headers.get("content-type"):
                 res += self.get_element_title() + "\n"
         return res.rstrip()
