@@ -880,7 +880,7 @@ class NotSubculture(object):
            u'オレオ': u'オレオ',
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
-           '^http': SubcultureTitleExtract,
+           'https?': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
            u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',
