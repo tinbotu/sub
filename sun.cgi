@@ -534,7 +534,7 @@ class SubcultureTitleExtract(Subculture):
         h = HTMLParser.HTMLParser()
         m = re.search(r'<title>\n?(.+?)\n?</title', self.content, re.IGNORECASE)
         if m and m.group():
-            return h.unescape(m.group(1).decode(self.content_encoding.lower()))
+            return "Title: " + h.unescape(m.group(1).decode(self.content_encoding.lower()))
 
     def response(self):
         url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
