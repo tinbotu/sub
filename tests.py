@@ -392,5 +392,22 @@ class TestSubcultureSpontaneity(unittest.TestCase):
         pass
 
 
+class TestSubcultureTitleExtract(unittest.TestCase):
+    def setUp(self):
+        self.s = SubcultureTitleExtract()
+
+    def test_cp932(self):
+        self.s.text = 'http://kakaku.com'
+        self.assertEqual(self.s.response(), u'Title: 価格.com - 「買ってよかった」をすべてのひとに。')
+
+    def test_euc(self):
+        self.s.text = 'http://www.mozilla.gr.jp/standards/webtips0022.html'
+        self.assertEqual(self.s.response(), u'Title: 文字コード宣言は行いましょう(HTML) - Web標準普及プロジェクト')
+
+    def test_utf8(self):
+        self.s.text = 'http://www.google.com'
+        self.assertEqual(self.s.response(), u'Title: Google')
+
+
 if __name__ == '__main__':
     unittest.main()
