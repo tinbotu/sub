@@ -15,6 +15,7 @@ import sys
 import time
 import traceback
 
+import cchardet
 import git
 import requests
 import redis
@@ -95,7 +96,7 @@ class Subculture(object):
                 self.content = r.content
                 self.content_headers = r.headers
                 if guess_encoding:
-                    self.content_encoding = r.apparent_encoding
+                    self.content_encoding = cchardet.detect(r.content).get("encoding")
                 else:
                     self.content_encoding = r.encoding
             else:
