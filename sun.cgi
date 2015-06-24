@@ -899,7 +899,7 @@ class NotSubculture(object):
            u'かわいい': u'ちーちゃんかわいいね/c',
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
-           u'うぜー': u'オマエモナー/cC',
+           u'う(ぜ[ーえ]|ざい)': u'オマエモナー/cC',
            u'^No$': u'No じゃないが/c',
            u'https://twitter.com/': SubcultureTwitterScraper,
            u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
