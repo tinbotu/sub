@@ -376,7 +376,7 @@ class SubcultureSilent(Subculture):
         },
         {
             'wordclass': '動詞',
-            'wordclass1': '連用形',
+            'conj2': '連用形',
         },
     ]
 
