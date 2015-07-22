@@ -374,6 +374,10 @@ class SubcultureSilent(Subculture):
             'wordclass': '助詞',
             'wordclass1': '並立助詞',
         },
+        {
+            'wordclass': '動詞',
+            'wordclass1': '連用形',
+        },
     ]
 
     break_dic = [
