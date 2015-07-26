@@ -832,6 +832,8 @@ class SubcultureKimoti(Subculture):
             "http://i.gyazo.com/48c1cacec98df70130c0739bf185cfe7.jpg",
             "http://i.gyazo.com/45064e2b054428461ca91fa56fe718b3.jpg",
             "http://i.gyazo.com/cf4605eab0a6953753f14e6540e7f916.jpg",
+            "http://i.gyazo.com/f81a179087b49349b1ba72bed3ab77a1.jpg",
+            "http://i.gyazo.com/480b38890a3c3c2ca826b09de5d32eed.jpg",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
