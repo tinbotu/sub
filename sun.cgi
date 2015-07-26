@@ -654,7 +654,6 @@ class SubcultureOmochi(Subculture):
             'http://40.media.tumblr.com/277d6031c2a25ac4cc160acfc984fa8f/tumblr_myzslsgJMh1qkllbso1_500.png',
             'http://livedoor.blogimg.jp/nasuka7777/imgs/c/c/cc8c7ebb.jpg',
             'https://pbs.twimg.com/media/B3grzV5CEAAiCoz.jpg',
-            'https://pbs.twimg.com/media/B2YEuvFCUAAe1Ba.jpg',
             'https://pbs.twimg.com/media/Bzv0UUxCEAAWhEh.jpg',
             'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
         ]
