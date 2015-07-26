@@ -656,6 +656,9 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/B3grzV5CEAAiCoz.jpg',
             'https://pbs.twimg.com/media/Bzv0UUxCEAAWhEh.jpg',
             'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
+            'http://ecx.images-amazon.com/images/I/51VDBqtGQ4L.jpg',
+            'http://prtimes.jp/i/9289/15/resize/d9289-15-340332-5.jpg',
+            'http://www.sapporo6h.com/wordpress/event/files/10f03541b3875901c5fbbd8b529ff7d5-724x1024.jpg',
         ]
 
         # dont response within 30 seconds
