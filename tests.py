@@ -408,6 +408,11 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.s.text = 'http://www.google.com'
         self.assertEqual(self.s.response(), u'Title: Google')
 
+    def test_utf8_withlazycrlf(self):
+        self.s.text = 'http://jp.reuters.com/article/2015/08/05/us-theater-shooting-idJPKCN0QA2O720150805'
+        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | Reuters')
+
+
 
 if __name__ == '__main__':
     unittest.main()
