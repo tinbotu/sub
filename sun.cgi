@@ -516,7 +516,7 @@ class SubcultureTwitterScraper(Subculture):
 
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
-    pick_re = '<meta content="(http://i.gyazo.com/([0-9a-z\.]+))" name="twitter:image" />'
+    pick_re = r'<link href="(https?://i.gyazo.com/([0-9a-z\.]+))" (rel="image_src"|name="twitter:image") />'
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
@@ -886,7 +886,7 @@ class NotSubculture(object):
            u'どうすればいいんだ': u'おれはもうだめだ',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん',
-           'http://gyazo.com': SubcultureGyazoScraper,
+           'https?://gyazo.com': SubcultureGyazoScraper,
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,

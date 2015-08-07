@@ -51,7 +51,7 @@ class TestTwitterScraper(unittest.TestCase):
 
 
 class TestGyazoScraper(unittest.TestCase):
-    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', ]
+    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', ]
     gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
@@ -74,7 +74,7 @@ class TestGyazoScraper(unittest.TestCase):
         for url in self.gyazo_url:
             self.g.fetch(url)
             r = self.g.response()
-            self.assertRegexpMatches(r, r'http://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
+            self.assertRegexpMatches(r, r'https?://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
 
         for url in self.gyazo_url_false:
             self.g.fetch(url)
