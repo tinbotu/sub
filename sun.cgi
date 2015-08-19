@@ -920,7 +920,7 @@ class NotSubculture(object):
            u'性欲': u'性欲を持て余す',
            u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg',
            u'\(飼い主\)': u'tinbotu',
-           u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg',
+           u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            }
 
     def __init__(self):
