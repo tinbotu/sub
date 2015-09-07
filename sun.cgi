@@ -921,6 +921,7 @@ class NotSubculture(object):
            u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg',
            u'\(飼い主\)': u'tinbotu',
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
+           u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            }
 
     def __init__(self):
