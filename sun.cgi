@@ -199,6 +199,7 @@ class SubcultureAtencion(Subculture):
         'bot': 10,
         u'メイン': 40,
         u'サブ': 4,
+        'doge': 50,
     }
     soku_dic = {
         u'犬': 10,
@@ -208,7 +209,7 @@ class SubcultureAtencion(Subculture):
         u'黙れ': -150,
         u'はい$': 10,
         u'はいじゃないが': -20,
-        u'おっ': 30,
+        u'おっ': 20,
         u'いいですね': 10,
         u'寿司': 5,
         u'[分|わ]か[らりるっん]': 20,
@@ -218,7 +219,7 @@ class SubcultureAtencion(Subculture):
         u'姫': 20,
         u'サ[ブヴ]': 30,
         u'ゴミ': 10,
-        u'(馬鹿|バカ)': 50,
+        u'(馬鹿|バカ)': 40,
         u'機運': 20,
         u'ウッ': 10,
         u'危険': 10,
@@ -226,6 +227,8 @@ class SubcultureAtencion(Subculture):
         u'おもち': -10,
         u'(ない|ねーよ?)$': -30,
         u'絡み方が悪質': 50,
+        'doge': 20,
+        'Ruby': 10,
     }
 
     def lpf(self, n0, n1, T=.3):
