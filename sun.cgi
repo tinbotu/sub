@@ -145,7 +145,7 @@ class Subculture(object):
         self.fetch('http://lingr.com/api/room/say', payload)
 
     def doge_soku(self):
-        return float(max(self.conn.get('inu_soku'), 0))
+        return float(max(self.conn.get('inu_soku'), 1))
 
 
 class SubcultureKnowerLevel(Subculture):
@@ -772,7 +772,7 @@ class SubcultureHitozuma(Subculture):
         random.seed()
 
         res = None
-        if random.randrange(0, 100) < 1:
+        if random.randrange(0, 500) < self.doge_soku():
             if random.randrange(0, 100) > 0:
                 res = u'はい'
             else:
