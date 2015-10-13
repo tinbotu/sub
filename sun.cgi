@@ -34,7 +34,7 @@ class Subculture(object):
     enable_flood_check = True
     doge_is_away = False
     api_secret = None
-    settings = None
+    _settings = None
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -48,7 +48,6 @@ class Subculture(object):
                 self._conn.ping()
             except redis.exceptions.ResponseError as e:
                 if e.message == 'NOAUTH Authentication required.':
-                    self.read_settings()
                     self._conn.execute_command("AUTH", self.settings["redis_auth"])
                 else:
                     raise
@@ -114,11 +113,13 @@ class Subculture(object):
         content = open(filename).read()
         self.api_secret = yaml.safe_load(content)
 
-    def read_settings(self, filename='settings.yaml'):
-        if self.settings is not None:
-            return
-        fp = open(filename).read()
-        self.settings = yaml.safe_load(fp)
+    @property
+    def settings(self):
+        if self._settings is not None:
+            return self._settings
+        fp = open('settings.yaml').read()
+        self._settings = yaml.safe_load(fp)
+        return self._settings
 
     def build_say_payload(self, room, bot, text, apikey):
         return {
@@ -626,20 +627,24 @@ class SubcultureGaishutsu(Subculture):
 
 class SubcultureMETAR(Subculture):
     """ Weather METARs """
-    url = 'http://api.openweathermap.org/data/2.5/weather?q=Tokyo,jp'
+    url = 'http://api.wunderground.com/api/%s/conditions/lang:JP/q/Japan/Tokyo.json'
 
     def __init__(self, text=None, speaker=None):
+        apikey = self.settings['wunderground_apikey']
+        self.url = self.url % apikey
         self.fetch(self.url)
 
-    def response(self):
+    def get_wunderground(self):
         w = json.loads(self.content)
-        temp_c = float(w["main"]["temp"]) - 273.15
-        weather = w["weather"][0]["description"]
-        icon_url = 'http://openweathermap.org/img/w/' + w["weather"][0]["icon"] + '.png'
-        pressure = int(w["main"]["pressure"])
-        humidity = int(w["main"]["humidity"])
+        self.temp_c = float(w["current_observation"]["temp_c"])
+        self.weather = w["current_observation"]["weather"]
+        self.icon_url = w["current_observation"]["icon_url"]
+        self.pressure = int(w["current_observation"]["pressure_mb"])
+        self.humidity = w["current_observation"]["relative_humidity"]
 
-        return u'%s (%.1f\u2103; %d\u3371; %d%%)\n%s' % (weather, temp_c, pressure, humidity, icon_url)
+    def response(self):
+        self.get_wunderground()
+        return u'%s (%.1f\u2103; %d\u3371; %s)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
 
 
 
