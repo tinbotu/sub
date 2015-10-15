@@ -92,14 +92,14 @@ class TestSubcultureKnowerLevel(unittest.TestCase):
 
 
 class TestSubcultureMETAR(unittest.TestCase):
-    json_openweathermap = """{"coord":{"lon":139.69,"lat":35.69},"sys":{"type":3,"id":7622,"message":0.5056,"country":"JP","sunrise":1415394609,"sunset":1415432388},"weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04n"}],"base":"cmc stations","main":{"temp":287.15,"pressure":1029,"humidity":82,"temp_min":287.15,"temp_max":287.15},"wind":{"speed":2.1,"deg":330},"clouds":{"all":90},"dt":1415447880,"id":1850147,"name":"Tokyo","cod":200}"""
-
     json_wunderground = '{"response": {"version":"0.1","termsofService":"http://www.wunderground.com/weather/api/d/terms.html","features": {"conditions": 1}},"current_observation": {"image": {"url":"http://icons.wxug.com/graphics/wu2/logo_130x80.png","title":"Weather Underground","link":"http://www.wunderground.com"},"display_location": {"full":"Tokyo, Japan","city":"Tokyo","state":"","state_name":"Japan","country":"JP","country_iso3166":"JP","zip":"00000","magic":"1","wmo":"47671","latitude":"35.54999924","longitude":"139.77999878","elevation":"8.00000000"},"observation_location": {"full":"Tokyo, ","city":"Tokyo","state":"","country":"JP","country_iso3166":"JP","latitude":"35.55333328","longitude":"139.78111267","elevation":"26 ft"},"estimated": {},"station_id":"RJTT","observation_time":"Last Updated on 十月 13, 4:00 PM JST","observation_time_rfc822":"Tue, 13 Oct 2015 16:00:00 +0900","observation_epoch":"1444719600","local_time_rfc822":"Tue, 13 Oct 2015 16:09:19 +0900","local_epoch":"1444720159","local_tz_short":"JST","local_tz_long":"Asia/Tokyo","local_tz_offset":"+0900","weather":"所により曇","temperature_string":"72 F (22 C)","temp_f":72,"temp_c":22,"relative_humidity":"46%","wind_string":"From the SE at 6 MPH","wind_dir":"SE","wind_degrees":130,"wind_mph":6,"wind_gust_mph":0,"wind_kph":9,"wind_gust_kph":0,"pressure_mb":"1010","pressure_in":"29.83","pressure_trend":"0","dewpoint_string":"50 F (10 C)","dewpoint_f":50,"dewpoint_c":10,"heat_index_string":"NA","heat_index_f":"NA","heat_index_c":"NA","windchill_string":"NA","windchill_f":"NA","windchill_c":"NA","feelslike_string":"72 F (22 C)","feelslike_f":"72","feelslike_c":"22","visibility_mi":"6.2","visibility_km":"10.0","solarradiation":"--","UV":"1","precip_1hr_string":"-9999.00 in (-9999.00 mm)","precip_1hr_in":"-9999.00","precip_1hr_metric":"--","precip_today_string":"0.00 in (0.0 mm)","precip_today_in":"0.00","precip_today_metric":"0.0","icon":"partlycloudy","icon_url":"http://icons.wxug.com/i/c/k/partlycloudy.gif","forecast_url":"http://www.wunderground.com/global/stations/47671.html","history_url":"http://www.wunderground.com/history/airport/RJTT/2015/10/13/DailyHistory.html","ob_url":"http://www.wunderground.com/cgi-bin/findweather/getForecast?query=35.55333328,139.78111267","nowcast":""}}'
 
     def setUp(self):
         self.r = SubcultureMETAR('', 'tests')
 
     def test_fetch(self):
+        if os.uname()[1] != 'stingray':
+            return
         self.r.get_wunderground()
         self.assertGreater(self.r.temp_c, -50)
         self.assertLess(self.r.temp_c, 50)
@@ -109,9 +109,9 @@ class TestSubcultureMETAR(unittest.TestCase):
 
     def test_response(self):
         pass
-        #self.r.content = self.json_openweathermap
-        #res = self.r.response()
-        #self.assertEqual(res, u'overcast clouds (14.0\u2103; 1029\u3371; 82%)\nhttp://openweathermap.org/img/w/04n.png')
+        self.r.content = self.json_wunderground
+        res = self.r.response()
+        self.assertEqual(res, u'所により曇 (22.0\u2103; 1010\u3371; 46%)\nhttp://icons.wxug.com/i/c/k/partlycloudy.gif')
 
 
 class TestSubcultureOmochi(unittest.TestCase):
