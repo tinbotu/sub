@@ -35,6 +35,7 @@ class Subculture(object):
     doge_is_away = False
     api_secret = None
     _settings = None
+    settings_filename = "settings.yaml"
 
     def __init__(self, text=None, speaker=None):
         self.speaker = speaker
@@ -117,7 +118,7 @@ class Subculture(object):
     def settings(self):
         if self._settings is not None:
             return self._settings
-        fp = open('settings.yaml').read()
+        fp = open(self.settings_filename).read()
         self._settings = yaml.safe_load(fp)
         return self._settings
 
@@ -629,12 +630,12 @@ class SubcultureMETAR(Subculture):
     """ Weather METARs """
     url = 'http://api.wunderground.com/api/%s/conditions/lang:JP/q/Japan/Tokyo.json'
 
-    def __init__(self, text=None, speaker=None):
-        apikey = self.settings['wunderground_apikey']
+    def fetch_wunderground(self):
+        apikey = self.settings.get('wunderground_apikey')
         self.url = self.url % apikey
         self.fetch(self.url)
 
-    def get_wunderground(self):
+    def parse_wunderground(self):
         w = json.loads(self.content)
         self.temp_c = float(w["current_observation"]["temp_c"])
         self.weather = w["current_observation"]["weather"]
@@ -643,7 +644,9 @@ class SubcultureMETAR(Subculture):
         self.humidity = w["current_observation"]["relative_humidity"]
 
     def response(self):
-        self.get_wunderground()
+        if self.content is None:
+            self.fetch_wunderground()
+        self.parse_wunderground()
         return u'%s (%.1f\u2103; %d\u3371; %s)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
 
 

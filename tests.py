@@ -100,7 +100,8 @@ class TestSubcultureMETAR(unittest.TestCase):
     def test_fetch(self):
         if os.uname()[1] != 'stingray':
             return
-        self.r.get_wunderground()
+        self.r.fetch_wunderground()
+        self.r.parse_wunderground()
         self.assertGreater(self.r.temp_c, -50)
         self.assertLess(self.r.temp_c, 50)
         self.assertGreater(self.r.pressure, 800)
@@ -108,7 +109,6 @@ class TestSubcultureMETAR(unittest.TestCase):
         self.assertIs(type(self.r.weather), unicode)
 
     def test_response(self):
-        pass
         self.r.content = self.json_wunderground
         res = self.r.response()
         self.assertEqual(res, u'所により曇 (22.0\u2103; 1010\u3371; 46%)\nhttp://icons.wxug.com/i/c/k/partlycloudy.gif')
