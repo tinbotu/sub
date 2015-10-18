@@ -994,7 +994,7 @@ class NotSubculture(object):
             except:
                 pass
 
-            sub.say(self.message.get('spontaneous_message'), self.message.get('app'), t)
+            sub.say(self.message.get('body'), self.message.get('app'), t)
             return
 
 
