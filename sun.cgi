@@ -998,7 +998,7 @@ class NotSubculture(object):
             t = 15
             if type(token) is dict:
                 try:
-                    t = float(max(self.message.get('anti_double_sec'), token.get("antidouble")))
+                    t = int(max(self.message.get('anti_double_sec'), token.get("antidouble")))
                 except:
                     pass
                 sub.say(self.message.get('body'), self.message.get('name'), t)
