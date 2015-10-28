@@ -140,6 +140,7 @@ class Subculture(object):
             return
 
         if self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
+            print "301 Flood"
             return
 
         payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
@@ -148,6 +149,11 @@ class Subculture(object):
 
     def doge_soku(self):
         return float(max(self.conn.get('inu_soku'), 1))
+
+    def spontaneous(self, name, key):
+        for app in self.settings["spontaneous"]:
+            if app["name"] == name and app["key"] == key:
+                return app
 
 
 class SubcultureKnowerLevel(Subculture):
@@ -497,7 +503,7 @@ class SubcultureKnowerLevelGet(Subculture):
 
 
 class SubcultureTwitterScraper(Subculture):
-    pick_re = '<img src="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))" alt="'
+    pick_re = 'data-image-url="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))"'
     url_re = "(https://twitter.com/([0-9a-z_/.]+))"
 
     def __init__(self, text=None, speaker=None):
@@ -988,15 +994,17 @@ class NotSubculture(object):
 
         # 自発的発言
         if self.message.get('events') is None and sub.doge_is_away is not True:
+            token = sub.spontaneous(name=self.message.get('name'), key=self.message.get('key'))
             t = 15
-            try:
-                t = int(self.message.get('anti_double_sec'))
-            except:
-                pass
-
-            sub.say(self.message.get('body'), self.message.get('app'), t)
+            if type(token) is dict:
+                try:
+                    t = float(max(self.message.get('anti_double_sec'), token.get("antidouble")))
+                except:
+                    pass
+                sub.say(self.message.get('body'), self.message.get('name'), t)
+            else:
+                print "400"
             return
-
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
         doge_soku = sub.doge_soku()

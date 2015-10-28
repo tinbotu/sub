@@ -28,15 +28,13 @@ from sun import (
 
 
 class TestTwitterScraper(unittest.TestCase):
-    twitter_url = [
-        'https://twitter.com/esehara/status/567342138640171009',
-        'https://twitter.com/miminashi/status/566437373056016384']
+    twitter_url = ['https://twitter.com/esehara/status/567342138640171009',]
     twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
 
     def setUp(self):
         self.g = SubcultureTwitterScraper()
 
-    def test_fatch(self):
+    def test_fetch(self):
         for url in self.twitter_url:
             self.g.fetch(url)
             self.assertRegexpMatches(self.g.content, self.g.pick_re)
