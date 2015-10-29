@@ -327,6 +327,7 @@ class TestNotSubculture(unittest.TestCase):
 
     def setUp(self):
         self.n = NotSubculture()
+        self.n.enable_acl = False
 
     def test_instance(self):
         self.assertIsInstance(self.n, NotSubculture)

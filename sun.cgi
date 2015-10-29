@@ -875,6 +875,7 @@ class NotSubculture(object):
     body = None
     message = None
     texts = None
+    enable_acl = True
 
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧/d',
@@ -1021,6 +1022,10 @@ class NotSubculture(object):
                 sub.say(self.message.get('body'), self.message.get('name'), t)
             else:
                 print "400"
+            return
+
+        if self.enable_acl is True and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
+            print "401"
             return
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
