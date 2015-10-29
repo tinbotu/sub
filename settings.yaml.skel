@@ -1,2 +1,6 @@
 redis_auth: "VGFA3ysRKPAxuxuwZFSx3AefUQnEkG6WGX6PY5sHvCmAmgXoqsRiDzuKDmBaRWOgKvE9uTZJgaxJLcFpbXM7SK1DUj7nk7LzP6CgGY4MjkAGnqlqL03djZopZ1YaQysQldnXqS5iUnOmSGXeM8tUS6ruwnSaKP7aQ5L6LGLV9d3CTfsy3WtH1GbtAqqAQR1xQoJGK4yOSU8ToJ5RsfRFrMJeu3AWKoCJVf6Gv9fpB2Gp8dXsN9T1I1gsCE0ZfWui"
 wunderground_apikey: "VtYGRqXRqrCDyaZ0"
+hosts_allow_lingr: [219.94.128.0/17, 127.0.0.0/8]
+spontaneous:
+    - {name: appname1, key: YIc1v1vYZkiEEyKi, antidouble: 600}
+    - {name: appname2, key: ikyXpVRObWl4FwVO, antidouble: 300}

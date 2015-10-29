@@ -323,6 +323,8 @@ class TestNotSubculture(unittest.TestCase):
      "timestamp":"2011-02-12T08:13:51Z",
      "local_id":"pending-UBDH84-1"}}]}"""
 
+    access_control_list = ['192.168.1.0/29', '172.16.0.0/22', ]
+
     def setUp(self):
         self.n = NotSubculture()
 
@@ -345,6 +347,14 @@ class TestNotSubculture(unittest.TestCase):
         self.n.read_http_post('POST', self.json_subculture)
         for r in self.n.response():
             self.assertEqual(r, 'No')
+
+    def test_acl(self):
+        self.assertIs(False, self.n.acl(None, None))
+        self.assertIs(False, self.n.acl(None, '192.168.1.60'))
+        self.assertIs(False, self.n.acl(self.access_control_list, '192.168.1.60'))
+        self.assertIs(True, self.n.acl(self.access_control_list, '192.168.1.2'))
+        self.assertIs(True, self.n.acl(self.access_control_list, '172.16.3.254'))
+        self.assertIs(False, self.n.acl(self.access_control_list, '172.16.4.1'))
 
 
 class TestSubcultureSelfUpdate(unittest.TestCase):

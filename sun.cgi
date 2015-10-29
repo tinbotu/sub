@@ -17,6 +17,7 @@ import traceback
 
 import cchardet
 import git
+import ipaddress
 import requests
 import redis
 import HTMLParser
@@ -963,6 +964,22 @@ class NotSubculture(object):
                     self.httpheader()
                     print "json decode error:", self.body
                     sys.exit(0)
+
+    def acl(self, acl, ip_address):
+        if type(acl) is not list:
+            return False
+        ip = ipaddress.ip_address(unicode(ip_address))
+        for address_block in acl:
+            block = ipaddress.IPv4Network(unicode(address_block))
+            if ip in block:
+                return True
+        return False
+
+    def check_acl(self, acl):
+        remote_addr = os.environ.get('REMOTE_ADDR')
+        if type(remote_addr) is str:
+            return self.acl(acl, remote_addr)
+        return False
 
     def response(self):
         self.httpheader()

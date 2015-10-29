@@ -1,6 +1,7 @@
 flake8==2.2.5
 redis==2.10.3
 requests==2.5.0
+ipaddress==1.0.14
 wsgiref==0.1.2
 https://mecab.googlecode.com/files/mecab-python-0.996.tar.gz
 GitPython==0.3.2.1
