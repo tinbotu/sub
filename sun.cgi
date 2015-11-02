@@ -392,7 +392,7 @@ class SubcultureSilent(Subculture):
         },
         {
             'wordclass': '助詞',
-            #'wordclass1': '副助詞',
+            # 'wordclass1': '副助詞',
         },
     ]
 
@@ -1021,11 +1021,11 @@ class NotSubculture(object):
                     pass
                 sub.say(self.message.get('body'), self.message.get('name'), t)
             else:
-                print "400"
+                print "401 Unauthorized"
             return
 
         if self.enable_acl is True and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
-            print "401"
+            print "403 Forbidden"
             return
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
