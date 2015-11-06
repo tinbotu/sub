@@ -898,6 +898,7 @@ class NotSubculture(object):
            u'^おもち$': SubcultureOmochi,
            u'^(気持ち|きもち)$': SubcultureKimoti,
            u'^石$': SubcultureStone,
+           u'西山石' : u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
            u'山だ?$': u'やまいくぞ/c',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
