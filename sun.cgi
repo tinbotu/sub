@@ -18,6 +18,7 @@ import traceback
 import cchardet
 import git
 import ipaddress
+import pushbullet
 import requests
 import redis
 import HTMLParser
@@ -869,6 +870,61 @@ class SubcultureKimoti(Subculture):
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
 
+class SubculturePushbullet(Subculture):
+
+    settings_filename = 'pushbullet.yaml'
+    _settings = None
+    re_mention = '@([A-Za-z0-9_]+)?'
+
+    @property
+    def settings(self):
+        if self._settings is not None and self._settings.get("pushbullet"):
+            return self._settings.get("pushbullet")
+        fp = open(self.settings_filename).read()
+        self._settings = yaml.safe_load(fp)
+        return self._settings.get("pushbullet")
+
+    def get_mention_users(self, text, speaker):
+        if type(self.settings) is not list:
+            return
+
+        users = re.findall('@([A-Za-z0-9_]+)?', text)
+        bullets = []
+
+        for user in users:
+            for bullet in self.settings:
+                for keyword in bullet.get("keyword"):
+                    if user == keyword:
+                        body = '%s: %s' % (speaker, text)
+                        bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
+        return bullets
+
+
+    def send_bullets(self, bullets):
+        users_sent = []
+        users_fail = []
+        for b in bullets:
+            pb = pushbullet.Pushbullet(b.get('key'))
+            result = pb.push_note('Doge', b.get('body'))
+            try:
+                if result.get("created") > 1:
+                    users_sent.append(b.get('user'))
+            except:
+                users_fail.append(b.get('user'))
+
+        if len(users_sent) > 0:
+            message = 'sent: %s' % (', '.join(users_sent))
+        if len(users_fail) > 0:
+            message = 'No: %s' % (', '.join(users_fail))
+        return message
+
+
+    def response(self):
+        mention_list = self.get_mention_users(text=self.text, speaker=self.speaker)
+        return self.send_bullets(mention_list)
+
+
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -898,7 +954,7 @@ class NotSubculture(object):
            u'^おもち$': SubcultureOmochi,
            u'^(気持ち|きもち)$': SubcultureKimoti,
            u'^石$': SubcultureStone,
-           u'西山石' : u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
+           u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
            u'山だ?$': u'やまいくぞ/c',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
            u'ストールするぞ(ほんとに)?$': u'はい',
@@ -942,6 +998,7 @@ class NotSubculture(object):
            u'\(飼い主\)': u'tinbotu',
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
+           '@': SubculturePushbullet,
            }
 
     def __init__(self):
