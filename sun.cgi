@@ -505,7 +505,7 @@ class SubcultureKnowerLevelGet(Subculture):
 
 
 class SubcultureTwitterScraper(Subculture):
-    pick_re = 'data-image-url="(https://pbs.twimg.com/media/(.+(\.png|\.jpg)))"'
+    pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
     url_re = "(https://twitter.com/([0-9a-z_/.]+))"
 
     def __init__(self, text=None, speaker=None):
@@ -520,12 +520,14 @@ class SubcultureTwitterScraper(Subculture):
             return m.group(1)
 
     def response(self):
-        m = self.pick_re.search(self.content)
-        if m and m.group():
-            return m.group(1)
+        match = self.pick_re.findall(self.content)
+        if type(match) is list:
+            res = ''
+            for u in match:
+                res += u + "\n"
+            return res.rstrip()
         else:
             return None
-
 
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
