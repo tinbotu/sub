@@ -529,7 +529,7 @@ class SubcultureTwitterScraper(Subculture):
 
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
-    pick_re = r'<link href="(https?://i.gyazo.com/([0-9a-z\.]+))" (rel="image_src"|name="twitter:image") />'
+    pick_re = r'(?:<link href| src)="(https?://i.gyazo.com/([0-9a-z\.]+))" '
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)

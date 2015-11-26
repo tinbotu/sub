@@ -75,7 +75,7 @@ class TestTwitterScraper(unittest.TestCase):
 
 
 class TestGyazoScraper(unittest.TestCase):
-    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', ]
+    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', 'https://gyazo.com/033c02612a1911a84554d89b29462628', ]
     gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
