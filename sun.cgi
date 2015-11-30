@@ -522,10 +522,7 @@ class SubcultureTwitterScraper(Subculture):
     def response(self):
         match = self.pick_re.findall(self.content)
         if type(match) is list:
-            res = ''
-            for u in match:
-                res += u + "\n"
-            return res.rstrip()
+            return "\n".join(match)
         else:
             return None
 
