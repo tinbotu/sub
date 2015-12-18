@@ -1034,7 +1034,14 @@ class NotSubculture(object):
         return False
 
     def check_acl(self, acl):
-        remote_addr = os.environ.get('REMOTE_ADDR')
+        remote_addr = None
+
+        xff = os.environ.get('HTTP_X_FORWARDED_FOR')
+        if xff is str:
+            remote_addr = xff.split(',')[-1].strip()
+        else:
+            remote_addr = os.environ.get('REMOTE_ADDR')
+
         if type(remote_addr) is str:
             return self.acl(acl, remote_addr)
         return False
