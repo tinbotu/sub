@@ -1037,7 +1037,7 @@ class NotSubculture(object):
         remote_addr = None
 
         xff = os.environ.get('HTTP_X_FORWARDED_FOR')
-        if xff is str:
+        if type(xff) is str:
             remote_addr = xff.split(',')[-1].strip()
         else:
             remote_addr = os.environ.get('REMOTE_ADDR')
