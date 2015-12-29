@@ -533,7 +533,7 @@ class SubcultureGyazoScraper(Subculture):
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
         if text is not None:
-            self.fetch(text)
+            self.fetch(text.strip())
 
     def response(self):
         m = self.pick_re.search(self.content)
