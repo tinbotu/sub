@@ -526,6 +526,7 @@ class SubcultureTwitterScraper(Subculture):
         else:
             return None
 
+
 class SubcultureGyazoScraper(Subculture):
     """ gyazo image url extactor """
     pick_re = r'(?:<link href| src)="(https?://i.gyazo.com/([0-9a-z\.]+))" '
@@ -840,7 +841,12 @@ class SubcultureDogeHouseStatus(Subculture):
 
     def response(self):
         self.check_doge_away()
-        raise DogeAwayMessage(u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)'))
+        res = u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)')
+
+        with open("dogehouse.txt", "r") as fp:
+            res += fp.read().decode('utf_8')
+
+        raise DogeAwayMessage(res)
 
 
 class SubcultureKimoti(Subculture):
