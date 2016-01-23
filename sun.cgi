@@ -550,6 +550,28 @@ class SubcultureGyazoScraper(Subculture):
             return None
 
 
+class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
+    reading = False
+
+    def __init__(self, target_tag):
+        HTMLParser.HTMLParser.__init__(self)
+        self.target_tag = target_tag
+        self._content = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == self.target_tag:
+            self.reading = True
+
+    def handle_data(self, data):
+        if self.reading:
+            self._content.append(data)
+            self.reading = False
+
+    @property
+    def content(self):
+        return self._content
+
+
 class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
     """
@@ -559,10 +581,11 @@ class SubcultureTitleExtract(Subculture):
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def get_element_title(self):
-        h = HTMLParser.HTMLParser()
-        m = re.search(r'<title>[\ \t]*(.+?)(?=</title)', self.content.replace("\n", " "), re.IGNORECASE)
-        if m and m.group():
-            return "Title: " + h.unescape(m.group(1).decode(self.content_encoding.lower()))
+        h = HTMLParserGetElementsByTag('title')
+        h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
+        h.close()
+        if len(h.content) > 0:
+            return "Title: " + h.content[0].strip()
         else:
             return ''
 
