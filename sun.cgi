@@ -585,7 +585,6 @@ class SubcultureTitleExtract(Subculture):
 
     def get_element_title(self):
         h = HTMLParserGetElementsByTag('title')
-        content = None
 
         try:
             h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
