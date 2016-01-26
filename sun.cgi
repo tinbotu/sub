@@ -566,12 +566,22 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
             self.reading = True
 
     def handle_data(self, data):
-        if self.reading:
-            self._content += data
+        self.concat_content(data)
+
+    def handle_charref(self, data):
+        self.concat_content(self.unescape('&#'+data+';'))
+
+    def handle_entityref(self, data):
+        self.concat_content(self.unescape('&'+data+';'))
 
     def handle_endtag(self, tag):
         if tag == self.target_tag:
             self.reading = False
+
+    def concat_content(self, data):
+        if self.reading:
+            self._content += data
+
 
     @property
     def content(self):
