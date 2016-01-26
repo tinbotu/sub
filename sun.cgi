@@ -559,7 +559,7 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
     def __init__(self, target_tag):
         HTMLParser.HTMLParser.__init__(self)
         self.target_tag = target_tag
-        self._content = []
+        self._content = ''
 
     def handle_starttag(self, tag, attrs):
         if tag == self.target_tag:
@@ -567,7 +567,10 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
 
     def handle_data(self, data):
         if self.reading:
-            self._content.append(data)
+            self._content += data
+
+    def handle_endtag(self, tag):
+        if tag == self.target_tag:
             self.reading = False
 
     @property
@@ -593,7 +596,7 @@ class SubcultureTitleExtract(Subculture):
 
         h.close()
         if len(h.content) > 0:
-            return "Title: " + h.content[0].strip()
+            return "Title: " + h.unescape(h.content.strip())
         else:
             return ''
 
