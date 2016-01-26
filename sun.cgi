@@ -25,6 +25,9 @@ import HTMLParser
 import MeCab
 import yaml
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 class Subculture(object):
     """ abstract """
@@ -582,7 +585,13 @@ class SubcultureTitleExtract(Subculture):
 
     def get_element_title(self):
         h = HTMLParserGetElementsByTag('title')
-        h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
+        content = None
+
+        try:
+            h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
+        except UnicodeDecodeError:
+            h.feed(self.content.replace("\n", " "))
+
         h.close()
         if len(h.content) > 0:
             return "Title: " + h.content[0].strip()
