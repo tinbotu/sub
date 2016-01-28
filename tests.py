@@ -447,6 +447,10 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.s.text = 'http://jp.reuters.com/article/2015/08/05/us-theater-shooting-idJPKCN0QA2O720150805'
         self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | Reuters')
 
+    def test_instagram(self):
+        self.s.text = 'https://www.instagram.com/p/BA_yNXQjvAd/'
+        self.assertEqual(self.s.response(), 'https://scontent.cdninstagram.com/t51.2885-15/e35/12568894_505444742950257_187380268_n.jpg')
+
 
 
 if __name__ == '__main__':

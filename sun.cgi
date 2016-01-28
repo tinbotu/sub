@@ -555,15 +555,25 @@ class SubcultureGyazoScraper(Subculture):
 
 class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
     reading = False
+    #target_meta_property = None
 
-    def __init__(self, target_tag):
+    def __init__(self, target_tag, target_meta_property=None):
         HTMLParser.HTMLParser.__init__(self)
         self.target_tag = target_tag
+        self.target_meta_property = target_meta_property
         self._content = ''
 
     def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+
         if tag == self.target_tag:
-            self.reading = True
+            # <meta property="og:title" content="T I T L E" /> とかはここで取っちゃう
+            if self.target_meta_property is not None:
+                if self.target_meta_property == attrs.get("property"):
+                    self._content += attrs.get("content")
+            else:
+                self.reading = True
+
 
     def handle_data(self, data):
         self.concat_content(data)
@@ -592,12 +602,17 @@ class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
     """
     todo: formatting twitter
-    todo: error-handling
     """
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
-    def get_element_title(self):
-        h = HTMLParserGetElementsByTag('title')
+    def get_element_title(self, url=None):
+        h = None
+        prefix = "Title: "
+        if url is not None and url.find("instagram.com") != -1:
+            h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
+            prefix = ''
+        else:
+            h = HTMLParserGetElementsByTag('title')
 
         try:
             h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
@@ -605,8 +620,9 @@ class SubcultureTitleExtract(Subculture):
             h.feed(self.content.replace("\n", " "))
 
         h.close()
+
         if len(h.content) > 0:
-            return "Title: " + h.unescape(h.content.strip())
+            return prefix + h.unescape(h.content.strip())
         else:
             return ''
 
@@ -623,7 +639,7 @@ class SubcultureTitleExtract(Subculture):
                 continue
             self.fetch(url, guess_encoding=True)
             if "text/html" in self.content_headers.get("content-type"):
-                res += self.get_element_title() + "\n"
+                res += self.get_element_title(url=url) + "\n"
         return res.rstrip()
 
 
