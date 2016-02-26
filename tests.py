@@ -436,20 +436,20 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.assertEqual(self.s.response(), u'Title: 価格.com - 「買ってよかった」をすべてのひとに。')
 
     def test_euc(self):
-        self.s.text = 'http://www.mozilla.gr.jp/standards/webtips0022.html'
-        self.assertEqual(self.s.response(), u'Title: 文字コード宣言は行いましょう(HTML) - Web標準普及プロジェクト')
+        self.s.text = 'https://www.freebsd.org/doc/ja_JP.eucJP/books/handbook/'
+        self.assertEqual(self.s.response(), u'Title: FreeBSD ハンドブック')
 
     def test_utf8(self):
         self.s.text = 'http://www.google.com'
         self.assertEqual(self.s.response(), u'Title: Google')
 
     def test_utf8_withlazycrlf(self):
-        self.s.text = 'http://jp.reuters.com/article/2015/08/05/us-theater-shooting-idJPKCN0QA2O720150805'
-        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | Reuters')
+        self.s.text = 'http://jp.reuters.com/article/us-theater-shooting-idJPKCN0QA2O720150805'
+        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
 
     def test_instagram(self):
         self.s.text = 'https://www.instagram.com/p/BA_yNXQjvAd/'
-        self.assertEqual(self.s.response(), 'https://scontent.cdninstagram.com/t51.2885-15/e35/12568894_505444742950257_187380268_n.jpg')
+        self.assertRegexpMatches(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/t51.2885-15/e35/12568894_505444742950257_187380268_n.jpg.*')
 
 
 
