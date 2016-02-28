@@ -607,10 +607,17 @@ class SubcultureTitleExtract(Subculture):
 
     def get_element_title(self, url=None):
         h = None
-        prefix = "Title: "
+        prefix = 'Title: '
+        postfix = ''
         if url is not None and url.find("instagram.com") != -1:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
             prefix = ''
+        elif url is not None and \
+            ('photos.google.com' in url or
+             'goo.gl/photos' in url):
+            h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
+            prefix = ''
+            postfix = '#.jpg'
         else:
             h = HTMLParserGetElementsByTag('title')
 
@@ -622,7 +629,7 @@ class SubcultureTitleExtract(Subculture):
         h.close()
 
         if len(h.content) > 0:
-            return prefix + h.unescape(h.content.strip())
+            return prefix + h.unescape(h.content.strip()) + postfix
         else:
             return ''
 
