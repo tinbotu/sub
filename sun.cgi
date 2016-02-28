@@ -607,18 +607,17 @@ class SubcultureTitleExtract(Subculture):
 
     def get_element_title(self, url=None):
         h = None
-        prefix = 'Title: '
+        prefix = ''
         postfix = ''
-        if url is not None and url.find("instagram.com") != -1:
+        if url is not None and 'instagram.com' in url:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
-            prefix = ''
         elif url is not None and \
             ('photos.google.com' in url or
              'goo.gl/photos' in url):
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
-            prefix = ''
             postfix = '#.jpg'
         else:
+            prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title')
 
         try:
