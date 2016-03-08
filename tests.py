@@ -432,8 +432,8 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.s = SubcultureTitleExtract()
 
     def test_cp932(self):
-        self.s.text = 'http://kakaku.com'
-        self.assertEqual(self.s.response(), u'Title: 価格.com - 「買ってよかった」をすべてのひとに。')
+        self.s.text = 'http://nomenclator.la.coocan.jp/perl/shiftjis.htm'
+        self.assertEqual(self.s.response(), u'Title: Shift-JISテキストを正しく扱う')
 
     def test_euc(self):
         self.s.text = 'https://www.freebsd.org/doc/ja_JP.eucJP/books/handbook/'
