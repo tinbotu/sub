@@ -73,6 +73,10 @@ class TestTwitterScraper(unittest.TestCase):
         for text in texts:
             self.assertRegexpMatches(self.g.get_twitter_url(text), self.g.url_re)
 
+    def test_img(self):
+        self.g.fetch("https://twitter.com/DJWILDPARTY/status/707433573142413317/")
+        self.assertEqual(self.g.response(), "https://pbs.twimg.com/media/CdFPCH5W8AAwRk0.jpg")
+
 
 class TestGyazoScraper(unittest.TestCase):
     gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', 'https://gyazo.com/033c02612a1911a84554d89b29462628', ]
