@@ -515,7 +515,7 @@ class SubcultureKnowerLevelGet(Subculture):
 
 class SubcultureTwitterScraper(Subculture):
     pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
-    url_re = "(https://twitter.com/([0-9a-z_/.]+))"
+    url_re = "(https://twitter.com/([0-9A-Za-z_/.]+))"
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
