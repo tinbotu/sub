@@ -872,7 +872,7 @@ class SubcultureHitozuma(Subculture):
 class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
-        knower = ['kumagai', 'kuzuha', 'ykic', 'niryuu', 'esehara', 'esehara', ]
+        knower = ['kumagai', 'kuzuha', 'ykic', 'niryuu', 'esehara', 'pha', 'doge', ]
 
         K = SubcultureKnowerLevelUp('', self.speaker)
         K.response()
@@ -1022,6 +1022,7 @@ class NotSubculture(object):
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
            u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布) culture': AnotherIsMoreKnowerThanMe,
+           '^[KYETNOSVP1U]C$': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
            u'わかるなー*$': SubcultureKnowerLevel,
