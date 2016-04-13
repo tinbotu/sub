@@ -79,7 +79,7 @@ class TestTwitterScraper(unittest.TestCase):
 
 
 class TestGyazoScraper(unittest.TestCase):
-    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', 'https://gyazo.com/033c02612a1911a84554d89b29462628', ]
+    gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', 'https://gyazo.com/033c02612a1911a84554d89b29462628', 'https://gyazo.com/a1b0199e874b1b23a021883e30182fa6', ]
     gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
@@ -372,7 +372,7 @@ class TestNotSubculture(unittest.TestCase):
     def test_gyazo(self):
         self.n.read_http_post('POST', self.json_gyazo)
         for r in self.n.response():  # I dont care this comes first or not, one or more
-            self.assertEqual(r, 'http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.jpg')
+            self.assertEqual(r, 'https://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.jpg')
 
     def test_dict_subculture(self):
         self.n.read_http_post('POST', self.json_subculture)
