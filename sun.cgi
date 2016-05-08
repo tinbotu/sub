@@ -417,7 +417,7 @@ class SubcultureSilent(Subculture):
             'wordclass2': '一般',
         },
         {
-            'word': 'こと',
+            # 'word': 'こと',
             'wordclass': '名詞',
             'wordclass1': '非自立',
         },

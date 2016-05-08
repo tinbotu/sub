@@ -223,6 +223,7 @@ class TestSubcultureSilent(unittest.TestCase):
         u'観測をしたい': u'^(:?私も|また)?観測をしたいな$',
         u'何がしたいんだ': None,
         u'言わんとしたいことはわかる': None,
+        u'撮りたいものがはっきりして': None,
     }
 
     def setUp(self):
