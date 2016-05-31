@@ -872,7 +872,7 @@ class SubcultureHitozuma(Subculture):
 class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
-        knower = ['kumagai', 'kuzuha', 'ykic', 'niryuu', 'esehara', 'pha', 'doge', ]
+        knower = ['kumagai']
 
         seed_text = self.speaker + self.text
         random.seed(seed_text)
