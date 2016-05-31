@@ -68,3 +68,5 @@ settings.yaml
 pushbullet.yaml
 .htaccess
 
+# RopeOpenProject
+.ropeproject/
