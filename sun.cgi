@@ -868,6 +868,16 @@ class SubcultureHitozuma(Subculture):
 
         return res
 
+class SubcultureKCzuma(Subculture):
+    """ hitozuma """
+    def response(self):
+        random.seed()
+
+        res = None
+        if random.randrange(0, 500) < self.doge_soku():
+            if random.randrange(0, 100) > 0:
+                res = u'KC'
+        return res
 
 class AnotherIsMoreKnowerThanMe(Subculture):
 
@@ -1061,6 +1071,7 @@ class NotSubculture(object):
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
            # u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
            '.+': SubcultureHitozuma,
+           '.+': SubcultureKCzuma,
            '^(?!.*http).*$': SubcultureNogata,  # except http
            '.*': SubcultureAtencion,  # 同じキーはだめ
            u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
