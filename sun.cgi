@@ -513,6 +513,20 @@ class SubcultureKnowerLevelGet(Subculture):
         return res
 
 
+class SubcultureRetirementLevelGet(Subculture):
+
+    def response(self):
+        speakers_blacklist = ["knower-tests", "knower-None", ]
+        res = ''
+        speakers = self.conn.keys("retirement-*")
+
+        for s in speakers:
+            if s not in speakers_blacklist:
+                res += "%s: %s\n" % (s, self.conn.get(s))
+
+        return res
+
+
 class SubcultureTwitterScraper(Subculture):
     pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
     url_re = "(https://twitter.com/([0-9A-Za-z_/.]+))"
@@ -1068,6 +1082,7 @@ class NotSubculture(object):
            # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
            u'(?:社会|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転職|社畜|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退)': SubcultureRetirementLevelUp,
+           u'^他人の社会': SubcultureRetirementLevelGet,
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
            'https?': SubcultureTitleExtract,
