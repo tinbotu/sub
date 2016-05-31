@@ -874,9 +874,10 @@ class AnotherIsMoreKnowerThanMe(Subculture):
     def response(self):
         knower = ['kumagai']
 
-        seed_text = self.speaker + self.text
-        random.seed(seed_text)
+        K = SubcultureKnowerLevelUp('', self.speaker)
+        K.response()
 
+        random.seed()
         return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
 
 
