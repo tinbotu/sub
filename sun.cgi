@@ -868,6 +868,7 @@ class SubcultureHitozuma(Subculture):
 
         return res
 
+
 class SubcultureKCzuma(Subculture):
     """ KCzuma """
     def response(self):
@@ -878,6 +879,7 @@ class SubcultureKCzuma(Subculture):
             if random.randrange(0, 100) > 0:
                 res = u'KC'
         return res
+
 
 class AnotherIsMoreKnowerThanMe(Subculture):
 
