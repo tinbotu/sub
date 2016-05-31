@@ -872,7 +872,7 @@ class SubcultureHitozuma(Subculture):
 class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
-        knower = ['kumagai', 'kuzuha', 'ykic', 'niryuu', 'esehara', 'pha', 'doge', ]
+        knower = ['kumagai']
 
         K = SubcultureKnowerLevelUp('', self.speaker)
         K.response()
