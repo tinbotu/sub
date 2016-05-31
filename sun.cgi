@@ -555,7 +555,6 @@ class SubcultureGyazoScraper(Subculture):
 
 class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
     reading = False
-    #target_meta_property = None
 
     def __init__(self, target_tag, target_meta_property=None):
         HTMLParser.HTMLParser.__init__(self)
@@ -953,6 +952,7 @@ class SubcultureKimoti(Subculture):
             "http://i.gyazo.com/a05b7cf820c103ae9daf16e45be6ef70.jpg",
             "https://i.gyazo.com/9952fe3b70c428989f83a1a9b59856c4.jpg",
             "http://farm6.static.flickr.com/5229/5757984661_c03a82b843.jpg",
+            "http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
