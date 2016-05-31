@@ -752,6 +752,14 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
             'http://ecx.images-amazon.com/images/I/51VDBqtGQ4L.jpg',
             'http://prtimes.jp/i/9289/15/resize/d9289-15-340332-5.jpg',
+            'https://scontent.cdninstagram.com/t51.2885-15/s750x750/sh0.08/e35/13151165_618195378329446_1327560183_n.jpg',
+            'https://scontent.cdninstagram.com/t51.2885-15/e35/13102329_383470485157026_914500049_n.jpg',
+            'https://pbs.twimg.com/media/ChQrPrXU0AEplOK.jpg',
+            'https://pbs.twimg.com/media/Ch4ntISVIAAUzGn.jpg',
+            'https://pbs.twimg.com/media/CjgsKqlUoAACZL_.jpg',
+            'https://pbs.twimg.com/media/BU_9vq6CAAAYv9x.jpg',
+            'https://pbs.twimg.com/media/BWIiHSkCcAAxKZT.jpg',
+            'https://pbs.twimg.com/media/BXZh1bvCMAEDqxY.jpg',
         ]
 
         # dont response within 30 seconds
