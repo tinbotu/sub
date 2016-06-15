@@ -1116,6 +1116,7 @@ class NotSubculture(object):
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            '@': SubculturePushbullet,
+           u'^NHR$': 'うへえへへえぁぁぁあぁ',
            }
 
     def __init__(self):
