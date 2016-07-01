@@ -14,6 +14,7 @@ import re
 import sys
 import time
 import traceback
+import urlparse
 
 import cchardet
 import git
@@ -1012,6 +1013,7 @@ class NotSubculture(object):
     message = None
     texts = None
     enable_acl = True
+    is_slack = False
 
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧/d',
@@ -1091,19 +1093,38 @@ class NotSubculture(object):
             print header
             self.httpheaderHasAlreadySent = True
 
-    def read_http_post(self, method, http_post_body):
+    def parse_slack_outgoing_webhooks(self, http_body):
+        params = urlparse.parse_qsl(http_body)
+        params = dict(params)
+        self.message = {}
+        self.message["events"] = []
+        self.message["events"].append({})
+        self.message["events"][0]["message"] = {}
+        self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
+        self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
+        self.message["events"][0]["message"]["room"] = params.get("team_domain")
+
+
+    def read_http_post(self, method=None, user_agent=None, http_post_body=None):
         if self.body is None and method == 'POST':
             self.body = http_post_body
+
+            if type(user_agent) is str and user_agent.find("Slackbot") != -1:
+                self.is_slack = True
+                return self.parse_slack_outgoing_webhooks(self.body)
+
             try:
                 self.message = json.loads(self.body)
             except Exception:
                 if self.debug:
                     self.httpheader()
+                    print "body:", http_post_body
+                    print "user_agent: ", user_agent
                     print traceback.format_exc()
                     sys.exit(0)
                 else:
                     self.httpheader()
-                    print "json decode error:", self.body
+                    sys.stderr.write("json decode error:", self.body, http_post_body)
                     sys.exit(0)
 
     def acl(self, acl, ip_address):
@@ -1129,8 +1150,13 @@ class NotSubculture(object):
             return self.acl(acl, remote_addr)
         return False
 
+
     def response(self):
-        self.httpheader()
+        if self.is_slack:
+            self.httpheader(header="Content-Type: application/json; charset=UTF-8\n")
+        else:
+            self.httpheader()
+
         if os.path.exists("quiet") or type(self.message) is not dict:
             return
 
@@ -1156,6 +1182,7 @@ class NotSubculture(object):
         }
 
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
+        denied_bot_list = ['slackbot', ]
 
         # 自発的発言
         if self.message.get('events') is None and sub.doge_is_away is not True:
@@ -1171,7 +1198,7 @@ class NotSubculture(object):
                 print "401 Unauthorized"
             return
 
-        if self.enable_acl is True and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
+        if self.enable_acl is True and self.is_slack is False and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
             print "403 Forbidden"
             return
 
@@ -1187,6 +1214,10 @@ class NotSubculture(object):
                 text = n['message']['text']
                 if n['message']['room'] not in allowed_channel_list:
                     raise UserWarning()
+
+                # anti pang-pong
+                if speaker in denied_bot_list:
+                    return
 
                 for dict_k, dict_res in self.dic.iteritems():
                     pattern = re.compile(dict_k)
@@ -1220,11 +1251,22 @@ class NotSubculture(object):
                             yield e.msg
 
 
+
+def say(no, slack=False, lingr=True):
+    if slack:
+        j = {}
+        resp = ''.join(no.response())
+        j["text"] = resp
+        print json.dumps(j)
+    if lingr:
+        for r in no.response():
+            print r
+
+
 if __name__ == '__main__':
     sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
     no = NotSubculture()
     post_body = sys.stdin.read()
-    no.read_http_post(os.environ.get('REQUEST_METHOD'), post_body)
-    for r in no.response():
-        print r
+    no.read_http_post(method=os.environ.get('REQUEST_METHOD'), user_agent=os.environ.get('HTTP_USER_AGENT'), http_post_body=post_body)
+    say(no, slack=no.is_slack)
