@@ -1017,9 +1017,9 @@ class SubculturePushbullet(Subculture):
         users_sent = []
         users_fail = []
         for b in bullets:
+            try:
             pb = pushbullet.Pushbullet(b.get('key'))
             result = pb.push_note('Doge', b.get('body'))
-            try:
                 if result.get("created") > 1:
                     users_sent.append(b.get('user'))
             except:
