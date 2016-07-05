@@ -1006,16 +1006,24 @@ class SubculturePushbullet(Subculture):
 
         for user in users:
             for bullet in self.settings:
-                for keyword in bullet.get("keyword"):
-                    if user == keyword:
-                        body = '%s: %s' % (speaker, text)
-                        bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
+                try:
+                    for keyword in bullet.get("keyword"):
+                        if user == keyword:
+                            body = '%s: %s' % (speaker, text)
+                            bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
+                except:
+                    pass
         return bullets
 
 
     def send_bullets(self, bullets):
         users_sent = []
         users_fail = []
+        message = None
+
+        if type(bullets) is not list:
+            return None
+
         for b in bullets:
             try:
                 pb = pushbullet.Pushbullet(b.get('key'))
@@ -1030,7 +1038,6 @@ class SubculturePushbullet(Subculture):
         if len(users_fail) > 0:
             message = 'No: %s' % (', '.join(users_fail))
         return message
-
 
     def response(self):
         mention_list = self.get_mention_users(text=self.text, speaker=self.speaker)
