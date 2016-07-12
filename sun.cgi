@@ -1271,5 +1271,6 @@ if __name__ == '__main__':
     no = NotSubculture()
     post_body = sys.stdin.read()
     no.read_http_post(os.environ.get('REQUEST_METHOD'), post_body)
-    for r in no.response():
-        print(r)
+
+    # 最後に改行しない
+    print("\n".join(tuple(no.response())).rstrip("\n"), end='')
