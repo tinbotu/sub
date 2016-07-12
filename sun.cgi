@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
+from __future__ import print_function
+
 import codecs
 import hashlib
 import inspect
@@ -145,7 +147,7 @@ class Subculture(object):
             return
 
         if self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
-            print "301 Flood"
+            print("301 Flood")
             return
 
         payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
@@ -1131,7 +1133,7 @@ class NotSubculture(object):
 
     def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
         if self.httpheaderHasAlreadySent is False:
-            print header
+            print(header)
             self.httpheaderHasAlreadySent = True
 
     def read_http_post(self, method, http_post_body):
@@ -1142,11 +1144,11 @@ class NotSubculture(object):
             except Exception:
                 if self.debug:
                     self.httpheader()
-                    print traceback.format_exc()
+                    print(traceback.format_exc())
                     sys.exit(0)
                 else:
                     self.httpheader()
-                    print "json decode error:", self.body
+                    print("json decode error:" + self.body)
                     sys.exit(0)
 
     def acl(self, acl, ip_address):
@@ -1211,11 +1213,11 @@ class NotSubculture(object):
                     pass
                 sub.say(self.message.get('body'), self.message.get('name'), t)
             else:
-                print "401 Unauthorized"
+                print("401 Unauthorized")
             return
 
         if self.enable_acl is True and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
-            print "403 Forbidden"
+            print("403 Forbidden")
             return
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
@@ -1270,4 +1272,4 @@ if __name__ == '__main__':
     post_body = sys.stdin.read()
     no.read_http_post(os.environ.get('REQUEST_METHOD'), post_body)
     for r in no.response():
-        print r
+        print(r)
