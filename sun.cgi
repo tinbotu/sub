@@ -985,6 +985,17 @@ class SubcultureKimoti(Subculture):
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
 
+class SubcultureCMD(Subculture):
+
+    def response(self):
+        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
+        random.seed()
+        return cmd[random.randrange(0, len(cmd))]
+
 class SubculturePushbullet(Subculture):
 
     settings_filename = 'pushbullet.yaml'
@@ -1126,7 +1137,7 @@ class NotSubculture(object):
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            '@': SubculturePushbullet,
            u'^NHR$': 'うへえへへえぁぁぁあぁ',
-           u'^CMD$': '( *ﾟ▽ﾟ*  っ)З',
+           u'^CMD$': SubcultureCMD,
            }
 
     def __init__(self):
