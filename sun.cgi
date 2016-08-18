@@ -1136,8 +1136,9 @@ class NotSubculture(object):
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            '@': SubculturePushbullet,
-           u'^NHR$': 'うへえへへえぁぁぁあぁ',
+           u'^NHR$': u'うへえへへえぁぁぁあぁ',
            u'^CMD$': SubcultureCMD,
+           u'^(やった|ヤッタ)[ー〜]*[!！]*$': 'http://marticleimage.nicoblomaga.jp/image/279/2016/f/c/fc17179f729a7083e3533e2856f64f2666cd747c1471470060.gif',
            }
 
     def __init__(self):
