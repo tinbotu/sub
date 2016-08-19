@@ -1137,6 +1137,7 @@ class NotSubculture(object):
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            '@': SubculturePushbullet,
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
+           u'^TMD': u'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg',
            u'^CMD$': SubcultureCMD,
            u'^(やった|ヤッタ)[ー〜]*[!！]*$': 'http://marticleimage.nicoblomaga.jp/image/279/2016/f/c/fc17179f729a7083e3533e2856f64f2666cd747c1471470060.gif',
            }
