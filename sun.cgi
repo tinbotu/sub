@@ -301,7 +301,7 @@ class SubcultureAtencion(Subculture):
         self.conn.expire("inu_internal_soku", 60*20)
 
         random.seed()
-        if random.randrange(1, 200) < inu_soku:
+        if random.randrange(1, 500) < inu_soku:
             # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
             return u'おっ'
 
