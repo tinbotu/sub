@@ -895,7 +895,7 @@ class SubcultureKCzuma(Subculture):
         random.seed()
 
         res = None
-        if random.randrange(0, 500) < self.doge_soku():
+        if random.randrange(0, 2000) < self.doge_soku():
             if random.randrange(0, 100) > 0:
                 res = random.choice([u'K', u'K', u'Y', u'N', u'E', u'P', u'D', u'H', u'U', u'T', u'S', u'O', u'V', ]) + u'C'
             else:
