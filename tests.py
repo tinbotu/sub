@@ -436,6 +436,10 @@ class TestSubcultureTitleExtract(unittest.TestCase):
     def setUp(self):
         self.s = SubcultureTitleExtract()
 
+    def test_has_customdata_attr(self):
+        self.s.text = 'http://www.gizmodo.jp/2016/09/billionaire-bought-dog-eight-iphone7.html'
+        self.assertEqual(self.s.response(), u'Title: 中国の富豪、犬のためにiPhone 7を8個買う｜ギズモード・ジャパン')
+
     def test_cp932(self):
         self.s.text = 'http://nomenclator.la.coocan.jp/perl/shiftjis.htm'
         self.assertEqual(self.s.response(), u'Title: Shift-JISテキストを正しく扱う')
