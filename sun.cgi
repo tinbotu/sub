@@ -587,7 +587,13 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
                 if self.target_meta_property == attrs.get("property"):
                     self._content += attrs.get("content")
             else:
-                self.reading = True
+                if attrs == {}:
+                    self.reading = True
+                else:
+                    # <hoge data-* は読まない
+                    for k in attrs:
+                        if not "data-" in k:
+                            self.reading = True
 
 
     def handle_data(self, data):
@@ -993,6 +999,7 @@ class SubcultureCMD(Subculture):
 
         random.seed()
         return cmd[random.randrange(0, len(cmd))]
+
 
 class SubculturePushbullet(Subculture):
 
