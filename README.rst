@@ -1,5 +1,5 @@
 =================
-NotSubKulture bot
+NotSubculture bot
 =================
 
 .. image:: https://api.travis-ci.org/tinbotu/sub.svg
