@@ -331,7 +331,12 @@ class SubcultureSelfUpdate(Subculture):
             return '?'
         else:
             os.system("make update_packages 1>deploy.log 2>&1")
-            return u'ニャーン %s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
+            url = u'https://github.com/tinbotu/sub/commit/%s' % (repo.head.commit.hexsha,)
+            msg = u'ニャーン %s %s %s\n%s' % (repo.head.commit.hexsha,
+                                                  repo.head.commit.committer,
+                                                  repo.head.commit.message,
+                                                  url)
+            return msg
 
 
 class SubcultureShowDogeSoku(Subculture):
