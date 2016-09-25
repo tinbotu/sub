@@ -632,7 +632,9 @@ class SubcultureTitleExtract(Subculture):
         h = None
         prefix = ''
         postfix = ''
-        if url is not None and 'instagram.com' in url:
+        if url is not None and \
+            ('instagram.com' in url or
+             'flickr.com/photos/' in url):
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
         elif url is not None and \
             ('photos.google.com' in url or
