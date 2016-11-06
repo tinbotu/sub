@@ -303,7 +303,7 @@ class SubcultureAtencion(Subculture):
         random.seed()
         if random.randrange(1, 500) < inu_soku:
             # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
-            return u'おっ'
+            return u'オッ'
 
 
 class SubcultureDogeDetailStatus(Subculture):
