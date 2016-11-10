@@ -30,6 +30,9 @@ import yaml
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 
 class Subculture(object):
     """ abstract """
@@ -98,7 +101,7 @@ class Subculture(object):
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = requests.get(url, headers=headers, params=params)
+            r = requests.get(url, headers=headers, params=params, verify=False)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
