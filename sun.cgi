@@ -218,7 +218,7 @@ class SubcultureAtencion(Subculture):
         u'^お前': 30,
         'main': 10,
         'bot': 10,
-        u'メイン': 40,
+        u'メイン': 10,
         u'サブ': 4,
         'doge': 50,
     }
@@ -231,6 +231,7 @@ class SubcultureAtencion(Subculture):
         u'はい$': 10,
         u'はいじゃないが': -20,
         u'おっ': 20,
+        u'オッ': 20,
         u'いいですね': 10,
         u'寿司': 5,
         u'[分|わ]か[らりるっん]': 20,
