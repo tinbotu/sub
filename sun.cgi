@@ -989,6 +989,7 @@ class SubcultureKimoti(Subculture):
             "http://farm6.static.flickr.com/5229/5757984661_c03a82b843.jpg",
             "http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg",
             "https://embed.gyazo.com/5f2af84410714fcd0721c3689ae4e4b0.jpg",
+            "https://i.gyazo.com/828c0395a0ac596fd33e7a3da86f4c1a.jpg",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
