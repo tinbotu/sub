@@ -97,13 +97,16 @@ class Subculture(object):
         else:
             self.conn.delete('doge_away')
 
-    def fetch(self, url, params=None, guess_encoding=False):
+    def fetch(self, url, params=None, guess_encoding=False, payload=None):
         self.content = None
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = requests.get(url, headers=headers, params=params, verify=False)
+            if payload:
+                r = requests.post(url, headers=headers, params=params, data=payload, verify=False)
+            else:
+                r = requests.get(url, headers=headers, params=params, verify=False)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
@@ -159,8 +162,20 @@ class Subculture(object):
 
         self.fetch('http://lingr.com/api/room/say', payload)
 
+
     def say_slack(self, message, anti_double_sec=15, anti_double=True):
-        pass
+        if self.api_secret is None:
+            self.read_bot_api()
+
+        if self.api_secret.get("slack_webhook_url") is None:
+            return
+
+        payload = {}
+        payload["text"] = message
+        payload["channel"] = "#general"
+        payload["username"] = "main"
+        self.fetch(self.api_secret.get("slack_webhook_url"), payload=json.dumps(payload))
+
 
     def doge_soku(self):
         return float(max(self.conn.get('inu_soku'), 1))
