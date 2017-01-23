@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
+from __future__ import print_function
+
 import codecs
 import hashlib
 import inspect
@@ -13,6 +15,7 @@ import random
 import re
 import sys
 import time
+import datetime
 import traceback
 import urlparse
 
@@ -28,6 +31,9 @@ import yaml
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 class Subculture(object):
@@ -97,7 +103,7 @@ class Subculture(object):
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = requests.get(url, headers=headers, params=params)
+            r = requests.get(url, headers=headers, params=params, verify=False)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
@@ -136,7 +142,7 @@ class Subculture(object):
             'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
         }
 
-    def say(self, message, speaker='doge', anti_double_sec=15):
+    def say_lingr(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
         if self.api_secret is None:
             self.read_bot_api()
 
@@ -145,13 +151,16 @@ class Subculture(object):
            self.api_secret.get("room") is None:
             return
 
-        if self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
-            print "301 Flood"
+        if anti_double and self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
+            print("301 Flood")
             return
 
         payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
 
         self.fetch('http://lingr.com/api/room/say', payload)
+
+    def say_slack(self, message, anti_double_sec=15, anti_double=True):
+        pass
 
     def doge_soku(self):
         return float(max(self.conn.get('inu_soku'), 1))
@@ -217,7 +226,7 @@ class SubcultureAtencion(Subculture):
         u'^お前': 30,
         'main': 10,
         'bot': 10,
-        u'メイン': 40,
+        u'メイン': 10,
         u'サブ': 4,
         'doge': 50,
     }
@@ -230,6 +239,7 @@ class SubcultureAtencion(Subculture):
         u'はい$': 10,
         u'はいじゃないが': -20,
         u'おっ': 20,
+        u'オッ': 20,
         u'いいですね': 10,
         u'寿司': 5,
         u'[分|わ]か[らりるっん]': 20,
@@ -300,9 +310,9 @@ class SubcultureAtencion(Subculture):
         self.conn.expire("inu_internal_soku", 60*20)
 
         random.seed()
-        if random.randrange(1, 200) < inu_soku:
+        if random.randrange(1, 500) < inu_soku:
             # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
-            return u'おっ'
+            return u'オッ'
 
 
 class SubcultureDogeDetailStatus(Subculture):
@@ -330,7 +340,12 @@ class SubcultureSelfUpdate(Subculture):
             return '?'
         else:
             os.system("make update_packages 1>deploy.log 2>&1")
-            return u'ニャーン %s %s %s' % (repo.head.commit.hexsha, repo.head.commit.committer, repo.head.commit.message)
+            url = u'https://github.com/tinbotu/sub/commit/%s' % (repo.head.commit.hexsha,)
+            msg = u'ニャーン %s %s %s\n%s' % (repo.head.commit.hexsha,
+                                                  repo.head.commit.committer,
+                                                  repo.head.commit.message,
+                                                  url)
+            return msg
 
 
 class SubcultureShowDogeSoku(Subculture):
@@ -418,7 +433,7 @@ class SubcultureSilent(Subculture):
             'wordclass2': '一般',
         },
         {
-            'word': 'こと',
+            # 'word': 'こと',
             'wordclass': '名詞',
             'wordclass1': '非自立',
         },
@@ -514,6 +529,20 @@ class SubcultureKnowerLevelGet(Subculture):
         return res
 
 
+class SubcultureRetirementLevelGet(Subculture):
+
+    def response(self):
+        speakers_blacklist = ["knower-tests", "knower-None", ]
+        res = ''
+        speakers = self.conn.keys("retirement-*")
+
+        for s in speakers:
+            if s not in speakers_blacklist:
+                res += "%s: %s\n" % (s, self.conn.get(s))
+
+        return res
+
+
 class SubcultureTwitterScraper(Subculture):
     pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
     url_re = "(https://twitter.com/([0-9A-Za-z_/.]+))"
@@ -556,7 +585,6 @@ class SubcultureGyazoScraper(Subculture):
 
 class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
     reading = False
-    #target_meta_property = None
 
     def __init__(self, target_tag, target_meta_property=None):
         HTMLParser.HTMLParser.__init__(self)
@@ -573,7 +601,13 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
                 if self.target_meta_property == attrs.get("property"):
                     self._content += attrs.get("content")
             else:
-                self.reading = True
+                if attrs == {}:
+                    self.reading = True
+                else:
+                    # <hoge data-* は読まない
+                    for k in attrs:
+                        if not "data-" in k:
+                            self.reading = True
 
 
     def handle_data(self, data):
@@ -601,20 +635,17 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
 
 class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
-    """
-    todo: formatting twitter
-    """
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def get_element_title(self, url=None):
         h = None
         prefix = ''
         postfix = ''
-        if url is not None and 'instagram.com' in url:
+        og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
+        og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', ]
+        if url is not None and True in [u in url for u in og_image]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
-        elif url is not None and \
-            ('photos.google.com' in url or
-             'goo.gl/photos' in url):
+        elif url is not None and True in [u in url for u in og_image_postfix_jpg]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
             postfix = '#.jpg'
         else:
@@ -736,11 +767,9 @@ class SubcultureOmochi(Subculture):
     """ omochi """
     def response(self):
         omochi = [
-            'http://limg3.ask.fm/assets/318/643/185/thumb/15.png',
             'http://icondecotter.jp/data/11787/1253637750/3da1de4437114e091d35483a03824989.png',
             'https://pbs.twimg.com/media/BcPKzauCQAEN7oR.png',
             'http://www.ttrinity.jp/_img/product/21/21201/1489293/1689893/4764618/product_img_f_4764618.jpg',
-            'http://zigg.jp/wp-content/uploads/2014/05/00_Icon.png',
             'http://i.gyazo.com/5f7f28f4794fa6023afa3a0cab0c3ac0.png',
             'http://i.gyazo.com/5f7f28f4794fa6023afa3a0cab0c3ac0.png',
             'http://img-cdn.jg.jugem.jp/f29/2946929/20140106_445358.jpg',
@@ -756,7 +785,14 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/Bzq1yhwCcAE8jRn.jpg',
             'http://ecx.images-amazon.com/images/I/51VDBqtGQ4L.jpg',
             'http://prtimes.jp/i/9289/15/resize/d9289-15-340332-5.jpg',
-            'http://www.sapporo6h.com/wordpress/event/files/10f03541b3875901c5fbbd8b529ff7d5-724x1024.jpg',
+            'https://scontent.cdninstagram.com/t51.2885-15/s750x750/sh0.08/e35/13151165_618195378329446_1327560183_n.jpg',
+            'https://scontent.cdninstagram.com/t51.2885-15/e35/13102329_383470485157026_914500049_n.jpg',
+            'https://pbs.twimg.com/media/ChQrPrXU0AEplOK.jpg',
+            'https://pbs.twimg.com/media/Ch4ntISVIAAUzGn.jpg',
+            'https://pbs.twimg.com/media/CjgsKqlUoAACZL_.jpg',
+            'https://pbs.twimg.com/media/BU_9vq6CAAAYv9x.jpg',
+            'https://pbs.twimg.com/media/BWIiHSkCcAAxKZT.jpg',
+            'https://pbs.twimg.com/media/BXZh1bvCMAEDqxY.jpg',
         ]
 
         # dont response within 30 seconds
@@ -870,6 +906,20 @@ class SubcultureHitozuma(Subculture):
         return res
 
 
+class SubcultureKCzuma(Subculture):
+    """ KCzuma """
+    def response(self):
+        random.seed()
+
+        res = None
+        if random.randrange(0, 2000) < self.doge_soku():
+            if random.randrange(0, 100) > 0:
+                res = random.choice([u'K', u'K', u'Y', u'N', u'E', u'P', u'D', u'H', u'U', u'T', u'S', u'O', u'V', ]) + u'C'
+            else:
+                res = u'KC'
+        return res
+
+
 class AnotherIsMoreKnowerThanMe(Subculture):
 
     def response(self):
@@ -942,6 +992,9 @@ class SubcultureKimoti(Subculture):
             "http://i.gyazo.com/a05b7cf820c103ae9daf16e45be6ef70.jpg",
             "https://i.gyazo.com/9952fe3b70c428989f83a1a9b59856c4.jpg",
             "http://farm6.static.flickr.com/5229/5757984661_c03a82b843.jpg",
+            "http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg",
+            "https://embed.gyazo.com/5f2af84410714fcd0721c3689ae4e4b0.jpg",
+            "https://i.gyazo.com/828c0395a0ac596fd33e7a3da86f4c1a.jpg",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
@@ -949,6 +1002,18 @@ class SubcultureKimoti(Subculture):
 
         random.seed()
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
+
+
+class SubcultureCMD(Subculture):
+
+    def response(self):
+        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
+        random.seed()
+        return cmd[random.randrange(0, len(cmd))]
 
 
 class SubculturePushbullet(Subculture):
@@ -974,20 +1039,28 @@ class SubculturePushbullet(Subculture):
 
         for user in users:
             for bullet in self.settings:
-                for keyword in bullet.get("keyword"):
-                    if user == keyword:
-                        body = '%s: %s' % (speaker, text)
-                        bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
+                try:
+                    for keyword in bullet.get("keyword"):
+                        if user == keyword:
+                            body = '%s: %s' % (speaker, text)
+                            bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
+                except:
+                    pass
         return bullets
 
 
     def send_bullets(self, bullets):
         users_sent = []
         users_fail = []
+        message = None
+
+        if type(bullets) is not list:
+            return None
+
         for b in bullets:
-            pb = pushbullet.Pushbullet(b.get('key'))
-            result = pb.push_note('Doge', b.get('body'))
             try:
+                pb = pushbullet.Pushbullet(b.get('key'))
+                result = pb.push_note('Doge', b.get('body'))
                 if result.get("created") > 1:
                     users_sent.append(b.get('user'))
             except:
@@ -998,7 +1071,6 @@ class SubculturePushbullet(Subculture):
         if len(users_fail) > 0:
             message = 'No: %s' % (', '.join(users_fail))
         return message
-
 
     def response(self):
         mention_list = self.get_mention_users(text=self.text, speaker=self.speaker)
@@ -1014,6 +1086,7 @@ class NotSubculture(object):
     texts = None
     enable_acl = True
     is_slack = False
+    sub = None
 
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧/d',
@@ -1053,16 +1126,18 @@ class NotSubculture(object):
            # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
            u'オレオ': u'オレオ',
            u'(?:社会|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転職|社畜|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退)': SubcultureRetirementLevelUp,
+           u'^他人の社会': SubcultureRetirementLevelGet,
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
            'https?': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
-           u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
+           # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',
            u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
            # u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
            '.+': SubcultureHitozuma,
+           '..+': SubcultureKCzuma,
            '^(?!.*http).*$': SubcultureNogata,  # except http
            '.*': SubcultureAtencion,  # 同じキーはだめ
            u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
@@ -1083,6 +1158,10 @@ class NotSubculture(object):
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            '@': SubculturePushbullet,
+           u'^NHR$': u'うへえへへえぁぁぁあぁ',
+           u'^TMD$': u'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg',
+           u'^CMD$': SubcultureCMD,
+           u'^(やった|ヤッタ)[ー〜]*[!！]*$': 'http://marticleimage.nicoblomaga.jp/image/279/2016/f/c/fc17179f729a7083e3533e2856f64f2666cd747c1471470060.gif',
            }
 
     def __init__(self):
@@ -1090,19 +1169,26 @@ class NotSubculture(object):
 
     def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
         if self.httpheaderHasAlreadySent is False:
-            print header
+            print(header)
             self.httpheaderHasAlreadySent = True
 
     def parse_slack_outgoing_webhooks(self, http_body):
         params = urlparse.parse_qsl(http_body)
         params = dict(params)
+
+        """ generate a *pseudo* message of Lingr """
         self.message = {}
         self.message["events"] = []
         self.message["events"].append({})
         self.message["events"][0]["message"] = {}
+        self.message["events"][0]["message"]["id"] = -1
+        self.message["events"][0]["message"]["type"] = "user"
         self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
+        self.message["events"][0]["message"]["nickname"] = params.get("user_name")
         self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
         self.message["events"][0]["message"]["room"] = params.get("team_domain")
+        d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
+        self.message["events"][0]["message"]["timestamp"] = d + 'Z'
 
 
     def read_http_post(self, method=None, user_agent=None, http_post_body=None):
@@ -1118,13 +1204,13 @@ class NotSubculture(object):
             except Exception:
                 if self.debug:
                     self.httpheader()
-                    print "body:", http_post_body
-                    print "user_agent: ", user_agent
-                    print traceback.format_exc()
+                    print("body:" + http_post_body)
+                    print("user_agent: " + user_agent)
+                    print(traceback.format_exc())
                     sys.exit(0)
                 else:
                     self.httpheader()
-                    sys.stderr.write("json decode error:", self.body, http_post_body)
+                    print("json decode error:" + self.body)
                     sys.exit(0)
 
     def acl(self, acl, ip_address):
@@ -1161,6 +1247,7 @@ class NotSubculture(object):
             return
 
         sub = Subculture()
+        self.sub = sub
         sub.check_doge_away()
 
         response_modifier = {
@@ -1193,13 +1280,13 @@ class NotSubculture(object):
                     t = int(max(self.message.get('anti_double_sec'), token.get("antidouble")))
                 except:
                     pass
-                sub.say(self.message.get('body'), self.message.get('name'), t)
+                sub.say_lingr(self.message.get('body'), self.message.get('name'), t)
             else:
-                print "401 Unauthorized"
+                print("401 Unauthorized")
             return
 
         if self.enable_acl is True and self.is_slack is False and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
-            print "403 Forbidden"
+            print("403 Forbidden")
             return
 
         response_modifier_re = re.compile(r'(.+?)\/([a-zA-Z]+)$')
@@ -1250,17 +1337,18 @@ class NotSubculture(object):
                         except DogeAwayMessage as e:
                             yield e.msg
 
+    def say(self, slack=False, lingr=True):
+        resp = "\n".join(tuple(self.response())).rstrip("\n")
+        if slack:
+            j = {}
+            j["text"] = resp
+            print(json.dumps(j))
+            # Lingr にも話す
+            self.sub.say_lingr(message=resp, anti_double=False)
 
-
-def say(no, slack=False, lingr=True):
-    if slack:
-        j = {}
-        resp = ''.join(no.response())
-        j["text"] = resp
-        print json.dumps(j)
-    if lingr:
-        for r in no.response():
-            print r
+        if lingr:
+            print(resp, end='')
+            self.sub.say_slack(message=resp, anti_double=False)
 
 
 if __name__ == '__main__':
@@ -1269,4 +1357,4 @@ if __name__ == '__main__':
     no = NotSubculture()
     post_body = sys.stdin.read()
     no.read_http_post(method=os.environ.get('REQUEST_METHOD'), user_agent=os.environ.get('HTTP_USER_AGENT'), http_post_body=post_body)
-    say(no, slack=no.is_slack)
+    no.say(slack=no.is_slack)
