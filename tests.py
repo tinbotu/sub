@@ -367,16 +367,16 @@ class TestNotSubculture(unittest.TestCase):
         pass
 
     def test_read_http_post(self):
-        self.n.read_http_post('POST', self.json_official_sample)
+        self.n.read_http_post(method='POST', http_post_body=self.json_official_sample)
         self.assertEqual(self.json_official_sample, self.n.body)
 
     def test_gyazo(self):
-        self.n.read_http_post('POST', self.json_gyazo)
+        self.n.read_http_post(method='POST', http_post_body=self.json_gyazo)
         for r in self.n.response():  # I dont care this comes first or not, one or more
             self.assertEqual(r, 'https://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.jpg')
 
     def test_dict_subculture(self):
-        self.n.read_http_post('POST', self.json_subculture)
+        self.n.read_http_post(method='POST', http_post_body=self.json_subculture)
         for r in self.n.response():
             self.assertEqual(r, 'No')
 
