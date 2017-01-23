@@ -15,7 +15,9 @@ import random
 import re
 import sys
 import time
+import datetime
 import traceback
+import urlparse
 
 import cchardet
 import git
@@ -95,13 +97,16 @@ class Subculture(object):
         else:
             self.conn.delete('doge_away')
 
-    def fetch(self, url, params=None, guess_encoding=False):
+    def fetch(self, url, params=None, guess_encoding=False, payload=None):
         self.content = None
         headers = {
             "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
         }
         try:
-            r = requests.get(url, headers=headers, params=params, verify=False)
+            if payload:
+                r = requests.post(url, headers=headers, params=params, data=payload, verify=False)
+            else:
+                r = requests.get(url, headers=headers, params=params, verify=False)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
@@ -140,7 +145,7 @@ class Subculture(object):
             'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
         }
 
-    def say(self, message, speaker='doge', anti_double_sec=15):
+    def say_lingr(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
         if self.api_secret is None:
             self.read_bot_api()
 
@@ -149,13 +154,28 @@ class Subculture(object):
            self.api_secret.get("room") is None:
             return
 
-        if self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
+        if anti_double and self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
             print("301 Flood")
             return
 
         payload = self.build_say_payload(self.api_secret.get("room"), self.api_secret.get("bot_id"), message, self.api_secret.get("bot_secret"))
 
         self.fetch('http://lingr.com/api/room/say', payload)
+
+
+    def say_slack(self, message, anti_double_sec=15, anti_double=True):
+        if self.api_secret is None:
+            self.read_bot_api()
+
+        if self.api_secret.get("slack_webhook_url") is None:
+            return
+
+        payload = {}
+        payload["text"] = message
+        payload["channel"] = "#general"
+        payload["username"] = "main"
+        self.fetch(self.api_secret.get("slack_webhook_url"), payload=json.dumps(payload))
+
 
     def doge_soku(self):
         return float(max(self.conn.get('inu_soku'), 1))
@@ -1080,6 +1100,8 @@ class NotSubculture(object):
     message = None
     texts = None
     enable_acl = True
+    is_slack = False
+    sub = None
 
     dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧/d',
@@ -1165,9 +1187,33 @@ class NotSubculture(object):
             print(header)
             self.httpheaderHasAlreadySent = True
 
-    def read_http_post(self, method, http_post_body):
+    def parse_slack_outgoing_webhooks(self, http_body):
+        params = urlparse.parse_qsl(http_body)
+        params = dict(params)
+
+        """ generate a *pseudo* message of Lingr """
+        self.message = {}
+        self.message["events"] = []
+        self.message["events"].append({})
+        self.message["events"][0]["message"] = {}
+        self.message["events"][0]["message"]["id"] = -1
+        self.message["events"][0]["message"]["type"] = "user"
+        self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
+        self.message["events"][0]["message"]["nickname"] = params.get("user_name")
+        self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
+        self.message["events"][0]["message"]["room"] = params.get("team_domain")
+        d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
+        self.message["events"][0]["message"]["timestamp"] = d + 'Z'
+
+
+    def read_http_post(self, method=None, user_agent=None, http_post_body=None):
         if self.body is None and method == 'POST':
             self.body = http_post_body
+
+            if type(user_agent) is str and user_agent.find("Slackbot") != -1:
+                self.is_slack = True
+                return self.parse_slack_outgoing_webhooks(self.body)
+
             try:
                 self.message = json.loads(self.body)
             except Exception:
@@ -1179,6 +1225,8 @@ class NotSubculture(object):
                     self.httpheader()
                     print("json decode error:" + self.body)
                     sys.exit(0)
+        else:
+            raise
 
     def acl(self, acl, ip_address):
         if type(acl) is not list:
@@ -1203,12 +1251,18 @@ class NotSubculture(object):
             return self.acl(acl, remote_addr)
         return False
 
+
     def response(self):
-        self.httpheader()
+        if self.is_slack:
+            self.httpheader(header="Content-Type: application/json; charset=UTF-8\n")
+        else:
+            self.httpheader()
+
         if os.path.exists("quiet") or type(self.message) is not dict:
             return
 
         sub = Subculture()
+        self.sub = sub
         sub.check_doge_away()
 
         response_modifier = {
@@ -1230,6 +1284,7 @@ class NotSubculture(object):
         }
 
         allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
+        denied_bot_list = ['slackbot', ]
 
         # 自発的発言
         if self.message.get('events') is None and sub.doge_is_away is not True:
@@ -1240,12 +1295,12 @@ class NotSubculture(object):
                     t = int(max(self.message.get('anti_double_sec'), token.get("antidouble")))
                 except:
                     pass
-                sub.say(self.message.get('body'), self.message.get('name'), t)
+                sub.say_lingr(self.message.get('body'), self.message.get('name'), t)
             else:
                 print("401 Unauthorized")
             return
 
-        if self.enable_acl is True and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
+        if self.enable_acl is True and self.is_slack is False and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
             print("403 Forbidden")
             return
 
@@ -1261,6 +1316,10 @@ class NotSubculture(object):
                 text = n['message']['text']
                 if n['message']['room'] not in allowed_channel_list:
                     raise UserWarning()
+
+                # anti pang-pong
+                if speaker in denied_bot_list:
+                    return
 
                 for dict_k, dict_res in self.dic.iteritems():
                     pattern = re.compile(dict_k)
@@ -1293,13 +1352,24 @@ class NotSubculture(object):
                         except DogeAwayMessage as e:
                             yield e.msg
 
+    def say(self, slack=False, lingr=True):
+        resp = "\n".join(tuple(self.response())).rstrip("\n")
+        if slack:
+            j = {}
+            j["text"] = resp
+            print(json.dumps(j))
+            # Lingr にも話す
+            self.sub.say_lingr(message=resp, anti_double=False)
+
+        if lingr:
+            print(resp, end='')
+            self.sub.say_slack(message=resp, anti_double=False)
+
 
 if __name__ == '__main__':
     sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 
     no = NotSubculture()
     post_body = sys.stdin.read()
-    no.read_http_post(os.environ.get('REQUEST_METHOD'), post_body)
-
-    # 最後に改行しない
-    print("\n".join(tuple(no.response())).rstrip("\n"), end='')
+    no.read_http_post(method=os.environ.get('REQUEST_METHOD'), user_agent=os.environ.get('HTTP_USER_AGENT'), http_post_body=post_body)
+    no.say(slack=no.is_slack)
