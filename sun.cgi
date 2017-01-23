@@ -1361,6 +1361,9 @@ class NotSubculture(object):
             # Lingr にも話す
             self.sub.say_lingr(message=resp, anti_double=False)
 
+            # Lingr and Slack なんてことあるのか?
+            lingr = False
+
         if lingr:
             print(resp, end='')
             self.sub.say_slack(message=resp, anti_double=False)
