@@ -185,25 +185,25 @@ class TestSubcultureStone(unittest.TestCase):
             self.assertRegexpMatches(res, u'(西山石|https?://)')
 
 
-class TestSubcultureHitozuma(unittest.TestCase):
-
-    def setUp(self):
-        self.r = SubcultureHitozuma('', 'tests')
-
-    def test_response(self):
-        y = False
-        n = False
-
-        for i in xrange(100 * 100 * 10):
-            res = self.r.response()
-            if res == u'はい':
-                y = True
-            elif res == u'いいえ':
-                n = True
-
-        self.assertTrue(y)
-        self.assertTrue(n)
-
+#class TestSubcultureHitozuma(unittest.TestCase):
+#
+#    def setUp(self):
+#        self.r = SubcultureHitozuma('', 'tests')
+#
+#    def test_response(self):
+#        y = False
+#        n = False
+#
+#        for i in xrange(100 * 100 * 10):
+#            res = self.r.response()
+#            if res == u'はい':
+#                y = True
+#            elif res == u'いいえ':
+#                n = True
+#
+#        self.assertTrue(y)
+#        self.assertTrue(n)
+#
 
 class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
