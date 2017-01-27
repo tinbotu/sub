@@ -266,6 +266,7 @@ class TestSubcultureShowDogeSoku(unittest.TestCase):
 
 class TestSubcultureNogata(unittest.TestCase):
     text = u'姫'
+
     def setUp(self):
         self.nogata = SubcultureNogata(self.text)
         self.nogata.PROBABLY = 200
@@ -354,6 +355,9 @@ class TestNotSubculture(unittest.TestCase):
      "timestamp":"2011-02-12T08:13:51Z",
      "local_id":"pending-UBDH84-1"}}]}"""
 
+    json_slack_outgoing = """token=4kftd7C8DqrPW5u8qIU5SglB&team_id=T005B00XY&team_domain=tinbotu&service_id=2016082717&channel_id=C0000AAA&channel_name=general
+&timestamp=1485517231.000005&user_id=USSLACKBOT&user_name=slackbot&text=%E3%82%AA%E3%83%AC%E3%82%AA&bot_id=B00000DM3&bot_name="""
+
     access_control_list = ['192.168.1.0/29', '172.16.0.0/22', ]
 
     def setUp(self):
@@ -379,6 +383,11 @@ class TestNotSubculture(unittest.TestCase):
         self.n.read_http_post(method='POST', http_post_body=self.json_subculture)
         for r in self.n.response():
             self.assertEqual(r, 'No')
+
+    def test_slack_outgoing(self):
+        self.n.read_http_post(method='POST', http_post_body=self.json_slack_outgoing, user_agent='Slackbot 1.0 (+https://api.slack.com/robots)')
+        for r in self.n.response():
+            self.assertEqual(r, 'オレオ')
 
     def test_acl(self):
         self.assertIs(False, self.n.acl(None, None))
