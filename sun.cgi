@@ -163,11 +163,15 @@ class Subculture(object):
         self.fetch('http://lingr.com/api/room/say', payload)
 
 
-    def say_slack(self, message, anti_double_sec=15, anti_double=True):
+    def say_slack(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
         if self.api_secret is None:
             self.read_bot_api()
 
         if self.api_secret.get("slack_webhook_url") is None:
+            return
+
+        if anti_double and self.check_flood("bot_say_slack_"+speaker, anti_double_sec) is False:
+            print("301 Flood")
             return
 
         payload = {}
@@ -1296,6 +1300,7 @@ class NotSubculture(object):
                 except:
                     pass
                 sub.say_lingr(self.message.get('body'), self.message.get('name'), t)
+                sub.say_slack(self.message.get('body'), self.message.get('name'), t)
             else:
                 print("401 Unauthorized")
             return
