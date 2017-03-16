@@ -163,11 +163,15 @@ class Subculture(object):
         self.fetch('http://lingr.com/api/room/say', payload)
 
 
-    def say_slack(self, message, anti_double_sec=15, anti_double=True):
+    def say_slack(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
         if self.api_secret is None:
             self.read_bot_api()
 
         if self.api_secret.get("slack_webhook_url") is None:
+            return
+
+        if anti_double and self.check_flood("bot_say_slack_"+speaker, anti_double_sec) is False:
+            print("301 Flood")
             return
 
         payload = {}
@@ -1010,6 +1014,9 @@ class SubcultureKimoti(Subculture):
             "http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg",
             "https://embed.gyazo.com/5f2af84410714fcd0721c3689ae4e4b0.jpg",
             "https://i.gyazo.com/828c0395a0ac596fd33e7a3da86f4c1a.jpg",
+            "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
+            "https://i.gyazo.com/b73667b5c31d1a847828b1b17c9e661a.png",
+            "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
@@ -1172,11 +1179,11 @@ class NotSubculture(object):
            u'\(飼い主\)': u'tinbotu',
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
+           u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
            '@': SubculturePushbullet,
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
            u'^TMD$': u'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg',
            u'^CMD$': SubcultureCMD,
-           u'^(やった|ヤッタ)[ー〜]*[!！]*$': 'http://marticleimage.nicoblomaga.jp/image/279/2016/f/c/fc17179f729a7083e3533e2856f64f2666cd747c1471470060.gif',
            }
 
     def __init__(self):
@@ -1296,6 +1303,7 @@ class NotSubculture(object):
                 except:
                     pass
                 sub.say_lingr(self.message.get('body'), self.message.get('name'), t)
+                sub.say_slack(self.message.get('body'), self.message.get('name'), t)
             else:
                 print("401 Unauthorized")
             return
@@ -1360,6 +1368,9 @@ class NotSubculture(object):
             print(json.dumps(j))
             # Lingr にも話す
             self.sub.say_lingr(message=resp, anti_double=False)
+
+            # Lingr and Slack なんてことあるのか?
+            lingr = False
 
         if lingr:
             print(resp, end='')
