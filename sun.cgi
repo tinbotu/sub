@@ -1037,19 +1037,6 @@ class SubcultureCMD(Subculture):
         random.seed()
         return cmd[random.randrange(0, len(cmd))]
 
-class SubcultureTamaHimeno(Subculture):
-
-    def response(self):
-        tama_no_kimoti = [
-            "https://pbs.twimg.com/media/Bn1fR4QIcAAMNAL.jpg",
-        ]
-
-        if self.check_flood(self.speaker, 30) is False:
-            return None
-
-        random.seed()
-        return tama_no_kimoti[random.randrange(0, len(tama_no_kimoti))]
-
 
 class SubculturePushbullet(Subculture):
 
@@ -1197,7 +1184,6 @@ class NotSubculture(object):
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
            u'^TMD$': u'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg',
            u'^CMD$': SubcultureCMD,
-           u'^(やった|ヤッタ)[ー〜]*[!！]*$': 'http://marticleimage.nicoblomaga.jp/image/279/2016/f/c/fc17179f729a7083e3533e2856f64f2666cd747c1471470060.gif',
            }
 
     def __init__(self):
