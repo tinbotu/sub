@@ -1037,9 +1037,10 @@ class SubcultureCMD(Subculture):
         random.seed()
         return cmd[random.randrange(0, len(cmd))]
 
+
 class SubcultureTMD(Subculture):
 
-    def response(seif):
+    def response(self):
 
         shacho = [
             'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecq',
