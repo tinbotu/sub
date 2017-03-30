@@ -1037,6 +1037,35 @@ class SubcultureCMD(Subculture):
         random.seed()
         return cmd[random.randrange(0, len(cmd))]
 
+class SubcultureTMD(Subculture):
+
+    def response(seif):
+
+        shacho = [
+            'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecq',
+            'https://i.gyazo.com/e361c623a76212499a3878e74dc38a07.jpg',
+            'https://i.gyazo.com/627e4a1c291252a2686f1f26d357812c.jpg',
+            'https://i.gyazo.com/cbab315f3251cf36d380e38e89b41243.jpg',
+            'https://i.gyazo.com/92684b965d70167881ebb79406b4684b.jpg',
+            'https://i.gyazo.com/29e5275253a9fe3ee0d224f174a767c4.jpg',
+            'https://i.gyazo.com/21892a43c727ee347c136e2ae2992f26.jpg',
+            'https://i.gyazo.com/7a962ee36e29c6266e2d7e60a63115a3.jpg',
+            'https://i.gyazo.com/ad56d43ea09569c38a5ff661f86f56a0.jpg',
+            'https://i.gyazo.com/b4f71013cb8e33f04d46488ff92ec107.jpg',
+            'https://i.gyazo.com/06cbac04f18b85c7288038b7dec918d4.jpg',
+            'https://i.gyazo.com/c38034e6df985514bca1d7237c76ec67.jpg',
+            'https://i.gyazo.com/95dfbbb88cb7afb44e9d290b551f2af0.jpg',
+            'https://i.gyazo.com/4906911f01ff464eb58fb429556e4076.jpg',
+            'https://i.gyazo.com/a3f6ec22696e9bd52df36247e5147225.jpg',
+        ]
+
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
+        random.seed()
+        return shacho[random.randrange(0, len(shacho))]
+
 
 class SubculturePushbullet(Subculture):
 
@@ -1182,7 +1211,7 @@ class NotSubculture(object):
            u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
            '@': SubculturePushbullet,
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
-           u'^TMD$': u'http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg',
+           u'^TMD$': SubcultureTMD,
            u'^CMD$': SubcultureCMD,
            }
 
