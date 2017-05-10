@@ -1214,6 +1214,7 @@ class NotSubculture(object):
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
            u'^TMD$': SubcultureTMD,
            u'^CMD$': SubcultureCMD,
+           u'^EZ$': u'説明の必要はない',
            }
 
     def __init__(self):
