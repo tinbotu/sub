@@ -1408,15 +1408,15 @@ class NotSubculture(object):
             j["text"] = resp
             print(json.dumps(j))
             # Lingr にも話す
-            if self.passerby_channel:
-                self.sub.say_lingr(message=resp, anti_double=False)
+            self.sub.say_lingr(message=resp, anti_double=False)
 
             # Lingr and Slack なんてことあるのか?
             lingr = False
 
         if lingr:
             print(resp, end='')
-            self.sub.say_slack(message=resp, anti_double=False)
+            if not self.passerby_channel:
+                self.sub.say_slack(message=resp, anti_double=False)
 
 
 if __name__ == '__main__':
