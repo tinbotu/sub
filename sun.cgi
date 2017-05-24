@@ -1361,10 +1361,10 @@ class NotSubculture(object):
 
                 dic = copy.copy(self.dic_base)
                 if n['message']['room'] in allowed_channel_list:
-                    self.passerby_channel = True
+                    self.passerby_channel = False
                     dic.update(self.dic_extend)
                 else:
-                    self.passerby_channel = False
+                    self.passerby_channel = True
 
                 # anti pang-pong
                 if speaker in denied_bot_list:
