@@ -5,6 +5,7 @@
 from __future__ import print_function
 
 import codecs
+import copy
 import hashlib
 import inspect
 import json
@@ -1140,7 +1141,14 @@ class NotSubculture(object):
     is_slack = False
     sub = None
 
-    dic = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
+    dic_base = {
+           'https?://gyazo.com': SubcultureGyazoScraper,
+           'https?': SubcultureTitleExtract,
+           u'https://twitter.com/': SubcultureTwitterScraper,
+           '@': SubculturePushbullet,
+           }
+
+    dic_extend = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
            u'ベンゾ': u'曖昧/d',
            u'(カエリンコ|かえりんこ)': u'いいですよ',
            u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
@@ -1170,7 +1178,6 @@ class NotSubculture(object):
            u'どうすればいいんだ': u'おれはもうだめだ/d',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
            u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん/c',
-           'https?://gyazo.com': SubcultureGyazoScraper,
            u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
            u'^消毒$': SubcultureWaterFall,
            u'^流す$': HateSubculture,
@@ -1181,7 +1188,6 @@ class NotSubculture(object):
            u'^他人の社会': SubcultureRetirementLevelGet,
            u'たい': SubcultureSilent,
            'http': SubcultureGaishutsu,
-           'https?': SubcultureTitleExtract,
            u'うひー': u'うひーとかやめてくれる',
            # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
            # u'弁当': u'便當だろ',
@@ -1202,7 +1208,6 @@ class NotSubculture(object):
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'う(ぜ[ーえ]|ざい)': u'オマエモナー/bC',
            u'^No$': u'No じゃないが/c',
-           u'https://twitter.com/': SubcultureTwitterScraper,
            u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
            u'性欲': u'性欲を持て余す/cC',
            u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
@@ -1210,7 +1215,6 @@ class NotSubculture(object):
            u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
            u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
            u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
-           '@': SubculturePushbullet,
            u'^NHR$': u'うへえへへえぁぁぁあぁ',
            u'^TMD$': SubcultureTMD,
            u'^CMD$': SubcultureCMD,
@@ -1353,14 +1357,16 @@ class NotSubculture(object):
             if 'text' in n['message']:
                 speaker = n['message']['speaker_id']
                 text = n['message']['text']
-                if n['message']['room'] not in allowed_channel_list:
-                    raise UserWarning()
+
+                dic = copy.copy(self.dic_base)
+                if n['message']['room'] in allowed_channel_list:
+                    dic.update(self.dic_extend)
 
                 # anti pang-pong
                 if speaker in denied_bot_list:
                     return
 
-                for dict_k, dict_res in self.dic.iteritems():
+                for dict_k, dict_res in dic.iteritems():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
 
