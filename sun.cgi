@@ -1140,6 +1140,7 @@ class NotSubculture(object):
     enable_acl = True
     is_slack = False
     sub = None
+    passerby_channel = False
 
     dic_base = {
            'https?://gyazo.com': SubcultureGyazoScraper,
@@ -1360,7 +1361,10 @@ class NotSubculture(object):
 
                 dic = copy.copy(self.dic_base)
                 if n['message']['room'] in allowed_channel_list:
+                    self.passerby_channel = True
                     dic.update(self.dic_extend)
+                else:
+                    self.passerby_channel = False
 
                 # anti pang-pong
                 if speaker in denied_bot_list:
@@ -1404,7 +1408,8 @@ class NotSubculture(object):
             j["text"] = resp
             print(json.dumps(j))
             # Lingr にも話す
-            self.sub.say_lingr(message=resp, anti_double=False)
+            if self.passerby_channel:
+                self.sub.say_lingr(message=resp, anti_double=False)
 
             # Lingr and Slack なんてことあるのか?
             lingr = False
