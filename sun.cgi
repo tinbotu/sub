@@ -1032,7 +1032,7 @@ class SubcultureKimoti(Subculture):
 class SubcultureCMD(Subculture):
 
     def response(self):
-        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', ]
+        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'Xamarinはいいぞ', ]
 
         if self.check_flood(self.speaker, 30) is False:
             return None
@@ -1069,6 +1069,18 @@ class SubcultureTMD(Subculture):
 
         random.seed()
         return shacho[random.randrange(0, len(shacho))]
+
+
+class SubcultureXamarin(Subculture):
+
+    def response(self):
+        words = [u'人脈♪', u'Xamarinはいいぞ', ]
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
+        random.seed()
+        return words[random.randrange(0, len(words))]
 
 
 class SubculturePushbullet(Subculture):
@@ -1222,6 +1234,7 @@ class NotSubculture(object):
            u'^TMD$': SubcultureTMD,
            u'^CMD$': SubcultureCMD,
            u'^EZ$': u'説明の必要はない',
+           u'^Xamarin$': SubcultureXamarin,
            }
 
     def __init__(self):
