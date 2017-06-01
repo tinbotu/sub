@@ -1183,7 +1183,7 @@ class NotSubculture(object):
            u'拝承': u'拝復/c',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
-           u'^(気持ち|きもち)$': SubcultureKimoti,
+           u'^(気持ち|きもち|KMT)$': SubcultureKimoti,
            u'^石$': SubcultureStone,
            u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
            u'山だ?$': u'やまいくぞ/c',
