@@ -1020,6 +1020,9 @@ class SubcultureKimoti(Subculture):
             "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg",
             "https://i.gyazo.com/a30020820a98347edad1e7be7add3d44.jpg",
             "https://0x00.be/photo/tajima25.gif",
+            "https://scontent-nrt1-1.cdninstagram.com/t51.2885-15/e35/19533877_336792173421246_1500116541872537600_n.jpg",
+            "https://i.gyazo.com/5706cf8b2221ae07b1f16017b18ad032.png",
+            "https://i.gyazo.com/9b5c887fdd25fe91b94ba93218d1871c.png",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
