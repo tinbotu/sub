@@ -21,6 +21,7 @@ import traceback
 import urlparse
 
 import cchardet
+import emoji
 import git
 import ipaddress
 import pushbullet
@@ -139,10 +140,12 @@ class Subculture(object):
         return self._settings
 
     def build_say_payload(self, room, bot, text, apikey):
+        demoji = emoji.demojize(text)
+
         return {
             'room': room,
             'bot': bot,
-            'text': text,
+            'text': demoji,
             'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
         }
 
@@ -1432,7 +1435,8 @@ class NotSubculture(object):
             lingr = False
 
         if lingr:
-            print(resp, end='')
+            resp_demoji = emoji.demojize(resp)
+            print(resp_demoji, end='')
             if not self.passerby_channel:
                 self.sub.say_slack(message=resp, anti_double=False)
 

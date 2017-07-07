@@ -8,3 +8,4 @@ GitPython==0.3.2.1
 PyYAML==3.11
 cchardet==0.3.5
 pushbullet.py==0.9.0
+emoji
