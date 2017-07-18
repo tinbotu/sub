@@ -664,7 +664,7 @@ class SubcultureTitleExtract(Subculture):
         h = None
         prefix = ''
         postfix = ''
-        og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', 'photos.app.goo.gl', ]
+        og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
         if url is not None and True in [u in url for u in og_image]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
