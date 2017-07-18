@@ -664,6 +664,8 @@ class SubcultureTitleExtract(Subculture):
         h = None
         prefix = ''
         postfix = ''
+        re_google_photo_remove_odd_params = re.compile(r'(http.+?)=[whpk]')
+
         og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
         if url is not None and True in [u in url for u in og_image]:
@@ -683,9 +685,16 @@ class SubcultureTitleExtract(Subculture):
         h.close()
 
         if len(h.content) > 0:
-            return prefix + h.unescape(h.content.strip()) + postfix
+            text = h.unescape(h.content.strip())
         else:
-            return ''
+            text = ''
+
+        # Google Photo 用
+        match = re_google_photo_remove_odd_params.search(text)
+        if match and "goo" in text:
+            text = match.group(1) + "=s750"
+
+        return prefix + text + postfix
 
     def response(self):
         url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
