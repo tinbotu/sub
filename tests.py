@@ -471,7 +471,7 @@ class TestSubcultureTitleExtract(unittest.TestCase):
 
     def test_googlephotos(self):
         self.s.text = 'https://photos.google.com/share/AF1QipMKk5JZSiMYssa5QEepeh5M85aQxjHXK7xyJP7gQuEfKSKGUXTWApHnDkwXLE5gpw?key=bml0T1JxdVlNcFdIV3BIcFprLUt3UUlEQ1RsRU53'
-        self.assertRegexpMatches(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1280#.jpg')
+        self.assertRegexpMatches(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
 
 
 

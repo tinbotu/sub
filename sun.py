@@ -692,7 +692,7 @@ class SubcultureTitleExtract(Subculture):
         # Google Photo 用
         match = re_google_photo_remove_odd_params.search(text)
         if match and "goo" in text:
-            text = match.group(1) + "=s1280"
+            text = match.group(1) + "=s1600"
 
         return prefix + text + postfix
 
