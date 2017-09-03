@@ -608,29 +608,29 @@ class SubcultureGyazoScraper(Subculture):
 
 class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
     reading = False
+    _count = 0
 
-    def __init__(self, target_tag, target_meta_property=None):
+    def __init__(self, target_tag, target_meta_property=None, count=None):
         HTMLParser.HTMLParser.__init__(self)
         self.target_tag = target_tag
         self.target_meta_property = target_meta_property
+        self.countlimit = count
         self._content = ''
 
     def handle_starttag(self, tag, attrs):
+        if type(self.countlimit) is int and self._count > self.countlimit:
+            return
+
         attrs = dict(attrs)
 
         if tag == self.target_tag:
+            self._count += 1
             # <meta property="og:title" content="T I T L E" /> とかはここで取っちゃう
             if self.target_meta_property is not None:
                 if self.target_meta_property == attrs.get("property"):
                     self._content += attrs.get("content")
             else:
-                if attrs == {}:
-                    self.reading = True
-                else:
-                    # <hoge data-* は読まない
-                    for k in attrs:
-                        if not "data-" in k:
-                            self.reading = True
+                self.reading = True
 
 
     def handle_data(self, data):
@@ -675,7 +675,7 @@ class SubcultureTitleExtract(Subculture):
             postfix = '#.jpg'
         else:
             prefix = 'Title: '
-            h = HTMLParserGetElementsByTag('title')
+            h = HTMLParserGetElementsByTag('title', count=1)
 
         try:
             h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
@@ -708,7 +708,7 @@ class SubcultureTitleExtract(Subculture):
             if skip:
                 continue
             self.fetch(url, guess_encoding=True)
-            if "text/html" in self.content_headers.get("content-type"):
+            if hasattr(self, "content_headers") and "text/html" in self.content_headers.get("content-type"):
                 res += self.get_element_title(url=url) + "\n"
         return res.rstrip()
 
@@ -1279,6 +1279,7 @@ class NotSubculture(object):
         self.message["events"][0]["message"]["timestamp"] = d + 'Z'
 
 
+
     def read_http_post(self, method=None, user_agent=None, http_post_body=None):
         if self.body is None and method == 'POST':
             self.body = http_post_body
@@ -1439,8 +1440,6 @@ class NotSubculture(object):
             print(json.dumps(j))
             # Lingr にも話す
             self.sub.say_lingr(message=resp, anti_double=False)
-
-            # Lingr and Slack なんてことあるのか?
             lingr = False
 
         if lingr:
