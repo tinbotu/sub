@@ -629,7 +629,7 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
         self._content = ''
 
     def handle_starttag(self, tag, attrs):
-        if type(self.countlimit) is int and self._count > self.countlimit:
+        if type(self.countlimit) is int and self._count >= self.countlimit:
             return
 
         attrs = dict(attrs)
