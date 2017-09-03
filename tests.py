@@ -466,8 +466,8 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
 
     def test_instagram(self):
-        self.s.text = 'https://www.instagram.com/p/BA_yNXQjvAd/'
-        self.assertRegexpMatches(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/t51.2885-15/e35/12568894_505444742950257_187380268_n.jpg.*')
+        self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
+        self.assertRegexpMatches(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
 
     def test_googlephotos(self):
         self.s.text = 'https://photos.google.com/share/AF1QipMKk5JZSiMYssa5QEepeh5M85aQxjHXK7xyJP7gQuEfKSKGUXTWApHnDkwXLE5gpw?key=bml0T1JxdVlNcFdIV3BIcFprLUt3UUlEQ1RsRU53'
