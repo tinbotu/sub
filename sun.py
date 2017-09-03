@@ -193,6 +193,17 @@ class Subculture(object):
             if app["name"] == name and app["key"] == key:
                 return app
 
+    @property
+    def temporary(self):
+        return None
+
+    @temporary.setter
+    def temporary(self, obj):
+        key = "temporary_"
+        self.conn.rpush(key, json.dumps(obj))
+        self.conn.expire(key, 60*60*24)
+
+
 
 class SubcultureKnowerLevel(Subculture):
 
@@ -697,7 +708,7 @@ class SubcultureTitleExtract(Subculture):
         return prefix + text + postfix
 
     def response(self):
-        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
+        url_re = re.compile(r'<?(https?:\/\/[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+\/*[^\s>　]*)>?')
         res = ''
         urls = url_re.findall(self.text)
         for url in urls:
