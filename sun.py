@@ -579,7 +579,7 @@ class SubcultureRetirementLevelGet(Subculture):
 
 class SubcultureTwitterScraper(Subculture):
     pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
-    url_re = "(https://twitter.com/([0-9A-Za-z_/.]+))"
+    url_re = "(https?://twitter.com/(?:[0-9A-Za-z_/.]+))[^>\s]?"
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
@@ -759,7 +759,7 @@ class SubcultureGaishutsu(Subculture):
         return "%s__URI__%s" % (self.__class__.__name__, url)
 
     def response(self):
-        url_re = re.compile(r'(https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　]*)')
+        url_re = re.compile(r'<?(https?:\/\/[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+\/*[^\s>　]*)>?')
 
         res = ''
         urls = url_re.findall(self.text)
