@@ -1019,26 +1019,24 @@ class SubcultureKimoti(Subculture):
 
     def response(self):
         otoko_no_bigaku = [
-            "http://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png",
-            "http://i.gyazo.com/a22873a222cdd6366d644298627a3717.png",
-            "http://i.gyazo.com/bd420c4c42f76e81fe1f937a57745e37.jpg",
-            "http://i.gyazo.com/83c58eb1db4fb1a5b36b4c7b35d5c2de.jpg",
-            "http://i.gyazo.com/222e2cbba284710e0e9d289dfcc5f217.jpg",
-            "http://i.gyazo.com/6d673a77640232ff0584c3ccce6f5e2f.jpg",
-            "http://i.gyazo.com/ed97b6fe05ea6533b06185d4671c2610.jpg",
-            "http://i.gyazo.com/d3668cab2d34ff8e25910d06a58376e8.jpg",
-            "http://i.gyazo.com/48c1cacec98df70130c0739bf185cfe7.jpg",
-            "http://i.gyazo.com/45064e2b054428461ca91fa56fe718b3.jpg",
-            "http://i.gyazo.com/cf4605eab0a6953753f14e6540e7f916.jpg",
-            "http://i.gyazo.com/f81a179087b49349b1ba72bed3ab77a1.jpg",
-            "http://i.gyazo.com/480b38890a3c3c2ca826b09de5d32eed.jpg",
-            "http://i.gyazo.com/a05b7cf820c103ae9daf16e45be6ef70.jpg",
+            "https://i.gyazo.com/57ce687dc640ac945a38b07221dde69e.png",
+            "https://i.gyazo.com/a22873a222cdd6366d644298627a3717.png",
+            "https://i.gyazo.com/bd420c4c42f76e81fe1f937a57745e37.jpg",
+            "https://i.gyazo.com/83c58eb1db4fb1a5b36b4c7b35d5c2de.jpg",
+            "https://i.gyazo.com/222e2cbba284710e0e9d289dfcc5f217.jpg",
+            "https://i.gyazo.com/6d673a77640232ff0584c3ccce6f5e2f.jpg",
+            "https://i.gyazo.com/ed97b6fe05ea6533b06185d4671c2610.jpg",
+            "https://i.gyazo.com/d3668cab2d34ff8e25910d06a58376e8.jpg",
+            "https://i.gyazo.com/48c1cacec98df70130c0739bf185cfe7.jpg",
+            "https://i.gyazo.com/45064e2b054428461ca91fa56fe718b3.jpg",
+            "https://i.gyazo.com/cf4605eab0a6953753f14e6540e7f916.jpg",
+            "https://i.gyazo.com/f81a179087b49349b1ba72bed3ab77a1.jpg",
+            "https://i.gyazo.com/480b38890a3c3c2ca826b09de5d32eed.jpg",
+            "https://i.gyazo.com/a05b7cf820c103ae9daf16e45be6ef70.jpg",
             "https://i.gyazo.com/9952fe3b70c428989f83a1a9b59856c4.jpg",
             "http://farm6.static.flickr.com/5229/5757984661_c03a82b843.jpg",
-            "http://res.cloudinary.com/thefader/image/upload/s--tAIiYzeK--/w_1440,c_limit,q_jpegmini/vtus59nok5kywxecqyaw.jpg",
             "https://embed.gyazo.com/5f2af84410714fcd0721c3689ae4e4b0.jpg",
             "https://i.gyazo.com/828c0395a0ac596fd33e7a3da86f4c1a.jpg",
-            "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
             "https://i.gyazo.com/b73667b5c31d1a847828b1b17c9e661a.png",
             "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg",
             "https://i.gyazo.com/a30020820a98347edad1e7be7add3d44.jpg",
@@ -1046,6 +1044,8 @@ class SubcultureKimoti(Subculture):
             "https://scontent-nrt1-1.cdninstagram.com/t51.2885-15/e35/19533877_336792173421246_1500116541872537600_n.jpg",
             "https://i.gyazo.com/5706cf8b2221ae07b1f16017b18ad032.png",
             "https://i.gyazo.com/9b5c887fdd25fe91b94ba93218d1871c.png",
+            # takano32
+            "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
@@ -1054,6 +1054,11 @@ class SubcultureKimoti(Subculture):
         random.seed()
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
+class SubcultureKimotiYorokobi(SubcultureKimoti):
+    def response(self):
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+        return "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg"
 
 class SubcultureCMD(Subculture):
 
@@ -1209,6 +1214,7 @@ class NotSubculture(object):
            u'拝承': u'拝復/c',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
            u'^おもち$': SubcultureOmochi,
+           u'^(喜び|悦び|歓び|慶び|よろこび)の(気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
            u'^(気持ち|きもち|KMT)$': SubcultureKimoti,
            u'^石$': SubcultureStone,
            u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
