@@ -1282,6 +1282,11 @@ class NotSubculture(object):
 :takano32-1-3::takano32-2-3::takano32-3-3::takano32-4-3:
 :takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
                """,
+           u'^(big|BIG|Big)( |　|-)?(cmd|CMD|ちょまんこ|まんこ|マンコ)$' :
+               """:cmd-x1-y1::cmd-x1-y2:
+:cmd-x2-y1::cmd-x2-y2:
+""",
+
            }
 
     def __init__(self):
