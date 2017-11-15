@@ -1270,6 +1270,18 @@ class NotSubculture(object):
            u'^CMD$': SubcultureCMD,
            u'^EZ$': u'説明の必要はない',
            u'^Xamarin$': SubcultureXamarin,
+           u'^yoshio$' :
+               """:yos-1-1::yos-1-2::yos-1-3::yos-1-4:
+:yos-2-1::yos-2-2::yos-2-3::yos-2-4:
+:yos-3-1::yos-3-2::yos-3-3::yos-3-4:
+:yos-4-1::yos-4-2::yos-4-3::yos-4-4:
+               """,
+           u'^(big|BIG|Big)( |　|-)?(takano32)$' :
+               """:takano32-1-1::takano32-2-1::takano32-3-1::takano32-4-1:
+:takano32-1-2::takano32-2-2::takano32-3-2::takano32-4-2:
+:takano32-1-3::takano32-2-3::takano32-3-3::takano32-4-3:
+:takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
+               """,
            }
 
     def __init__(self):
