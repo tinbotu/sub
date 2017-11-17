@@ -54,7 +54,7 @@ class TestSubculturePushbullet(unittest.TestCase):
 
 
 class TestTwitterScraper(unittest.TestCase):
-    twitter_url = ['https://twitter.com/esehara/status/567342138640171009', 'https://twitter.com/saki61204/status/668731628450000896', ]
+    twitter_url = ['https://twitter.com/esehara/status/567342138640171009', 'https://twitter.com/saki61204/status/917000652655534081', ]
     twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
 
     def setUp(self):
