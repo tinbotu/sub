@@ -639,7 +639,7 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
             # <meta property="og:title" content="T I T L E" /> とかはここで取っちゃう
             if self.target_meta_property is not None:
                 if self.target_meta_property == attrs.get("property"):
-                    self._content += attrs.get("content")
+                    self._content += attrs.get("content") + "\n"
             else:
                 self.reading = True
 
@@ -679,11 +679,14 @@ class SubcultureTitleExtract(Subculture):
 
         og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
+        og_description = ['twitter.com', 'facebook.com', ]
         if url is not None and True in [u in url for u in og_image]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
         elif url is not None and True in [u in url for u in og_image_postfix_jpg]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
             postfix = '#.jpg'
+        elif url is not None and True in [u in url for u in og_description]:
+            h = HTMLParserGetElementsByTag('meta', target_meta_property='og:description')
         else:
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
