@@ -475,6 +475,10 @@ class SubcultureSilent(Subculture):
             'wordclass': '助詞',
             'wordclass1': '副助詞／並立助詞／終助詞',
         },
+        {
+            'word': 'も',
+            'wordclass': '助詞',
+        },
     ]
 
     def divide_wordclass(self, text):
