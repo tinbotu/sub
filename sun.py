@@ -1269,7 +1269,7 @@ class NotSubculture(object):
            u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
            u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
            u'う(ぜ[ーえ]|ざい)': u'オマエモナー/bC',
-           u'^No$': u'No じゃないが/c',
+           u'^[Nn][Oo]$': u'Noじゃないが/c',
            u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
            u'性欲': u'性欲を持て余す/cC',
            u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
