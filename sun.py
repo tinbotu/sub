@@ -102,7 +102,7 @@ class Subculture(object):
     def fetch(self, url, params=None, guess_encoding=False, payload=None):
         self.content = None
         headers = {
-            "User-Agent": r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36',
+            "User-Agent": r'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:56.0) Gecko/20100101 Firefox/56.0',
         }
         try:
             if payload:
@@ -1048,13 +1048,16 @@ class SubcultureKimoti(Subculture):
             "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg",
             "https://i.gyazo.com/a30020820a98347edad1e7be7add3d44.jpg",
             "https://0x00.be/photo/tajima25.gif",
-            "https://scontent-nrt1-1.cdninstagram.com/t51.2885-15/e35/19533877_336792173421246_1500116541872537600_n.jpg",
             "https://i.gyazo.com/5706cf8b2221ae07b1f16017b18ad032.png",
             "https://i.gyazo.com/9b5c887fdd25fe91b94ba93218d1871c.png",
             "https://i.gyazo.com/4439e29666882249fc8687641b746fc8.jpg",
             "https://i.gyazo.com/2746f6cddeb71353d13b7e1c2886a22d.jpg",
             "https://i.gyazo.com/53590ce997cfd7ccfff88d983e1b3731.jpg",
             "https://i.gyazo.com/48bea2b64f30f9a413991920afa4a612.jpg",
+            "https://i.gyazo.com/58adb3dbf0e17846e1c98202afa87c94.png",
+            "https://i.gyazo.com/bb3e3a715b9c55d9c3dabbbe040ea41a.jpg",
+            "https://i.gyazo.com/0258ee4ef2f31b9cc56693b52cd78fe8.jpg",
+            "https://i.gyazo.com/af1c7344df585a266b02814593e93769.jpg",
 
             # takano32
             "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
