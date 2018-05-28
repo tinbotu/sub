@@ -1225,20 +1225,20 @@ class NotSubculture(object):
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
            u'わかるなー*$': SubcultureKnowerLevel,
-           u'(doge2048|JAL\s?123)': u'なるほど',
+           u'(doge2048|[Jj][Aa][Ll]\s?123)': u'なるほど',
            u'(鐵|鐡)道(では)?$': u'おっ',
            u'電車': u'鐵道または軌道車/b',
            u'戦い': u'戰いでしょ/b',
            u'拝承': u'拝復/c',
            u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
-           u'^おもち$': SubcultureOmochi,
+           u'^(おもち|OM[CT])$': SubcultureOmochi,
            u'^(喜び|悦び|歓び|慶び|よろこび)の(気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
-           u'^(気持ち|きもち|KMT)$': SubcultureKimoti,
+           u'^(気持ち|きもち|KM[CT])$': SubcultureKimoti,
            u'^石$': SubcultureStone,
            u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
            u'山だ?$': u'やまいくぞ/c',
            u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
-           u'ストールするぞ(ほんとに)?$': u'はい',
+           u'ストール$': u'はい',
            u'(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': u'どうすればいいんだ/d',
            u'どうすればいいんだ': u'おれはもうだめだ/d',
            u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
@@ -1255,10 +1255,10 @@ class NotSubculture(object):
            'http': SubcultureGaishutsu,
            u'うひー': u'うひーとかやめてくれる',
            # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
-           # u'弁当': u'便當だろ',
+           u'^弁当$': u'便當だろ',
            u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
            u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
-           # u'((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
+           u'^((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
            '.+': SubcultureHitozuma,
            '..+': SubcultureKCzuma,
            '^(?!.*http).*$': SubcultureNogata,  # except http
@@ -1285,7 +1285,7 @@ class NotSubculture(object):
            u'^CMD$': SubcultureCMD,
            u'^EZ$': u'説明の必要はない',
            u'^Xamarin$': SubcultureXamarin,
-           u'^yoshio$' :
+           u'^(yosh?io|芳雄|よしお|ヨシオ|ヨタ)$' :
                """:yos-1-1::yos-1-2::yos-1-3::yos-1-4:
 :yos-2-1::yos-2-2::yos-2-3::yos-2-4:
 :yos-3-1::yos-3-2::yos-3-3::yos-3-4:
