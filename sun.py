@@ -1132,6 +1132,20 @@ class SubcultureXamarin(Subculture):
         return words[random.randrange(0, len(words))]
 
 
+class SubcultureKotoshinoKanji(Subculture):
+
+    def response(self):
+        return """2010 罰
+2011 罰
+2012 罰
+2013 諦
+2014 渋
+2015 老
+2016 家
+2017 終"""
+
+
+
 class SubculturePushbullet(Subculture):
 
     settings_filename = 'pushbullet.yaml'
@@ -1297,6 +1311,7 @@ class NotSubculture(object):
 :takano32-1-3::takano32-2-3::takano32-3-3::takano32-4-3:
 :takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
                """,
+           u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
            }
 
     def __init__(self):

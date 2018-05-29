@@ -25,6 +25,7 @@ from sun import (
     SubcultureSelfUpdate,
     SubcultureTitleExtract,
     SubculturePushbullet,
+    SubcultureKotoshinoKanji,
 )
 
 
@@ -439,6 +440,15 @@ class TestSubcultureSpontaneity(unittest.TestCase):
 
     def test_say(self):
         pass
+
+class TestSubcultureKotoshinoKanji(unittest.TestCase):
+    def setUp(self):
+        self.s = SubcultureKotoshinoKanji('', 'tests')
+
+
+    def test_kanji_list(self):
+        self.s.text = ''
+        self.assertRegexpMatches(self.s.response(), r'^[0-9]+\ ')
 
 
 class TestSubcultureTitleExtract(unittest.TestCase):
