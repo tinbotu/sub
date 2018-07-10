@@ -24,34 +24,8 @@ from sun import (
     SubcultureShowDogeSoku,
     SubcultureSelfUpdate,
     SubcultureTitleExtract,
-    SubculturePushbullet,
     SubcultureKotoshinoKanji,
 )
-
-
-class TestSubculturePushbullet(unittest.TestCase):
-
-    def setUp(self):
-        self.g = SubculturePushbullet()
-        self.g.settings_filename = 'pushbullet.yaml.skel'
-
-    def test_settings(self):
-        self.assertEqual(type(self.g.settings[0].get('keyword')), list)
-        self.assertEqual(type(self.g.settings[0].get('key')), str)
-
-    def test_get_mention_users(self):
-        message_p = u'@testkeyword てすと'
-        message_n = u'@CH8YEF4U なし'
-
-        r = self.g.get_mention_users(text=message_p, speaker='test')
-        self.assertEqual(r[0].get('user'), 'testkeyword')
-        self.assertEqual(r[0].get('key'), 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        self.assertEqual(r[0].get('body'), '%s: %s' % ('test', message_p))
-
-        r = self.g.get_mention_users(text=message_n, speaker='test')
-        self.assertEqual(type(r), list)
-        self.assertEqual(len(r), 0)
-
 
 
 class TestTwitterScraper(unittest.TestCase):

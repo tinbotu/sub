@@ -24,7 +24,6 @@ import cchardet
 import emoji
 import git
 import ipaddress
-import pushbullet
 import requests
 import redis
 import HTMLParser
@@ -1151,68 +1150,6 @@ class SubcultureKotoshinoKanji(Subculture):
 
 
 
-class SubculturePushbullet(Subculture):
-
-    settings_filename = 'pushbullet.yaml'
-    _settings = None
-    re_mention = '@([A-Za-z0-9_]+)?'
-
-    @property
-    def settings(self):
-        if self._settings is not None and self._settings.get("pushbullet"):
-            return self._settings.get("pushbullet")
-        fp = open(self.settings_filename).read()
-        self._settings = yaml.safe_load(fp)
-        return self._settings.get("pushbullet")
-
-    def get_mention_users(self, text, speaker):
-        if type(self.settings) is not list:
-            return
-
-        users = re.findall('@([A-Za-z0-9_]+)?', text)
-        bullets = []
-
-        for user in users:
-            for bullet in self.settings:
-                try:
-                    for keyword in bullet.get("keyword"):
-                        if user == keyword:
-                            body = '%s: %s' % (speaker, text)
-                            bullets.append({'user': keyword, 'key': bullet.get('key'), 'body': body})
-                except:
-                    pass
-        return bullets
-
-
-    def send_bullets(self, bullets):
-        users_sent = []
-        users_fail = []
-        message = None
-
-        if type(bullets) is not list:
-            return None
-
-        for b in bullets:
-            try:
-                pb = pushbullet.Pushbullet(b.get('key'))
-                result = pb.push_note('Doge', b.get('body'))
-                if result.get("created") > 1:
-                    users_sent.append(b.get('user'))
-            except:
-                users_fail.append(b.get('user'))
-
-        if len(users_sent) > 0:
-            message = 'sent: %s' % (', '.join(users_sent))
-        if len(users_fail) > 0:
-            message = 'No: %s' % (', '.join(users_fail))
-        return message
-
-    def response(self):
-        mention_list = self.get_mention_users(text=self.text, speaker=self.speaker)
-        return self.send_bullets(mention_list)
-
-
-
 class NotSubculture(object):
     """ main """
     debug = True
@@ -1228,7 +1165,6 @@ class NotSubculture(object):
            'https?://gyazo.com': SubcultureGyazoScraper,
            'https?': SubcultureTitleExtract,
            u'https://twitter.com/': SubcultureTwitterScraper,
-           '@': SubculturePushbullet,
            }
 
     dic_extend = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
