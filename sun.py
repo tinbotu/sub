@@ -1056,9 +1056,6 @@ class SubcultureKimoti(Subculture):
 
             # takano32
             "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
-
-            # yoidore
-            ":yos-1-1::yos-1-2::yos-1-3::yos-1-4:\n:yos-2-1::yos-2-2::yos-2-3::yos-2-4:\n:yos-3-1::yos-3-2::yos-3-3::yos-3-4:\n:yos-4-1::yos-4-2::yos-4-3::yos-4-4:",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
