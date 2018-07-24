@@ -1152,7 +1152,7 @@ class SubculturePizza(Subculture):
             return None
 
         random.seed()
-        return shacho[random.randrange(0, len(shacho))]
+        return pizzayas[random.randrange(0, len(pizzayas))]
 
 
 class NotSubculture(object):
