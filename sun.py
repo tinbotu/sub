@@ -141,6 +141,7 @@ class Subculture(object):
         return self._settings
 
     def build_say_payload(self, room, bot, text, apikey):
+        """ Lingr """
         demoji = emoji.demojize(text)
 
         return {
@@ -1286,6 +1287,7 @@ class NotSubculture(object):
         self.message["events"][0]["message"]["nickname"] = params.get("user_name")
         self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
         self.message["events"][0]["message"]["room"] = params.get("team_domain")
+        self.message["events"][0]["message"]["slack_channel"] = params.get("channel_name")  # extra
         d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
         self.message["events"][0]["message"]["timestamp"] = d + 'Z'
 
@@ -1368,7 +1370,8 @@ class NotSubculture(object):
             'H': 1/8.,
         }
 
-        allowed_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']
+        bridged_channel_list = ['arakawatomonori', 'myroom', 'tinbotu']  # team_domain or Lingr room
+        passby_channel_list = ['tarekomi', ]  # not bridged
         denied_bot_list = ['slackbot', ]
 
         # 自発的発言
@@ -1402,9 +1405,12 @@ class NotSubculture(object):
                 text = n['message']['text']
 
                 dic = copy.copy(self.dic_base)
-                if n['message']['room'] in allowed_channel_list:
-                    self.passerby_channel = False
+                if n['message']['room'] in bridged_channel_list:
                     dic.update(self.dic_extend)
+                    if n['message'].get('slack_channel') in passby_channel_list:
+                        self.passerby_channel = True
+                    else:
+                        self.passerby_channel = False
                 else:
                     self.passerby_channel = True
 
