@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
+# 絡み方が悪質
+
 from __future__ import print_function
 
 import codecs
