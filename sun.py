@@ -1137,6 +1137,23 @@ class SubcultureKotoshinoKanji(Subculture):
 2017 終"""
 
 
+class SubculturePizza(Subculture):
+
+    def response(self):
+
+        pizzayas = [
+            'https://www.dominos.jp/',
+            'https://www.pizza-la.co.jp/',
+            'https://pizzahut.jp/',
+        ]
+
+
+        if self.check_flood(self.speaker, 30) is False:
+            return None
+
+        random.seed()
+        return shacho[random.randrange(0, len(shacho))]
+
 
 class NotSubculture(object):
     """ main """
@@ -1241,6 +1258,7 @@ class NotSubculture(object):
 :takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
                """,
            u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
+           u'\(ピザ\)': SubculturePizza,
            }
 
     def __init__(self):
