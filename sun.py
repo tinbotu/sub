@@ -1056,6 +1056,7 @@ class SubcultureKimoti(Subculture):
             "https://i.gyazo.com/e9f13c8f47f5f819cd36034f108617ee.jpg",
             "https://i.gyazo.com/c5606232ff2ac81d04b4bbbaaea5bc2a.jpg",
             "https://i.gyazo.com/67919378fc4ab09346175756d253025f.png",
+            "https://i.gyazo.com/d5162f92ce481b681c3a76a9555e099b.jpg",
 
             # takano32
             "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
