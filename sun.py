@@ -1180,7 +1180,7 @@ class NotSubculture(object):
            u'ベンゾ': u'曖昧/d',
            u'(カエリンコ|かえりんこ)': u'いいですよ',
            u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
-           u'(:?\(sun\)|おはようございます|ohayougozaimasu)': u'☀',
+           u'(:?\(sun\)|おはようございます|ohayougozaimasu|起きた|おきた)$': u'☀',
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
