@@ -675,7 +675,7 @@ class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
 
 class SubcultureTitleExtract(Subculture):
     """ <title> extract very quickhack """
-    url_blacklist = ['gyazo.com', '.png', '.jpg', 'slack.com', ]
+    url_blacklist = ['twitter.com', 'gyazo.com', '.png', '.jpg', 'slack.com', ]
 
     def get_element_title(self, url=None):
         h = None
