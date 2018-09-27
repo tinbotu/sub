@@ -971,8 +971,13 @@ class AnotherIsMoreKnowerThanMe(Subculture):
         K = SubcultureKnowerLevelUp('', self.speaker)
         K.response()
 
-        random.seed()
-        return 'No, %s culture.' % knower[random.randrange(0, len(knower))]
+        if 'JC' in self.text or 'JAL' in self.text:
+            res = 'kuzuha culture'
+        else:
+            random.seed()
+            res = 'No, %s culture.' % knower[random.randrange(0, len(knower))]
+
+        return res
 
 
 class HateSubculture(Subculture):
@@ -1184,8 +1189,8 @@ class NotSubculture(object):
            u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
            u'^(\?|？)$': '?',
            u'^はい(じゃないが)?$': SubcultureHai,
-           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布) culture': AnotherIsMoreKnowerThanMe,
-           '^[KYETNOSVP1U]C$': AnotherIsMoreKnowerThanMe,
+           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
+           '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
            u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
            u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
            u'わかるなー*$': SubcultureKnowerLevel,
