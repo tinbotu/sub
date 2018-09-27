@@ -457,10 +457,6 @@ class TestSubcultureTitleExtract(unittest.TestCase):
         self.s.text = 'https://photos.google.com/share/AF1QipMKk5JZSiMYssa5QEepeh5M85aQxjHXK7xyJP7gQuEfKSKGUXTWApHnDkwXLE5gpw?key=bml0T1JxdVlNcFdIV3BIcFprLUt3UUlEQ1RsRU53'
         self.assertRegexpMatches(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
 
-    def test_twitter_long(self):
-        self.s.text = 'https://twitter.com/ladygaga/status/925806347836301312'
-        self.assertEqual(self.s.response(), u'\u201cGAGA x TUDOR And yes, that\u2019s really me playing. #BornToDare The most important person to dare is yourself. #TudorWatch https://t.co/6gDfAZ0t46\u201d')
-
 
 if __name__ == '__main__':
     unittest.main()
