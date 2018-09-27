@@ -1073,11 +1073,13 @@ class SubcultureKimoti(Subculture):
         random.seed()
         return otoko_no_bigaku[random.randrange(0, len(otoko_no_bigaku))]
 
+
 class SubcultureKimotiYorokobi(SubcultureKimoti):
     def response(self):
         if self.check_flood(self.speaker, 30) is False:
             return None
         return "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg"
+
 
 class SubcultureCMD(Subculture):
 
@@ -1176,99 +1178,100 @@ class NotSubculture(object):
     passerby_channel = False
 
     dic_base = {
-           'https?://gyazo.com': SubcultureGyazoScraper,
-           'https?': SubcultureTitleExtract,
-           # u'https://twitter.com/': SubcultureTwitterScraper,
-           }
+        'https?://gyazo.com': SubcultureGyazoScraper,
+        'https?': SubcultureTitleExtract,
+        # u'https://twitter.com/': SubcultureTwitterScraper,
+    }
 
-    dic_extend = {'^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
-           u'ベンゾ': u'曖昧/d',
-           u'(カエリンコ|かえりんこ)': u'いいですよ',
-           u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
-           u'(:?\(sun\)|おはようございます|ohayougozaimasu|起きた|おきた)$': u'☀',
-           u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
-           u'^(\?|？)$': '?',
-           u'^はい(じゃないが)?$': SubcultureHai,
-           u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
-           '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
-           u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
-           u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
-           u'わかるなー*$': SubcultureKnowerLevel,
-           u'(doge2048|[Jj][Aa][Ll]\s?123)': u'なるほど',
-           u'(鐵|鐡)道(では)?$': u'おっ',
-           u'電車': u'鐵道または軌道車/b',
-           u'戦い': u'戰いでしょ/b',
-           u'拝承': u'拝復/c',
-           u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
-           u'^(おもち|OM[CT])$': SubcultureOmochi,
-           u'^(喜び|悦び|歓び|慶び|よろこび)の(気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
-           u'^(気持ち|きもち|KM[CT])$': SubcultureKimoti,
-           u'^石$': SubcultureStone,
-           u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
-           u'山だ?$': u'やまいくぞ/c',
-           u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
-           u'ストール$': u'はい',
-           u'(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': u'どうすればいいんだ/d',
-           u'どうすればいいんだ': u'おれはもうだめだ/d',
-           u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
-           u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん/c',
-           u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
-           u'^消毒$': SubcultureWaterFall,
-           u'^流す$': HateSubculture,
-           u'^他人のわかり': SubcultureKnowerLevelGet,
-           # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
-           u'オレオ': u'オレオ',
-           u'(?:社|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退|オワ)': SubcultureRetirementLevelUp,
-           u'^他人の社会': SubcultureRetirementLevelGet,
-           u'たい': SubcultureSilent,
-           'http': SubcultureGaishutsu,
-           u'うひー': u'うひーとかやめてくれる',
-           # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
-           u'^弁当$': u'便當だろ',
-           u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
-           u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
-           u'^((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
-           '.+': SubcultureHitozuma,
-           '..+': SubcultureKCzuma,
-           '^(?!.*http).*$': SubcultureNogata,  # except http
-           '.*': SubcultureAtencion,  # 同じキーはだめ
-           u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
-           u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
-           u'^\(コラッ\)$': SubcultureDogeDetailStatus,
-           u'\(犬\)': SubcultureShowDogeSoku,
-           u'\(犬転生\)': SubcultureSelfUpdate,
-           u'かわいい': u'ちーちゃんかわいいね/b',
-           u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
-           u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
-           u'う(ぜ[ーえ]|ざい)': u'オマエモナー/bC',
-           u'^[Nn][Oo]$': u'Noじゃないが/c',
-           u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
-           u'性欲': u'性欲を持て余す/cC',
-           u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
-           u'\(飼い主\)': u'tinbotu',
-           u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
-           u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
-           u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
-           u'^NHR$': u'うへえへへえぁぁぁあぁ',
-           u'^TMD$': SubcultureTMD,
-           u'^CMD$': SubcultureCMD,
-           u'^EZ$': u'説明の必要はない',
-           u'^Xamarin$': SubcultureXamarin,
-           u'^(yosh?io|芳雄|よしお|ヨシオ|ヨタ)$' :
-               """:yos-1-1::yos-1-2::yos-1-3::yos-1-4:
+    dic_extend = {
+        '^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
+        u'ベンゾ': u'曖昧/d',
+        u'(カエリンコ|かえりんこ)': u'いいですよ',
+        u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
+        u'(:?\(sun\)|おはようございます|ohayougozaimasu|起きた|おきた)$': u'☀',
+        u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
+        u'^(\?|？)$': '?',
+        u'^はい(じゃないが)?$': SubcultureHai,
+        u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
+        '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
+        u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
+        u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
+        u'わかるなー*$': SubcultureKnowerLevel,
+        u'(doge2048|[Jj][Aa][Ll]\s?123)': u'なるほど',
+        u'(鐵|鐡)道(では)?$': u'おっ',
+        u'電車': u'鐵道または軌道車/b',
+        u'戦い': u'戰いでしょ/b',
+        u'拝承': u'拝復/c',
+        u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
+        u'^(おもち|OM[CT])$': SubcultureOmochi,
+        u'^(喜び|悦び|歓び|慶び|よろこび)の(気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
+        u'^(気持ち|きもち|KM[CT])$': SubcultureKimoti,
+        u'^石$': SubcultureStone,
+        u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
+        u'山だ?$': u'やまいくぞ/c',
+        u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
+        u'ストール$': u'はい',
+        u'(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': u'どうすればいいんだ/d',
+        u'どうすればいいんだ': u'おれはもうだめだ/d',
+        u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
+        u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん/c',
+        u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
+        u'^消毒$': SubcultureWaterFall,
+        u'^流す$': HateSubculture,
+        u'^他人のわかり': SubcultureKnowerLevelGet,
+        # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
+        u'オレオ': u'オレオ',
+        u'(?:社|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退|オワ)': SubcultureRetirementLevelUp,
+        u'^他人の社会': SubcultureRetirementLevelGet,
+        u'たい': SubcultureSilent,
+        'http': SubcultureGaishutsu,
+        u'うひー': u'うひーとかやめてくれる',
+        # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
+        u'^弁当$': u'便當だろ',
+        u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
+        u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
+        u'^((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
+        '.+': SubcultureHitozuma,
+        '..+': SubcultureKCzuma,
+        '^(?!.*http).*$': SubcultureNogata,  # except http
+        '.*': SubcultureAtencion,  # 同じキーはだめ
+        u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
+        u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
+        u'^\(コラッ\)$': SubcultureDogeDetailStatus,
+        u'\(犬\)': SubcultureShowDogeSoku,
+        u'\(犬転生\)': SubcultureSelfUpdate,
+        u'かわいい': u'ちーちゃんかわいいね/b',
+        u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
+        u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
+        u'う(ぜ[ーえ]|ざい)': u'オマエモナー/bC',
+        u'^[Nn][Oo]$': u'Noじゃないが/c',
+        u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
+        u'性欲': u'性欲を持て余す/cC',
+        u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
+        u'\(飼い主\)': u'tinbotu',
+        u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
+        u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
+        u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
+        u'^NHR$': u'うへえへへえぁぁぁあぁ',
+        u'^TMD$': SubcultureTMD,
+        u'^CMD$': SubcultureCMD,
+        u'^EZ$': u'説明の必要はない',
+        u'^Xamarin$': SubcultureXamarin,
+        u'^(yosh?io|芳雄|よしお|ヨシオ|ヨタ)$':
+        """:yos-1-1::yos-1-2::yos-1-3::yos-1-4:
 :yos-2-1::yos-2-2::yos-2-3::yos-2-4:
 :yos-3-1::yos-3-2::yos-3-3::yos-3-4:
 :yos-4-1::yos-4-2::yos-4-3::yos-4-4:
-               """,
-           u'^(big|BIG|Big)( |　|-)?(takano32)$' :
-               """:takano32-1-1::takano32-2-1::takano32-3-1::takano32-4-1:
+        """,
+        u'^(big|BIG|Big)( |　|-)?(takano32)$':
+        """:takano32-1-1::takano32-2-1::takano32-3-1::takano32-4-1:
 :takano32-1-2::takano32-2-2::takano32-3-2::takano32-4-2:
 :takano32-1-3::takano32-2-3::takano32-3-3::takano32-4-3:
 :takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
-               """,
-           u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
-           u'\(ピザ\)': SubculturePizza,
-           }
+        """,
+        u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
+        u'\(ピザ\)': SubculturePizza,
+    }
 
     def __init__(self):
         self.httpheaderHasAlreadySent = False
