@@ -1271,6 +1271,7 @@ class NotSubculture(object):
         """,
         u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
         u'\(ピザ\)': SubculturePizza,
+        '^mineo$': u'https://0x00.be/supervision/stub-iwata_last_10800.png',
     }
 
     def __init__(self):
