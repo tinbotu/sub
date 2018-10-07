@@ -1169,7 +1169,7 @@ class SubculturePizza(Subculture):
 class SubcultureMineo(Subculture):
 
     def response(self):
-        self.fetch("https://0x00.be/cgi-bin/dogewunderground/mineo_latency.cgi")
+        self.fetch("https://0x00.be/cgi-bin/dogewunderground/mineo_latency.cgi?multispan=true")
         return None
 
 
