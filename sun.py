@@ -1166,6 +1166,13 @@ class SubculturePizza(Subculture):
         return pizzayas[random.randrange(0, len(pizzayas))]
 
 
+class SubcultureMineo(Subculture):
+
+    def response(self):
+        self.fetch("https://0x00.be/cgi-bin/dogewunderground/mineo_latency.cgi")
+        return None
+
+
 class NotSubculture(object):
     """ main """
     debug = True
@@ -1271,7 +1278,7 @@ class NotSubculture(object):
         """,
         u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
         u'\(ピザ\)': SubculturePizza,
-        '^mineo$': u'https://0x00.be/supervision/stub-iwata_last_10800.png',
+        '^mineo$': SubcultureMineo,
     }
 
     def __init__(self):
