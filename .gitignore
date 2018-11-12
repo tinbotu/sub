@@ -70,3 +70,7 @@ pushbullet.yaml
 
 # RopeOpenProject
 .ropeproject/
+
+# pyenv
+.python-version
+
