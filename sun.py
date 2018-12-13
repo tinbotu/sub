@@ -1146,7 +1146,8 @@ class SubcultureKotoshinoKanji(Subculture):
 2014 渋
 2015 老
 2016 家
-2017 終"""
+2017 終
+2018 転"""
 
 
 class SubculturePizza(Subculture):
