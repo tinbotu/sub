@@ -836,6 +836,7 @@ class SubcultureOmochi(Subculture):
             'http://prtimes.jp/i/9289/15/resize/d9289-15-340332-5.jpg',
             'https://pbs.twimg.com/media/BU_9vq6CAAAYv9x.jpg',
             'https://i.gyazo.com/539bccec6e34ccb189b9f2458f95e4cb.png',
+            'https://i.gyazo.com/170e5975c586da83c414527442f018c1.png',
         ]
 
         # dont response within 30 seconds
