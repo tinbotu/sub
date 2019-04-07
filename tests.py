@@ -447,7 +447,7 @@ class TestSubcultureTitleExtract(unittest.TestCase):
 
     def test_utf8_withlazycrlf(self):
         self.s.text = 'http://jp.reuters.com/article/us-theater-shooting-idJPKCN0QA2O720150805'
-        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
+        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 - ロイター')
 
     def test_instagram(self):
         self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
