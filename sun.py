@@ -1337,7 +1337,8 @@ class NotSubculture(object):
                     print("json decode error:" + self.body)
                     sys.exit(0)
         else:
-            raise
+            print("Status: 400 Bad request\n\n400")
+            sys.exit(0)
 
     def acl(self, acl, ip_address):
         if type(acl) is not list:
