@@ -792,26 +792,28 @@ class SubcultureGaishutsu(Subculture):
 
 class SubcultureMETAR(Subculture):
     """ Weather METARs """
-    url = 'http://api.wunderground.com/api/%s/conditions/lang:JP/q/Japan/Tokyo.json'
+    url = 'http://api.openweathermap.org/data/2.5/weather?id=1850147&APPID=%s'
 
-    def fetch_wunderground(self):
-        apikey = self.settings.get('wunderground_apikey')
+    def fetch_openweathermap(self):
+        apikey = self.settings.get('openweathermap_apikey')
         self.url = self.url % apikey
         self.fetch(self.url)
 
-    def parse_wunderground(self):
+    def parse_openweathermap(self):
         w = json.loads(self.content)
-        self.temp_c = float(w["current_observation"]["temp_c"])
-        self.weather = w["current_observation"]["weather"]
-        self.icon_url = w["current_observation"]["icon_url"]
-        self.pressure = int(w["current_observation"]["pressure_mb"])
-        self.humidity = w["current_observation"]["relative_humidity"]
+        self.weather = w["weather"][0]["main"]
+        self.temp_c = float(w["main"]["temp"]) - 273.15  # kelvin
+        self.icon_url =  ("https://openweathermap.org/img/w/%s.png" % w["weather"][0]["icon"])
+        self.pressure = int(w["main"]["pressure"])
+        self.humidity = w["main"]["humidity"]
 
     def response(self):
         if self.content is None:
-            self.fetch_wunderground()
-        self.parse_wunderground()
-        return u'%s (%.1f\u2103; %d\u3371; %s)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
+            self.fetch_openweathermap()
+        self.parse_openweathermap()
+
+        if self.weather is not None:
+            return u'%s (%.1f\u2103; %d\u3371; %s%%)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
 
 
 
