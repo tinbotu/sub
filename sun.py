@@ -801,7 +801,7 @@ class SubcultureMETAR(Subculture):
 
     def parse_openweathermap(self):
         w = json.loads(self.content)
-        self.weather = w["weather"][0]["main"]
+        self.weather = w["weather"][0]["description"]
         self.temp_c = float(w["main"]["temp"]) - 273.15  # kelvin
         self.icon_url =  ("https://openweathermap.org/img/w/%s.png" % w["weather"][0]["icon"])
         self.pressure = int(w["main"]["pressure"])
