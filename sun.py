@@ -1091,7 +1091,7 @@ class SubcultureKimotiYorokobi(SubcultureKimoti):
 class SubcultureCMD(Subculture):
 
     def response(self):
-        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'Xamarinはいいぞ', ]
+        cmd = [u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'!(*ﾟ▽ﾟ* っ)З', u'┌（┌ *ﾟ▽ﾟ*）┐', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'₍₍⁽⁽(ી(*ﾟ▽ﾟ*)ʃ)₎₎⁾⁾', u'Xamarinはいいぞ', u'https://twitter.com/loadlimits/status/1124773878872416256' ]
 
         if self.check_flood(self.speaker, 30) is False:
             return None
