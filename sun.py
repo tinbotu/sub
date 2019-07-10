@@ -839,6 +839,7 @@ class SubcultureOmochi(Subculture):
             'https://pbs.twimg.com/media/BU_9vq6CAAAYv9x.jpg',
             'https://i.gyazo.com/539bccec6e34ccb189b9f2458f95e4cb.png',
             'https://i.gyazo.com/170e5975c586da83c414527442f018c1.png',
+            'https://i.gyazo.com/f4df0e3220c86d17d39e932b7dad8233.png',
         ]
 
         # dont response within 30 seconds
