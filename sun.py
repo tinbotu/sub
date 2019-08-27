@@ -889,6 +889,7 @@ class SubcultureStone(Subculture):
             'http://i.gyazo.com/0969e1c43acea1f70632b2157eba5793.png',
             'http://i.gyazo.com/f018d843af2338150b7522dfed84da08.png',
             'http://i.gyazo.com/99a4c3f45ee3758a37cac260c171c5d2.png',
+            'http://i.gyazo.com/4360b84e1d5d7861be1a964a9f74d0b8.jpg',
 
             # etc
             'http://i.gyazo.com/4fd0d04bd674ae6179d2e5de6340161f.png',
