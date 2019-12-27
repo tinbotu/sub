@@ -1074,6 +1074,9 @@ class SubcultureKimoti(Subculture):
 
             # takano32
             "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
+            
+            # pha
+            "https://i.gyazo.com/80ef198057bd98d23d5d625cd7ef312e.png",
         ]
 
         if self.check_flood(self.speaker, 30) is False:
