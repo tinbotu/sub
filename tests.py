@@ -10,7 +10,7 @@ from sun import (
     NotSubculture,
     Subculture,
     SubcultureGyazoScraper,
-    SubcultureTwitterScraper,
+#    SubcultureTwitterScraper,
     SubcultureMETAR,
     SubcultureOmochi,
     SubcultureStone,
@@ -28,29 +28,29 @@ from sun import (
 )
 
 
-class TestTwitterScraper(unittest.TestCase):
-    twitter_url = ['https://twitter.com/esehara/status/567342138640171009', 'https://twitter.com/saki61204/status/917000652655534081', ]
-    twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
-
-    def setUp(self):
-        self.g = SubcultureTwitterScraper()
-
-    def test_fetch(self):
-        for url in self.twitter_url:
-            self.g.fetch(url)
-            self.assertRegexpMatches(self.g.content, self.g.pick_re)
-
-    def test_inner_url(self):
-        texts = [
-            "@niryuu https://twitter.com/ah_hpc/status/567754030638964736",
-            "https://twitter.com/ah_hpc/status/567754030638964736",
-            "https://twitter.com/ah_hpc/status/567754030638964736 @niryuu"]
-        for text in texts:
-            self.assertRegexpMatches(self.g.get_twitter_url(text), self.g.url_re)
-
-    def test_img(self):
-        self.g.fetch("https://twitter.com/DJWILDPARTY/status/707433573142413317/")
-        self.assertEqual(self.g.response(), "https://pbs.twimg.com/media/CdFPCH5W8AAwRk0.jpg")
+#class TestTwitterScraper(unittest.TestCase):
+#    twitter_url = ['https://twitter.com/esehara/status/567342138640171009', 'https://twitter.com/saki61204/status/917000652655534081', ]
+#    twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
+#
+#    def setUp(self):
+#        self.g = SubcultureTwitterScraper()
+#
+#    def test_fetch(self):
+#        for url in self.twitter_url:
+#            self.g.fetch(url)
+#            self.assertRegexpMatches(self.g.content, self.g.pick_re)
+#
+#    def test_inner_url(self):
+#        texts = [
+#            "@niryuu https://twitter.com/ah_hpc/status/567754030638964736",
+#            "https://twitter.com/ah_hpc/status/567754030638964736",
+#            "https://twitter.com/ah_hpc/status/567754030638964736 @niryuu"]
+#        for text in texts:
+#            self.assertRegexpMatches(self.g.get_twitter_url(text), self.g.url_re)
+#
+#    def test_img(self):
+#        self.g.fetch("https://twitter.com/DJWILDPARTY/status/707433573142413317/")
+#        self.assertEqual(self.g.response(), "https://pbs.twimg.com/media/CdFPCH5W8AAwRk0.jpg")
 
 
 class TestGyazoScraper(unittest.TestCase):
