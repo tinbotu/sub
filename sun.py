@@ -1223,7 +1223,7 @@ class NotSubculture(object):
         u'電車': u'鐵道または軌道車/b',
         u'戦い': u'戰いでしょ/b',
         u'拝承': u'拝復/c',
-        u'あなた': u'あなたとJAVA, 今すぐダウンロー\nド\nhttps://www.java.com/ja/',
+        u'あなた': u'あなたとJAVA, \n今すぐダウンロー\nド\nhttps://www.java.com/ja/',
         # u'([^#]|^)[Cc]h?at[Ww][ao]rk': u'http://b.hatena.ne.jp/chatwark/',
         u'^(おもち|OM[CT])$': SubcultureOmochi,
         u'^(喜び|悦び|歓び|慶び|よろこび)の(気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
