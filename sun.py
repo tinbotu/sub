@@ -103,7 +103,7 @@ class Subculture(object):
     def fetch(self, url, params=None, guess_encoding=False, payload=None):
         self.content = None
         headers = {
-            "User-Agent": r'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:56.0) Gecko/20100101 Firefox/56.0',
+            "User-Agent": r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
         }
         try:
             if payload:
@@ -681,7 +681,7 @@ class SubcultureTitleExtract(Subculture):
         h = None
         prefix = ''
         postfix = ''
-        re_google_photo_remove_odd_params = re.compile(r'(http.+?)=[whpk]')
+        re_google_photo_remove_odd_params = re.compile(r'(http.+?)=[whpk][0-9\-]')
 
         og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
