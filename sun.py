@@ -1510,4 +1510,4 @@ if __name__ == '__main__':
     no = NotSubculture()
     post_body = sys.stdin.read()
     no.read_http_post(method=os.environ.get('REQUEST_METHOD'), user_agent=os.environ.get('HTTP_USER_AGENT'), http_post_body=post_body)
-    no.say(slack=no.is_slack)
+    no.say(slack=no.is_slack, lingr=False)
