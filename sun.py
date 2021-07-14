@@ -1490,9 +1490,7 @@ class NotSubculture(object):
     def say(self, slack=False, lingr=True):
         resp = "\n".join(tuple(self.response())).rstrip("\n")
         if slack:
-            j = {}
-            j["text"] = resp
-            print(json.dumps(j))
+            self.sub.say_slack(message=resp, anti_double=False)
             # Lingr にも話す
             self.sub.say_lingr(message=resp, anti_double=False)
             lingr = False
