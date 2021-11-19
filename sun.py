@@ -1220,7 +1220,7 @@ class NotSubculture(object):
         u'^はい(じゃないが)?$': SubcultureHai,
         u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
         '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
-        u'^[KkＫｋ][CcＣｃ][\?？]$': 'Yes, Kumagai Culture.'
+        u'^[KkＫｋ][CcＣｃ][\?？]$': u'Yes, Kumagai Culture.',
         u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
         u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
         u'わかるなー*$': SubcultureKnowerLevel,
