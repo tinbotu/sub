@@ -971,6 +971,21 @@ class SubcultureKCzuma(Subculture):
                 res = u'KC'
         return res
 
+class SubcultureKC(Subculture):
+    def response(self):
+        random.seed()
+        res = None
+
+        ordeal = random.randrange(0, 100)
+        if ordeal > 70:
+            res = u'Yes, Kumagai Culture.'
+        elif ordeal > 40:
+            res = u'Yes, Kuzuha Culture.'
+        elif ordeal > 20:
+            res = u'No, Not Kumagai Culture.'
+        elif ordeal < 5:
+            res = u'Exactly, Kuzuha Culture.'
+        return res
 
 class AnotherIsMoreKnowerThanMe(Subculture):
 
@@ -1220,7 +1235,7 @@ class NotSubculture(object):
         u'^はい(じゃないが)?$': SubcultureHai,
         u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
         '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
-        u'^[KkＫｋ][CcＣｃ][\?？]$': u'Yes, Kumagai Culture.',
+        u'^[KkＫｋ][CcＣｃ][\?？]$': SubcultureKC,
         u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
         u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
         u'わかるなー*$': SubcultureKnowerLevel,
