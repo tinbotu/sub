@@ -1179,7 +1179,8 @@ class SubcultureKotoshinoKanji(Subculture):
 2017 終
 2018 転
 2019 無
-2020 終"""
+2020 終
+2021 蟄"""
 
 
 class SubculturePizza(Subculture):
