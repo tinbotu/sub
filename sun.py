@@ -1181,7 +1181,8 @@ class SubcultureKotoshinoKanji(Subculture):
 2019 無
 2020 終
 2021 蟄
-2022 葬"""
+2022 葬
+2023 隠"""
 
 
 class SubculturePizza(Subculture):
