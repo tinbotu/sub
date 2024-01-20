@@ -1242,7 +1242,7 @@ class NotSubculture(object):
         u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
         u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
         u'わかるなー*$': SubcultureKnowerLevel,
-        u'(doge2048|[Jj][Aa][Ll]\s?[123|516]|[Mm][Hh]370)': u'なるほど',
+        u'(doge2048|[Jj][Aa][Ll]\s?(123|516)|[Mm][Hh]370)': u'なるほど',
         u'(鐵|鐡)道(では)?$': u'おっ',
         u'電車': u'鐵道または軌道車/b',
         u'戦い': u'戰いでしょ/b',
