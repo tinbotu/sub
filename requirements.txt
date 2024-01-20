@@ -1,5 +1,5 @@
 flake8
-redis==4.4.4
+redis==3.5.3
 requests
 ipaddress==1.0.14
 mecab-python==0.996
