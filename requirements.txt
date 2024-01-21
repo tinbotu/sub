@@ -3,7 +3,7 @@ redis==3.5.3
 requests
 ipaddress==1.0.14
 mecab-python==0.996
-GitPython==3.1.41
+GitPython==2.1.15
 PyYAML
 cchardet==0.3.5
 emoji
