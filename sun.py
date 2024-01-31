@@ -1275,7 +1275,7 @@ class NotSubculture(object):
         # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
         u'^弁当$': u'便當だろ',
         u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
-        # u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'http://33.media.tumblr.com/4ad95c7221816073ea18a4ff7b7040c3/tumblr_nf7906ogQV1qzxg8bo1_400.gif',
+        u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'https://i.gyazo.com/e50a1e1b5dd2a5cdd5c388f654bcf8a4.gif',
         u'^((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
         '.+': SubcultureHitozuma,
         '..+': SubcultureKCzuma,
