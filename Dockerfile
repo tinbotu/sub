@@ -19,6 +19,5 @@ RUN /sub/.venv/bin/python -m unidic download
 COPY ./docker-entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 
-# ENTRYPOINT ["./.venv/bin/python", "tests.py"]
 ENTRYPOINT ["/entrypoint.sh"]
 
