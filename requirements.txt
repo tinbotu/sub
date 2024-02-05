@@ -3,6 +3,7 @@ redis
 requests
 ipaddress
 mecab-python
+unidic
 GitPython
 PyYAML
 cchardet
