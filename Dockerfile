@@ -14,7 +14,7 @@ WORKDIR /sub
 RUN python3 -m venv /venv
 RUN /venv/bin/pip install -U pip
 RUN /venv/bin/pip install -r requirements.txt
-# RUN /venv/bin/python -m unidic download
+RUN /venv/bin/python -m unidic download
 
 COPY ./docker-entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh

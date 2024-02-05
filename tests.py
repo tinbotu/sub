@@ -134,7 +134,7 @@ class TestSubcultureOmochi(unittest.TestCase):
     def test_response(self):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = False
-        for i in xrange(100):
+        for i in range(100):
             res = self.r.response()
             self.assertRegexpMatches(res, r'^https?://')
 
@@ -155,7 +155,7 @@ class TestSubcultureStone(unittest.TestCase):
     def test_response(self):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = False
-        for i in xrange(500):
+        for i in range(500):
             res = self.r.response()
             self.assertRegexpMatches(res, u'(西山石|https?://)')
 
@@ -169,7 +169,7 @@ class TestSubcultureStone(unittest.TestCase):
 #        y = False
 #        n = False
 #
-#        for i in xrange(100 * 100 * 10):
+#        for i in range(100 * 100 * 10):
 #            res = self.r.response()
 #            if res == u'はい':
 #                y = True
@@ -186,7 +186,7 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
         self.r = AnotherIsMoreKnowerThanMe('', 'tests')
 
     def test_response(self):
-        for i in xrange(100):
+        for i in range(100):
             res = self.r.response()
             self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
 

@@ -29,6 +29,7 @@ import MeCab
 import yaml
 
 from html.parser import HTMLParser
+from urllib.parse import urlparse
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -543,7 +544,7 @@ class SubcultureSilent(Subculture):
         for l in node:
             word.append(self.divide_wordclass(l))
 
-        for i in xrange(len(word)):
+        for i in range(len(word)):
             do = None
             if word[i].get("word") == 'たい' and word[i].get("wordclass") == '助動詞' and word[i].get("conj1") == '特殊・タイ':
                 do = self.check_backward(word, i)
