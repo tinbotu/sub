@@ -4,8 +4,6 @@
 
 # 絡み方が悪質
 
-from __future__ import print_function
-
 import codecs
 import copy
 import hashlib
@@ -20,7 +18,6 @@ import sys
 import time
 import datetime
 import traceback
-import urlparse
 
 import cchardet
 import emoji
@@ -28,12 +25,10 @@ import git
 import ipaddress
 import requests
 import redis
-import HTMLParser
 import MeCab
 import yaml
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+from html.parser import HTMLParser
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -627,12 +622,12 @@ class SubcultureGyazoScraper(Subculture):
             return None
 
 
-class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
+class HTMLParserGetElementsByTag(HTMLParser):
     reading = False
     _count = 0
 
     def __init__(self, target_tag, target_meta_property=None, count=None):
-        HTMLParser.HTMLParser.__init__(self)
+        HTMLParser.__init__(self)
         self.target_tag = target_tag
         self.target_meta_property = target_meta_property
         self.countlimit = count
