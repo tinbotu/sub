@@ -11,10 +11,10 @@ RUN apt-get install -y git screen redis
 
 COPY . /sub
 WORKDIR /sub
-RUN python3 -m venv .venv
-RUN /sub/.venv/bin/pip install -U pip
-RUN /sub/.venv/bin/pip install -r requirements.txt
-RUN /sub/.venv/bin/python -m unidic download
+RUN python3 -m venv /venv
+RUN /venv/bin/pip install -U pip
+RUN /venv/bin/pip install -r requirements.txt
+# RUN /venv/bin/python -m unidic download
 
 COPY ./docker-entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh

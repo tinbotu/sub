@@ -4,6 +4,7 @@ requests
 ipaddress
 mecab-python
 unidic
+unidic-lite
 GitPython
 PyYAML
 cchardet
