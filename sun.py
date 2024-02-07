@@ -28,9 +28,14 @@ import redis
 import MeCab
 import yaml
 
+import html
 from html.parser import HTMLParser
-from urllib.parse import urlparse
 from urllib.parse import parse_qsl
+
+import urllib3
+import urllib3.exceptions
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class Subculture(object):
     """ abstract """
@@ -122,7 +127,9 @@ class Subculture(object):
     def read_bot_api(self, filename='bot_secret.yaml'):
         if self.api_secret is not None:
             return
-        content = open(filename).read()
+        yaml_file = open(filename)
+        content = yaml_file.read()
+        yaml_file.close()
         self.api_secret = yaml.safe_load(content)
 
     @property
@@ -141,7 +148,7 @@ class Subculture(object):
             'room': room,
             'bot': bot,
             'text': demoji,
-            'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
+            'bot_verifier': hashlib.sha1(str(bot + apikey).encode()).hexdigest(),
         }
 
     def say_lingr(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
@@ -712,12 +719,12 @@ class SubcultureTitleExtract(Subculture):
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
 
-        h.feed(self.content.replace("\n", ""))
+        h.feed(str(self.content).replace("\n", ""))
 
         h.close()
 
         if len(h.content) > 0:
-            text = h.unescape(h.content.strip())
+            text = html.unescape(h.content.strip())
         else:
             text = ''
 

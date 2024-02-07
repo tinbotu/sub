@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
-import json
 import unittest
 import os
+
+import urllib3
+import urllib3.exceptions
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from sun import (
     NotSubculture,
@@ -188,7 +191,7 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
     def test_response(self):
         for i in range(100):
             res = self.r.response()
-            self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
+            self.assertRegex(res, '^No, [A-Za-z0-9]+ culture.')
 
 
 class TestSubcultureSilent(unittest.TestCase):
@@ -211,7 +214,7 @@ class TestSubcultureSilent(unittest.TestCase):
             if r is None:
                 self.assertIsNone(self.r.response())
             else:
-                self.assertRegexpMatches(self.r.response(), r)
+                self.assertRegex(str(self.r.response()), r)
 
 
 class TestSubcultureDogeDetailStatus(unittest.TestCase):
@@ -275,7 +278,7 @@ class TestSubcultureGaishutsu(unittest.TestCase):
     def test_response_say(self):
         self.r.anti_double = False
         res = self.r.response()
-        self.assertRegexpMatches(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
+        self.assertRegex(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
 
 
 class TestNotSubculture(unittest.TestCase):
