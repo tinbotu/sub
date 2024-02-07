@@ -66,18 +66,18 @@ class TestGyazoScraper(unittest.TestCase):
     def test_fetch(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
-            self.assertRegexpMatches(self.g.content, self.g.pick_re)
+            self.assertRegex(self.g.content.decode(), self.g.pick_re)
 
     def test_fetch_false(self):
         for url in self.gyazo_url_false:
             self.g.fetch(url)
-            self.assertNotRegexpMatches(self.g.content, self.g.pick_re)
+            self.assertNotRegex(str(self.g.content), self.g.pick_re)
 
     def test_get_image_url(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
             r = self.g.response()
-            self.assertRegexpMatches(r, r'https?://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
+            self.assertRegex(r, r'https?://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
 
         for url in self.gyazo_url_false:
             self.g.fetch(url)
@@ -91,7 +91,7 @@ class TestSubcultureKnowerLevel(unittest.TestCase):
         self.r = SubcultureKnowerLevel('', 'tests')
 
     def test_levelup(self):
-        self.assertRegexpMatches(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
+        self.assertRegex(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
 
 
 class TestSubcultureMETAR(unittest.TestCase):
@@ -206,7 +206,7 @@ class TestSubcultureSilent(unittest.TestCase):
 
     def test_response(self):
         self.r.force = True
-        for c, r in self.dic.iteritems():
+        for c, r in self.dic.items():
             self.r.text = c
             if r is None:
                 self.assertIsNone(self.r.response())

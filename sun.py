@@ -30,10 +30,7 @@ import yaml
 
 from html.parser import HTMLParser
 from urllib.parse import urlparse
-
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
+from urllib.parse import parse_qsl
 
 class Subculture(object):
     """ abstract """
@@ -184,7 +181,10 @@ class Subculture(object):
 
 
     def doge_soku(self):
-        return float(max(self.conn.get('inu_soku'), 1))
+        value = self.conn.get("inu_soku")
+        if value is None:
+            value = 0
+        return float(max(value, 1))
 
     def spontaneous(self, name, key):
         for app in self.settings["spontaneous"]:
@@ -228,7 +228,7 @@ class SubcultureNogata(Subculture):
     def response(self):
         if random.randint(0, 200) > self.PROBABLY:
             return None
-        mecab = MeCab.Tagger().parse(self.text.encode('utf-8'))
+        mecab = MeCab.Tagger().parse(self.text)
         node = mecab.split("\n")
         noword = []
         for l in node:
@@ -240,7 +240,7 @@ class SubcultureNogata(Subculture):
                 noword.append(word)
         random.shuffle(noword)
         if len(noword) > 0:
-            return (noword.pop()).decode('utf-8')
+            return noword.pop()
         return None
 
 
@@ -351,9 +351,24 @@ class SubcultureDogeDetailStatus(Subculture):
     """ Show doge status """
     def response(self):
         # Expireしている場合はNoneが得られるため、maxで数値にしている
-        inu_soku = float(max(self.conn.get('inu_soku'), 0))
-        inu_internal_atencion = float(max(self.conn.get('inu_internal_atencion'), 0))
-        inu_internal_soku = float(max(self.conn.get('inu_internal_soku'), 0))
+        soku = self.conn.get('inu_soku')
+        if soku is None:
+            soku = 0
+        else:
+            soku = float(soku)
+        in_at = self.conn.get('inu_internal_atencion')
+        if in_at is None:
+            in_at = 0
+        else:
+            in_at = float(in_at)
+        in_soku = self.conn.get('inu_internal_soku')
+        if in_soku is None:
+            in_soku = 0
+        else:
+            in_soku = float(in_soku)
+        inu_soku = float(max(soku, 0))
+        inu_internal_atencion = float(max(in_at, 0))
+        inu_internal_soku = float(max(in_soku, 0))
 
         return u'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
             inu_soku, inu_internal_atencion, inu_internal_soku)
@@ -538,7 +553,7 @@ class SubcultureSilent(Subculture):
             return None
 
         m = MeCab.Tagger()
-        node = m.parse(self.text.encode('utf_8'))
+        node = m.parse(self.text)
         node = node.split("\n")
         word = []
         for l in node:
@@ -616,7 +631,7 @@ class SubcultureGyazoScraper(Subculture):
             self.fetch(text.strip())
 
     def response(self):
-        m = self.pick_re.search(self.content)
+        m = self.pick_re.search(str(self.content))
         if m and m.group():
             return m.group(1)
         else:
@@ -697,10 +712,7 @@ class SubcultureTitleExtract(Subculture):
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
 
-        try:
-            h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
-        except UnicodeDecodeError:
-            h.feed(self.content.replace("\n", " "))
+        h.feed(self.content.replace("\n", ""))
 
         h.close()
 
@@ -1325,7 +1337,7 @@ class NotSubculture(object):
             self.httpheaderHasAlreadySent = True
 
     def parse_slack_outgoing_webhooks(self, http_body):
-        params = urlparse.parse_qsl(http_body)
+        params = parse_qsl(http_body)
         params = dict(params)
 
         """ generate a *pseudo* message of Lingr """
@@ -1337,7 +1349,7 @@ class NotSubculture(object):
         self.message["events"][0]["message"]["type"] = "user"
         self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
         self.message["events"][0]["message"]["nickname"] = params.get("user_name")
-        self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
+        self.message["events"][0]["message"]["text"] = params.get("text")
         self.message["events"][0]["message"]["room"] = params.get("team_domain")
         self.message["events"][0]["message"]["slack_channel"] = params.get("channel_name")  # extra
         d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
@@ -1371,9 +1383,9 @@ class NotSubculture(object):
     def acl(self, acl, ip_address):
         if type(acl) is not list:
             return False
-        ip = ipaddress.ip_address(unicode(ip_address))
+        ip = ipaddress.ip_address(ip_address)
         for address_block in acl:
-            block = ipaddress.IPv4Network(unicode(address_block))
+            block = ipaddress.IPv4Network(address_block)
             if ip in block:
                 return True
         return False
@@ -1471,7 +1483,7 @@ class NotSubculture(object):
                 if speaker in denied_bot_list:
                     return
 
-                for dict_k, dict_res in dic.iteritems():
+                for dict_k, dict_res in dic.items():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
 
