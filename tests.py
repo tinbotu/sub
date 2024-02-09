@@ -5,10 +5,6 @@
 import unittest
 import os
 
-import urllib3
-import urllib3.exceptions
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 from sun import (
     NotSubculture,
     Subculture,
@@ -130,7 +126,7 @@ class TestSubcultureOmochi(unittest.TestCase):
         self.r.enable_flood_check = True
 
         res = self.r.response()
-        self.assertRegexpMatches(res, r'^https?://')
+        self.assertRegex(res, r'^https?://')
         res = self.r.response()
         self.assertIs(res, None)
 
@@ -139,7 +135,7 @@ class TestSubcultureOmochi(unittest.TestCase):
         self.r.enable_flood_check = False
         for i in range(100):
             res = self.r.response()
-            self.assertRegexpMatches(res, r'^https?://')
+            self.assertRegex(res, r'^https?://')
 
 
 class TestSubcultureStone(unittest.TestCase):
@@ -151,7 +147,7 @@ class TestSubcultureStone(unittest.TestCase):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = True
         res = self.r.response()
-        self.assertRegexpMatches(res, u'(西山石|https?://)')
+        self.assertRegex(res, u'(西山石|https?://)')
         res = self.r.response()
         self.assertIs(res, None)
 
@@ -160,7 +156,7 @@ class TestSubcultureStone(unittest.TestCase):
         self.r.enable_flood_check = False
         for i in range(500):
             res = self.r.response()
-            self.assertRegexpMatches(res, u'(西山石|https?://)')
+            self.assertRegex(res, u'(西山石|https?://)')
 
 
 #class TestSubcultureHitozuma(unittest.TestCase):
@@ -239,7 +235,7 @@ class TestSubcultureShowDogeSoku(unittest.TestCase):
         self.r = SubcultureShowDogeSoku('', 'tests')
 
     def test_response(self):
-        self.assertRegexpMatches(self.r.response(), '^https?://')
+        self.assertRegex(self.r.response(), '^https?://')
 
 
 class TestSubcultureNogata(unittest.TestCase):
@@ -261,7 +257,7 @@ class TestSubcultureNogata(unittest.TestCase):
 
 class TestSubcultureGaishutsu(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'
-    text = u'テスト http://docs.python.jp/2/howto/regex.html'
+    text = 'テスト http://docs.python.jp/2/howto/regex.html'
 
     def setUp(self):
         self.r = SubcultureGaishutsu(self.text, 'tests')
@@ -425,7 +421,7 @@ class TestSubcultureKotoshinoKanji(unittest.TestCase):
 
     def test_kanji_list(self):
         self.s.text = ''
-        self.assertRegexpMatches(self.s.response(), r'^[0-9]+\ ')
+        self.assertRegex(self.s.response(), r'^[0-9]+\ ')
 
 
 class TestSubcultureTitleExtract(unittest.TestCase):
@@ -454,11 +450,11 @@ class TestSubcultureTitleExtract(unittest.TestCase):
 
     def test_instagram(self):
         self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
-        self.assertRegexpMatches(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
+        self.assertRegex(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
 
     def test_googlephotos(self):
         self.s.text = 'https://photos.app.goo.gl/MobEewnGYii7epwN9'
-        self.assertRegexpMatches(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
+        self.assertRegex(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
 
 
 if __name__ == '__main__':

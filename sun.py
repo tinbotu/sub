@@ -32,10 +32,6 @@ import html
 from html.parser import HTMLParser
 from urllib.parse import parse_qsl
 
-import urllib3
-import urllib3.exceptions
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 
 class Subculture(object):
     """ abstract """
@@ -105,9 +101,9 @@ class Subculture(object):
         }
         try:
             if payload:
-                r = requests.post(url, headers=headers, params=params, data=payload, verify=False)
+                r = requests.post(url, headers=headers, params=params, data=payload)
             else:
-                r = requests.get(url, headers=headers, params=params, verify=False)
+                r = requests.get(url, headers=headers, params=params)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
@@ -191,6 +187,8 @@ class Subculture(object):
         value = self.conn.get("inu_soku")
         if value is None:
             value = 0
+        else:
+            value = float(value)
         return float(max(value, 1))
 
     def spontaneous(self, name, key):
@@ -209,12 +207,11 @@ class Subculture(object):
         self.conn.expire(key, 60*60*24)
 
 
-
 class SubcultureKnowerLevel(Subculture):
 
     def response(self):
         level = self.conn.incr("knower-%s" % self.speaker, 1)
-        return u"おっ、分かり度 %d ですか" % level
+        return "おっ、分かり度 %d ですか" % level
 
 
 class SubcultureKnowerLevelUp(Subculture):
@@ -228,7 +225,7 @@ class SubcultureRetirementLevelUp(Subculture):
 
 
 class SubcultureNogata(Subculture):
-    u""" 姫 """
+    """ 姫 """
 
     PROBABLY = 1
 
@@ -260,42 +257,42 @@ class SubcultureAtencion(Subculture):
     soku_T = .2
 
     atencion_dic = {
-        u'犬': 150,
-        u'イヌ': 100,
-        u'^お前': 30,
+        '犬': 150,
+        'イヌ': 100,
+        '^お前': 30,
         'main': 10,
         'bot': 10,
-        u'メイン': 10,
-        u'サブ': 4,
+        'メイン': 10,
+        'サブ': 4,
         'doge': 50,
     }
     soku_dic = {
-        u'犬': 10,
-        u'うぜー': -100,
-        u'糞': -80,
-        u'クソ': -100,
-        u'黙れ': -150,
-        u'はい$': 10,
-        u'はいじゃないが': -20,
-        u'おっ': 20,
-        u'オッ': 20,
-        u'いいですね': 10,
-        u'寿司': 5,
-        u'[分|わ]か[らりるっん]': 20,
-        u'かわいい': 10,
-        u' T ': 50,
-        u'だる': -10,
-        u'姫': 20,
-        u'サ[ブヴ]': 30,
-        u'ゴミ': 10,
-        u'(馬鹿|バカ)': 40,
-        u'機運': 20,
-        u'ウッ': 10,
-        u'危険': 10,
-        u'なるほど': 10,
-        u'おもち': -10,
-        u'(ない|ねーよ?)$': -30,
-        u'絡み方が悪質': 50,
+        '犬': 10,
+        'うぜー': -100,
+        '糞': -80,
+        'クソ': -100,
+        '黙れ': -150,
+        'はい$': 10,
+        'はいじゃないが': -20,
+        'おっ': 20,
+        'オッ': 20,
+        'いいですね': 10,
+        '寿司': 5,
+        '[分|わ]か[らりるっん]': 20,
+        'かわいい': 10,
+        ' T ': 50,
+        'だる': -10,
+        '姫': 20,
+        'サ[ブヴ]': 30,
+        'ゴミ': 10,
+        '(馬鹿|バカ)': 40,
+        '機運': 20,
+        'ウッ': 10,
+        '危険': 10,
+        'なるほど': 10,
+        'おもち': -10,
+        '(ない|ねーよ?)$': -30,
+        '絡み方が悪質': 50,
         'doge': 20,
         'Ruby': 10,
     }
@@ -320,7 +317,7 @@ class SubcultureAtencion(Subculture):
             else:
                 self.soku = float(self.soku)
 
-            for dict_k, score in self.atencion_dic.iteritems():
+            for dict_k, score in self.atencion_dic.items():
                 if re.compile(dict_k).search(self.text):
                     n1 = self.atencion + float(score)
                     self.atencion = self.lpf(self.atencion, n1, self.atencion_T)
@@ -328,7 +325,7 @@ class SubcultureAtencion(Subculture):
                 self.atencion = float(self.atencion) - 1
 
             me_factor = 1 + math.sqrt(abs(self.atencion))
-            for dict_k, score in self.soku_dic.iteritems():
+            for dict_k, score in self.soku_dic.items():
                 if re.compile(dict_k).search(self.text):
                     n1 = self.soku + float(score) * me_factor
                     self.soku = self.lpf(self.soku, n1, self.soku_T)
@@ -351,7 +348,7 @@ class SubcultureAtencion(Subculture):
         random.seed()
         if random.randrange(1, 500) < inu_soku:
             # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
-            return u'オッ'
+            return 'オッ'
 
 
 class SubcultureDogeDetailStatus(Subculture):
@@ -563,8 +560,8 @@ class SubcultureSilent(Subculture):
         node = m.parse(self.text)
         node = node.split("\n")
         word = []
-        for l in node:
-            word.append(self.divide_wordclass(l))
+        for line in node:
+            word.append(self.divide_wordclass(line))
 
         for i in range(len(word)):
             do = None
@@ -573,7 +570,7 @@ class SubcultureSilent(Subculture):
                 if self.check_forward(word, i):
                     continue
             if do:
-                me = [u'私も', u'私も', u'私も', u'また', u'私も', ]
+                me = ['私も', '私も', '私も', 'また', '私も', ]
                 return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
@@ -719,7 +716,7 @@ class SubcultureTitleExtract(Subculture):
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
 
-        h.feed(str(self.content).replace("\n", ""))
+        h.feed(str(self.content.decode()).replace("\n", ""))
 
         h.close()
 
@@ -833,7 +830,6 @@ class SubcultureMETAR(Subculture):
 
         if self.weather is not None:
             return u'%s (%.1f\u2103; %d\u3371; %s%%)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
-
 
 
 class SubcultureOmochi(Subculture):
@@ -1251,7 +1247,7 @@ class NotSubculture(object):
         u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
         u'^(\?|？)$': '?',
         u'^はい(じゃないが)?$': SubcultureHai,
-        u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
+        u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal|JAL) culture': AnotherIsMoreKnowerThanMe,
         '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
         u'^[KkＫｋ][CcＣｃ][\?？]$': SubcultureKC,
         u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
@@ -1340,7 +1336,6 @@ class NotSubculture(object):
 
     def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
         if self.httpheaderHasAlreadySent is False:
-            print(header)
             self.httpheaderHasAlreadySent = True
 
     def parse_slack_outgoing_webhooks(self, http_body):
