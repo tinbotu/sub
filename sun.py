@@ -1532,7 +1532,7 @@ class NotSubculture(object):
 
 
 if __name__ == '__main__':
-    sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
+    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
     no = NotSubculture()
     post_body = sys.stdin.read()
