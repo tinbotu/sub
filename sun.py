@@ -53,7 +53,7 @@ class Subculture(object):
     @property
     def conn(self):
         if self._conn is None:
-            self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+            self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db, decode_responses=True)
             try:
                 self._conn.ping()
             except redis.exceptions.ResponseError as e:
