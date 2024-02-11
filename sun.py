@@ -1050,7 +1050,7 @@ class SubcultureDogeHouseStatus(Subculture):
         res = u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)')
 
         with open("dogehouse.txt", "r") as fp:
-            res += fp.read().decode('utf_8')
+            res += fp.read()
 
         raise DogeAwayMessage(res)
 
