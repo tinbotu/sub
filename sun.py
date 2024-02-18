@@ -1351,11 +1351,11 @@ class NotSubculture(object):
         self.message["events"][0]["message"] = {}
         self.message["events"][0]["message"]["id"] = -1
         self.message["events"][0]["message"]["type"] = "user"
-        self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
-        self.message["events"][0]["message"]["nickname"] = params.get("user_name")
-        self.message["events"][0]["message"]["text"] = params.get("text")
-        self.message["events"][0]["message"]["room"] = params.get("team_domain")
-        self.message["events"][0]["message"]["slack_channel"] = params.get("channel_name")  # extra
+        self.message["events"][0]["message"]["speaker_id"] = str(params.get("user_name"))
+        self.message["events"][0]["message"]["nickname"] = str(params.get("user_name"))
+        self.message["events"][0]["message"]["text"] = str(params.get("text"))
+        self.message["events"][0]["message"]["room"] = str(params.get("team_domain"))
+        self.message["events"][0]["message"]["slack_channel"] = str(params.get("channel_name"))  # extra
         d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
         self.message["events"][0]["message"]["timestamp"] = d + 'Z'
 
