@@ -4,9 +4,6 @@
 
 # 絡み方が悪質
 
-from __future__ import print_function
-
-import codecs
 import copy
 import hashlib
 import inspect
@@ -20,7 +17,6 @@ import sys
 import time
 import datetime
 import traceback
-import urlparse
 
 import cchardet
 import emoji
@@ -28,15 +24,12 @@ import git
 import ipaddress
 import requests
 import redis
-import HTMLParser
 import MeCab
 import yaml
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import html
+from html.parser import HTMLParser
+from urllib.parse import parse_qsl
 
 
 class Subculture(object):
@@ -59,7 +52,7 @@ class Subculture(object):
     @property
     def conn(self):
         if self._conn is None:
-            self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db)
+            self._conn = redis.Redis(host='127.0.0.1', db=self.__redis_db, decode_responses=True)
             try:
                 self._conn.ping()
             except redis.exceptions.ResponseError as e:
@@ -107,9 +100,9 @@ class Subculture(object):
         }
         try:
             if payload:
-                r = requests.post(url, headers=headers, params=params, data=payload, verify=False)
+                r = requests.post(url, headers=headers, params=params, data=payload)
             else:
-                r = requests.get(url, headers=headers, params=params, verify=False)
+                r = requests.get(url, headers=headers, params=params)
             if r.status_code == requests.codes.ok:
                 self.content = r.content
                 self.content_headers = r.headers
@@ -129,7 +122,9 @@ class Subculture(object):
     def read_bot_api(self, filename='bot_secret.yaml'):
         if self.api_secret is not None:
             return
-        content = open(filename).read()
+        yaml_file = open(filename)
+        content = yaml_file.read()
+        yaml_file.close()
         self.api_secret = yaml.safe_load(content)
 
     @property
@@ -148,7 +143,7 @@ class Subculture(object):
             'room': room,
             'bot': bot,
             'text': demoji,
-            'bot_verifier': hashlib.sha1(bot + apikey).hexdigest(),
+            'bot_verifier': hashlib.sha1(str(bot + apikey).encode()).hexdigest(),
         }
 
     def say_lingr(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
@@ -188,7 +183,12 @@ class Subculture(object):
 
 
     def doge_soku(self):
-        return float(max(self.conn.get('inu_soku'), 1))
+        value = self.conn.get("inu_soku")
+        if value is None:
+            value = 0
+        else:
+            value = float(value)
+        return float(max(value, 1))
 
     def spontaneous(self, name, key):
         for app in self.settings["spontaneous"]:
@@ -206,12 +206,11 @@ class Subculture(object):
         self.conn.expire(key, 60*60*24)
 
 
-
 class SubcultureKnowerLevel(Subculture):
 
     def response(self):
         level = self.conn.incr("knower-%s" % self.speaker, 1)
-        return u"おっ、分かり度 %d ですか" % level
+        return "おっ、分かり度 %d ですか" % level
 
 
 class SubcultureKnowerLevelUp(Subculture):
@@ -225,14 +224,14 @@ class SubcultureRetirementLevelUp(Subculture):
 
 
 class SubcultureNogata(Subculture):
-    u""" 姫 """
+    """ 姫 """
 
     PROBABLY = 1
 
     def response(self):
         if random.randint(0, 200) > self.PROBABLY:
             return None
-        mecab = MeCab.Tagger().parse(self.text.encode('utf-8'))
+        mecab = MeCab.Tagger().parse(self.text)
         node = mecab.split("\n")
         noword = []
         for l in node:
@@ -244,7 +243,7 @@ class SubcultureNogata(Subculture):
                 noword.append(word)
         random.shuffle(noword)
         if len(noword) > 0:
-            return (noword.pop()).decode('utf-8')
+            return noword.pop()
         return None
 
 
@@ -257,42 +256,42 @@ class SubcultureAtencion(Subculture):
     soku_T = .2
 
     atencion_dic = {
-        u'犬': 150,
-        u'イヌ': 100,
-        u'^お前': 30,
+        '犬': 150,
+        'イヌ': 100,
+        '^お前': 30,
         'main': 10,
         'bot': 10,
-        u'メイン': 10,
-        u'サブ': 4,
+        'メイン': 10,
+        'サブ': 4,
         'doge': 50,
     }
     soku_dic = {
-        u'犬': 10,
-        u'うぜー': -100,
-        u'糞': -80,
-        u'クソ': -100,
-        u'黙れ': -150,
-        u'はい$': 10,
-        u'はいじゃないが': -20,
-        u'おっ': 20,
-        u'オッ': 20,
-        u'いいですね': 10,
-        u'寿司': 5,
-        u'[分|わ]か[らりるっん]': 20,
-        u'かわいい': 10,
-        u' T ': 50,
-        u'だる': -10,
-        u'姫': 20,
-        u'サ[ブヴ]': 30,
-        u'ゴミ': 10,
-        u'(馬鹿|バカ)': 40,
-        u'機運': 20,
-        u'ウッ': 10,
-        u'危険': 10,
-        u'なるほど': 10,
-        u'おもち': -10,
-        u'(ない|ねーよ?)$': -30,
-        u'絡み方が悪質': 50,
+        '犬': 10,
+        'うぜー': -100,
+        '糞': -80,
+        'クソ': -100,
+        '黙れ': -150,
+        'はい$': 10,
+        'はいじゃないが': -20,
+        'おっ': 20,
+        'オッ': 20,
+        'いいですね': 10,
+        '寿司': 5,
+        '[分|わ]か[らりるっん]': 20,
+        'かわいい': 10,
+        ' T ': 50,
+        'だる': -10,
+        '姫': 20,
+        'サ[ブヴ]': 30,
+        'ゴミ': 10,
+        '(馬鹿|バカ)': 40,
+        '機運': 20,
+        'ウッ': 10,
+        '危険': 10,
+        'なるほど': 10,
+        'おもち': -10,
+        '(ない|ねーよ?)$': -30,
+        '絡み方が悪質': 50,
         'doge': 20,
         'Ruby': 10,
     }
@@ -309,7 +308,7 @@ class SubcultureAtencion(Subculture):
         else:
             self.atencion = float(self.atencion)
 
-        if self.text == u'犬寝ろ':
+        if self.text == '犬寝ろ':
             pass
         else:
             if self.soku is None:
@@ -317,7 +316,7 @@ class SubcultureAtencion(Subculture):
             else:
                 self.soku = float(self.soku)
 
-            for dict_k, score in self.atencion_dic.iteritems():
+            for dict_k, score in self.atencion_dic.items():
                 if re.compile(dict_k).search(self.text):
                     n1 = self.atencion + float(score)
                     self.atencion = self.lpf(self.atencion, n1, self.atencion_T)
@@ -325,7 +324,7 @@ class SubcultureAtencion(Subculture):
                 self.atencion = float(self.atencion) - 1
 
             me_factor = 1 + math.sqrt(abs(self.atencion))
-            for dict_k, score in self.soku_dic.iteritems():
+            for dict_k, score in self.soku_dic.items():
                 if re.compile(dict_k).search(self.text):
                     n1 = self.soku + float(score) * me_factor
                     self.soku = self.lpf(self.soku, n1, self.soku_T)
@@ -347,19 +346,34 @@ class SubcultureAtencion(Subculture):
 
         random.seed()
         if random.randrange(1, 500) < inu_soku:
-            # msg = u"new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
-            return u'オッ'
+            # msg = "new soku:%.2f, internal_soku:%.2f, internal_atencion:%.2f" % (inu_soku, self.soku, self.atencion)
+            return 'オッ'
 
 
 class SubcultureDogeDetailStatus(Subculture):
     """ Show doge status """
     def response(self):
         # Expireしている場合はNoneが得られるため、maxで数値にしている
-        inu_soku = float(max(self.conn.get('inu_soku'), 0))
-        inu_internal_atencion = float(max(self.conn.get('inu_internal_atencion'), 0))
-        inu_internal_soku = float(max(self.conn.get('inu_internal_soku'), 0))
+        soku = self.conn.get('inu_soku')
+        if soku is None:
+            soku = 0
+        else:
+            soku = float(soku)
+        in_at = self.conn.get('inu_internal_atencion')
+        if in_at is None:
+            in_at = 0
+        else:
+            in_at = float(in_at)
+        in_soku = self.conn.get('inu_internal_soku')
+        if in_soku is None:
+            in_soku = 0
+        else:
+            in_soku = float(in_soku)
+        inu_soku = float(max(soku, 0))
+        inu_internal_atencion = float(max(in_at, 0))
+        inu_internal_soku = float(max(in_soku, 0))
 
-        return u'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
+        return 'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
             inu_soku, inu_internal_atencion, inu_internal_soku)
 
 
@@ -367,7 +381,7 @@ class SubcultureSelfUpdate(Subculture):
     def response(self):
         repo = git.Repo('.')
         if repo.is_dirty():
-            return u'私は穢れている'
+            return '私は穢れている'
 
         previous_head = repo.head.commit.hexsha
         repo.remotes.origin.pull('master')
@@ -376,8 +390,8 @@ class SubcultureSelfUpdate(Subculture):
             return '?'
         else:
             os.system("make update_packages 1>deploy.log 2>&1")
-            url = u'https://github.com/tinbotu/sub/commit/%s' % (repo.head.commit.hexsha,)
-            msg = u'ニャーン %s %s %s\n%s' % (repo.head.commit.hexsha,
+            url = 'https://github.com/tinbotu/sub/commit/%s' % (repo.head.commit.hexsha,)
+            msg = 'ニャーン %s %s %s\n%s' % (repo.head.commit.hexsha,
                                                   repo.head.commit.committer,
                                                   repo.head.commit.message,
                                                   url)
@@ -542,21 +556,21 @@ class SubcultureSilent(Subculture):
             return None
 
         m = MeCab.Tagger()
-        node = m.parse(self.text.encode('utf_8'))
+        node = m.parse(self.text)
         node = node.split("\n")
         word = []
-        for l in node:
-            word.append(self.divide_wordclass(l))
+        for line in node:
+            word.append(self.divide_wordclass(line))
 
-        for i in xrange(len(word)):
+        for i in range(len(word)):
             do = None
             if word[i].get("word") == 'たい' and word[i].get("wordclass") == '助動詞' and word[i].get("conj1") == '特殊・タイ':
                 do = self.check_backward(word, i)
                 if self.check_forward(word, i):
                     continue
             if do:
-                me = [u'私も', u'私も', u'私も', u'また', u'私も', ]
-                return u'%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
+                me = ['私も', '私も', '私も', 'また', '私も', ]
+                return '%s%sたいな' % (me[random.randrange(0, len(me))], do.decode('utf_8'))
 
 
 class SubcultureKnowerLevelGet(Subculture):
@@ -620,19 +634,19 @@ class SubcultureGyazoScraper(Subculture):
             self.fetch(text.strip())
 
     def response(self):
-        m = self.pick_re.search(self.content)
+        m = self.pick_re.search(str(self.content))
         if m and m.group():
             return m.group(1)
         else:
             return None
 
 
-class HTMLParserGetElementsByTag(HTMLParser.HTMLParser):
+class HTMLParserGetElementsByTag(HTMLParser):
     reading = False
     _count = 0
 
     def __init__(self, target_tag, target_meta_property=None, count=None):
-        HTMLParser.HTMLParser.__init__(self)
+        HTMLParser.__init__(self)
         self.target_tag = target_tag
         self.target_meta_property = target_meta_property
         self.countlimit = count
@@ -701,15 +715,12 @@ class SubcultureTitleExtract(Subculture):
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
 
-        try:
-            h.feed(self.content.replace("\n", " ").decode(self.content_encoding.lower()))
-        except UnicodeDecodeError:
-            h.feed(self.content.replace("\n", " "))
+        h.feed(str(self.content.decode()).replace("\n", ""))
 
         h.close()
 
         if len(h.content) > 0:
-            text = h.unescape(h.content.strip())
+            text = html.unescape(h.content.strip())
         else:
             text = ''
 
@@ -753,8 +764,8 @@ class SubcultureGaishutsu(Subculture):
             ago_sec = time.time() - float(r.get("first_seen"))
             if self.anti_double and ago_sec < 30:
                 return ""  # dont respond within 30 sec
-            ago = u' %.1f 日くらい前に' % (ago_sec / (60*60*24))
-        return u'おっ その %s は%s %s により既出ですね' % (url, ago, r.get('speaker'))
+            ago = ' %.1f 日くらい前に' % (ago_sec / (60*60*24))
+        return 'おっ その %s は%s %s により既出ですね' % (url, ago, r.get('speaker'))
 
     def update(self, key, count=1):
         r = {}
@@ -817,8 +828,7 @@ class SubcultureMETAR(Subculture):
         self.parse_openweathermap()
 
         if self.weather is not None:
-            return u'%s (%.1f\u2103; %d\u3371; %s%%)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
-
+            return '%s (%.1f\u2103; %d\u3371; %s%%)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
 
 
 class SubcultureOmochi(Subculture):
@@ -905,7 +915,7 @@ class SubcultureStone(Subculture):
             'http://livedoor.blogimg.jp/fknews/imgs/4/c/4c478d9b.jpg',
             'http://i.gyazo.com/29a38b2b9202862189d8f7a4df1e8886.png',
             'http://i.gyazo.com/183cade0a96dfcac84a113125a46bfa9.png',
-            u'西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
+            '西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
         ]
 
         if self.check_flood(self.speaker, 30) is False:
@@ -919,8 +929,8 @@ class SubcultureWaterFall(Subculture):
     """ water fall """
     def response(self):
         urls = [
-            u'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png',
-            u'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
+            'http://i.gyazo.com/78984f360ddf36de883ec0488a4178cb.png',
+            'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
         ]
 
         if self.check_flood(self.speaker, 10) is False:
@@ -936,9 +946,9 @@ class SubcultureHai(Subculture):
 
         res = None
         if random.randrange(0, 100) > 40:
-            res = u'はい'
+            res = 'はい'
         else:
-            res = u'はいじゃないが'
+            res = 'はいじゃないが'
 
         return res
 
@@ -951,9 +961,9 @@ class SubcultureHitozuma(Subculture):
         res = None
         if random.randrange(0, 500) < self.doge_soku():
             if random.randrange(0, 100) > 0:
-                res = u'はい'
+                res = 'はい'
             else:
-                res = u'いいえ'
+                res = 'いいえ'
 
         return res
 
@@ -966,9 +976,9 @@ class SubcultureKCzuma(Subculture):
         res = None
         if random.randrange(0, 2000) < self.doge_soku():
             if random.randrange(0, 100) > 0:
-                res = random.choice([u'K', u'K', u'Y', u'N', u'E', u'P', u'D', u'H', u'U', u'T', u'S', u'O', u'V', ]) + u'C'
+                res = random.choice(['K', 'K', 'Y', 'N', 'E', 'P', 'D', 'H', 'U', 'T', 'S', 'O', 'V', ]) + 'C'
             else:
-                res = u'KC'
+                res = 'KC'
         return res
 
 class SubcultureKC(Subculture):
@@ -978,13 +988,13 @@ class SubcultureKC(Subculture):
 
         ordeal = random.randrange(0, 100)
         if ordeal > 70:
-            res = u'Yes, Kumagai Culture.'
+            res = 'Yes, Kumagai Culture.'
         elif ordeal > 40:
-            res = u'Yes, Kuzuha Culture.'
+            res = 'Yes, Kuzuha Culture.'
         elif ordeal > 20:
-            res = u'No, Not Kumagai Culture.'
+            res = 'No, Not Kumagai Culture.'
         elif ordeal < 5:
-            res = u'Exactly, Kuzuha Culture.'
+            res = 'Exactly, Kuzuha Culture.'
         return res
 
 class AnotherIsMoreKnowerThanMe(Subculture):
@@ -1008,7 +1018,7 @@ class HateSubculture(Subculture):
 
     def response(self):
         random.seed()
-        return u'川\n' * (random.randint(0, 10) + 20)
+        return '川\n' * (random.randint(0, 10) + 20)
 
 
 class DogeAwayMessage(Exception):
@@ -1020,14 +1030,14 @@ class SubcultureDogeGoAway(Subculture):
 
     def response(self):
         random.seed()
-        if u'逃がす' in self.text:
+        if '逃がす' in self.text:
             if self.check_doge_away() is False:
                 self.doge_away(expire_sec=60*60)
-                raise DogeAwayMessage(u'(自由)')
-        elif u'捕' in self.text:
+                raise DogeAwayMessage('(自由)')
+        elif '捕' in self.text:
             if random.randrange(0, 100) > 50:
                 self.doge_away(False)
-                raise DogeAwayMessage(u'(不自由で邪悪)')
+                raise DogeAwayMessage('(不自由で邪悪)')
             else:
                 raise DogeAwayMessage('http://i.gyazo.com/d8f75febb9d57057731fc38f4f0288d5.png')
 
@@ -1036,10 +1046,10 @@ class SubcultureDogeHouseStatus(Subculture):
 
     def response(self):
         self.check_doge_away()
-        res = u'(犬' + (u'は逃げました)' if self.doge_is_away else u'はいる)')
+        res = '(犬' + ('は逃げました)' if self.doge_is_away else 'はいる)')
 
         with open("dogehouse.txt", "r") as fp:
-            res += fp.read().decode('utf_8')
+            res += fp.read()
 
         raise DogeAwayMessage(res)
 
@@ -1115,7 +1125,10 @@ class SubcultureKimotiYorokobi(SubcultureKimoti):
 class SubcultureCMD(Subculture):
 
     def response(self):
-        cmd = [u'https://twitter.com/chomado/status/1164468142195662850', u'(*ﾟ▽ﾟ* っ)З', u'(((o(*ﾟ▽ﾟ*)o)))', u'┌（┌ *ﾟ▽ﾟ*）┐', u'(((o===(*ﾟ▽ﾟ*)===o)))', u'┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', u'Xamarinはいいぞ', u'https://twitter.com/loadlimits/status/1124773878872416256' ]
+        cmd = ['https://twitter.com/chomado/status/1164468142195662850',
+               '(*ﾟ▽ﾟ* っ)З', '(((o(*ﾟ▽ﾟ*)o)))', '┌（┌ *ﾟ▽ﾟ*）┐',
+               '(((o===(*ﾟ▽ﾟ*)===o)))', '┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', 'Xamarinはいいぞ',
+               'https://twitter.com/loadlimits/status/1124773878872416256']
 
         if self.check_flood(self.speaker, 30) is False:
             return None
@@ -1157,7 +1170,7 @@ class SubcultureTMD(Subculture):
 class SubcultureXamarin(Subculture):
 
     def response(self):
-        words = [u'人脈♪', u'Xamarinはいいぞ', ]
+        words = ['人脈♪', 'Xamarinはいいぞ', ]
 
         if self.check_flood(self.speaker, 30) is False:
             return None
@@ -1224,99 +1237,99 @@ class NotSubculture(object):
     dic_base = {
         'https?://gyazo.com': SubcultureGyazoScraper,
         'https?': SubcultureTitleExtract,
-        # u'https://twitter.com/': SubcultureTwitterScraper,
+        # 'https://twitter.com/': SubcultureTwitterScraper,
     }
 
     dic_extend = {
         '^(Ｓ|ｓ|S|s)(ｕｂ|ub)\s*((Ｃ|ｃ|C|c)(ｕｌｔｕｒｅ|ulture))?$': 'No',
-        u'ベンゾ': u'曖昧/d',
-        u'(カエリンコ|かえりんこ)': u'いいですよ',
-        u'^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
-        u'(:?\(sun\)|おはようございます|ohayougozaimasu|起きた|おきた|ぉぁょ)$': u'☀',
-        u'^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
-        u'^(\?|？)$': '?',
-        u'^はい(じゃないが)?$': SubcultureHai,
-        u'(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal\JAL) culture': AnotherIsMoreKnowerThanMe,
+        'ベンゾ': '曖昧/d',
+        '(カエリンコ|かえりんこ)': 'いいですよ',
+        '^(Ｔａｒｏ|Taro|太郎|Ｙａｒｏ|Yaro|野郎)$': 'No',
+        '(:?\(sun\)|おはようございます|ohayougozaimasu|起きた|おきた|ぉぁょ)$': '☀',
+        '^サ(ブ|ヴ)(カルチャー)?(なの)?(では)?(\?|？|。)*$': '?',
+        '^(\?|？)$': '?',
+        '^はい(じゃないが)?$': SubcultureHai,
+        '(kumagai|ykic|kuzuha|esehara|tajima|niryuu|takano(:?32)?|usaco|voqn|tomad|yuiseki|pha|布|jal|JAL) culture': AnotherIsMoreKnowerThanMe,
         '^[KYETNOSVP1UJ]C$': AnotherIsMoreKnowerThanMe,
-        u'^[KkＫｋ][CcＣｃ][\?？]$': SubcultureKC,
-        u'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': u'わかるなー',
-        u'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': u'?',
-        u'わかるなー*$': SubcultureKnowerLevel,
-        u'(doge2048|[Jj][Aa][Ll]\s?(123|516)|[Mm][Hh]370)': u'なるほど',
-        u'(鐵|鐡)道(では)?$': u'おっ',
-        u'電車': u'鐵道または軌道車/b',
-        u'戦い': u'戰いでしょ/b',
-        u'拝承': u'拝復/c',
-        # u'あなた': u'あなたとJAVA, \n今すぐダウンロー\nド\nhttps://www.java.com/ja/',
-        # u'([^#]|^)[Cc]h?at[Ww][ao]rk': u'http://b.hatena.ne.jp/chatwark/',
-        u'^(おもち|OM[CT])$': SubcultureOmochi,
-        u'^(喜び|悦び|歓び|慶び|よろこび)の(氣持ち|気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
-        u'^(氣持ち|気持ち|きもち|KM[CT])$': SubcultureKimoti,
-        u'^石$': SubcultureStone,
-        u'西山石': u'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
-        u'山だ?$': u'やまいくぞ/c',
-        u'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
-        u'ストール$': u'はい',
-        u'(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': u'どうすればいいんだ/d',
-        u'どうすればいいんだ': u'おれはもうだめだ/d',
-        u'(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': u'?',
-        u'^(クソ|糞|くそ)(すぎる|だな)ー?$': u'ごめん/c',
-        u'^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
-        u'^消毒$': SubcultureWaterFall,
-        u'^流す$': HateSubculture,
-        u'^他人のわかり': SubcultureKnowerLevelGet,
-        # u'([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
-        u'オレオ': u'オレオ',
-        u'(?:社|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退|オワ)': SubcultureRetirementLevelUp,
-        u'^他人の社会': SubcultureRetirementLevelGet,
-        u'たい': SubcultureSilent,
+        '^[KkＫｋ][CcＣｃ][\?？]$': SubcultureKC,
+        'さすが\s?(kuzuha|ykic|usaco|pha|esehara|niryuu|tajima|usaco)\s?(さん)?': 'わかるなー',
+        'さすが\s?(くまがい|熊谷|kumagai|tinbotu|ｋｕｍａｇａｉ|ｔｉｎｂｏｔｕ)\s?(さん)?': '?',
+        'わかるなー*$': SubcultureKnowerLevel,
+        '(doge2048|[Jj][Aa][Ll]\s?(123|516)|[Mm][Hh]370)': 'なるほど',
+        '(鐵|鐡)道(では)?$': 'おっ',
+        '電車': '鐵道または軌道車/b',
+        '戦い': '戰いでしょ/b',
+        '拝承': '拝復/c',
+        # 'あなた': 'あなたとJAVA, \n今すぐダウンロー\nド\nhttps://www.java.com/ja/',
+        # '([^#]|^)[Cc]h?at[Ww][ao]rk': 'http://b.hatena.ne.jp/chatwark/',
+        '^(おもち|OM[CT])$': SubcultureOmochi,
+        '^(喜び|悦び|歓び|慶び|よろこび)の(氣持ち|気持ち|きもち|KMT)$': SubcultureKimotiYorokobi,
+        '^(氣持ち|気持ち|きもち|KM[CT])$': SubcultureKimoti,
+        '^石$': SubcultureStone,
+        '西山石': 'http://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
+        '山だ?$': 'やまいくぞ/c',
+        'がんばるぞい(！|!)?$': 'http://cdn-ak.f.st-hatena.com/images/fotolife/w/watari11/20140930/20140930223157.jpg',
+        'ストール$': 'はい',
+        '(俺は|おれは)?もう(だめ|ダメ)だ[ー〜]*$': 'どうすればいいんだ/d',
+        'どうすればいいんだ': 'おれはもうだめだ/d',
+        '(は|の|とか)((きも|キモ)いの|(サブ|サヴ))(では)?$': '?',
+        '^(クソ|糞|くそ)(すぎる|だな)ー?$': 'ごめん/c',
+        '^(?:(今日?|きょう)?外?(暑|寒|あつ|さむ|さみ|あち)い?(ー|のかな|？|\?)|METAR|天気)$': SubcultureMETAR,
+        '^消毒$': SubcultureWaterFall,
+        '^流す$': HateSubculture,
+        '^他人のわかり': SubcultureKnowerLevelGet,
+        # '([わゎ分][\/\s\|｜　]*?[か○][\/\s\|｜　]*?[らりるっ]|なるほど|はい|お[\/\s　]*?も[/\s　]*?ち|かわいい|便利|タダメシ|[TDdS]+$|機運|老|若|おっ|ですね|サ[\/\s\|｜　]*?[ブヴ]|布|ヤバい|だる|水|コー|ムー|野方|高円寺|ルノ|サイエンス|野郎|カルチャー|左翼|あっ|ウッ|速|陣営|ゴミ|オタサー|姫|寿司|危険|HOD|椅○)': SubcultureKnowerLevelUp,
+        'オレオ': 'オレオ',
+        '(?:社|無職|辞め|仏教|瞑想|無常|数学|OMD|老|帰|[働動行][きい]たくな|出家|転|つま[らん][なん]|休|不景気|舟|眠|だる|熊野|親|介護|[帰か]え?り[たて]|ポキ|気.*?[なね][しー]|終わり|職|怠|引退|オワ)': SubcultureRetirementLevelUp,
+        '^他人の社会': SubcultureRetirementLevelGet,
+        'たい': SubcultureSilent,
         'http': SubcultureGaishutsu,
-        u'うひー': u'うひーとかやめてくれる',
-        # u'(Mac|マック|OSX|osx)': u'マックパワー/aB',
-        u'^弁当$': u'便當だろ',
-        u'\bシュッ\b': u'シュッ！シュッ！\nんっ ...',
-        u'(止|と)ま(ら|ん)ない(んす|んすよ)?': u'https://i.gyazo.com/e50a1e1b5dd2a5cdd5c388f654bcf8a4.gif',
-        u'^((ヤバ|やば)(イ|い)|yabai)$': u'WHOOP! WHOOP! PULL UP!!!/aA',
+        'うひー': 'うひーとかやめてくれる',
+        # '(Mac|マック|OSX|osx)': 'マックパワー/aB',
+        '^弁当$': '便當だろ',
+        '\bシュッ\b': 'シュッ！シュッ！\nんっ ...',
+        '(止|と)ま(ら|ん)ない(んす|んすよ)?': 'https://i.gyazo.com/e50a1e1b5dd2a5cdd5c388f654bcf8a4.gif',
+        '^((ヤバ|やば)(イ|い)|yabai)$': 'WHOOP! WHOOP! PULL UP!!!/aA',
         '.+': SubcultureHitozuma,
         '..+': SubcultureKCzuma,
         '^(?!.*http).*$': SubcultureNogata,  # except http
         '.*': SubcultureAtencion,  # 同じキーはだめ
-        u'^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
-        u'^\(犬小屋\)$': SubcultureDogeHouseStatus,
-        u'^\(コラッ\)$': SubcultureDogeDetailStatus,
-        u'\(犬\)': SubcultureShowDogeSoku,
-        u'\(犬転生\)': SubcultureSelfUpdate,
-        u'かわいい': u'ちーちゃんかわいいね/b',
-        u'ナイス案件': u'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
-        u'((高野|たかの|タカノ|takano)さん|うひー)$': u'http://0x00.be/photo/takano32.jpg/dF',
-        u'う(ぜ[ーえ]|ざい)': u'オマエモナー/bC',
-        u'^[Nn][Oo]$': u'Noじゃないが/c',
-        u'官邸': u'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
-        u'性欲': u'性欲を持て余す/cC',
-        u'(ネムイ|ねむい|ねみー|眠い)': u'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
-        u'\(飼い主\)': u'tinbotu',
-        u'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
-        u'^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
-        u'^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
-        u'^NHR$': u'うへえへへえぁぁぁあぁ',
-        u'^TMD$': SubcultureTMD,
-        u'^CMD$': SubcultureCMD,
-        u'^EZ$': u'説明の必要はない',
-        u'^Xamarin$': SubcultureXamarin,
-        u'^(yosh?io|芳雄|よしお|ヨシオ|ヨタ)$':
+        '^\(犬?(逃が?す|捕まえる)\)$': SubcultureDogeGoAway,
+        '^\(犬小屋\)$': SubcultureDogeHouseStatus,
+        '^\(コラッ\)$': SubcultureDogeDetailStatus,
+        '\(犬\)': SubcultureShowDogeSoku,
+        '\(犬転生\)': SubcultureSelfUpdate,
+        'かわいい': 'ちーちゃんかわいいね/b',
+        'ナイス案件': 'http://i.gyazo.com/39111fc1ffe29ec1976696b3a95c511d.png',
+        '((高野|たかの|タカノ|takano)さん|うひー)$': 'http://0x00.be/photo/takano32.jpg/dF',
+        'う(ぜ[ーえ]|ざい)': 'オマエモナー/bC',
+        '^[Nn][Oo]$': 'Noじゃないが/c',
+        '官邸': 'http://i.gyazo.com/b8c2408c91cd49ecbe6fd9348e3bcf87.png',
+        '性欲': '性欲を持て余す/cC',
+        '(ネムイ|ねむい|ねみー|眠い)': 'http://i.gyazo.com/4f6e3d16fecb81f5c7b5cb371efa9074.jpg/aB',
+        '\(飼い主\)': 'tinbotu',
+        'サイエンス': 'http://i.gyazo.com/154e800fd6cdb4126eece72754c033c8.jpg/bF',
+        '^わかりシート$': 'https://docs.google.com/spreadsheets/d/16hNE_a8G-rehisYhPp6FppSL0ZmQSE4Por6v95fqBmA/edit#gid=0',
+        '^姫乃たまシート$': 'https://docs.google.com/spreadsheets/d/1W2lwTx5ib9x_uhigFiCBN534gIcmudAQfLoJtSi6anY/edit#gid=0',
+        '^NHR$': 'うへえへへえぁぁぁあぁ',
+        '^TMD$': SubcultureTMD,
+        '^CMD$': SubcultureCMD,
+        '^EZ$': '説明の必要はない',
+        '^Xamarin$': SubcultureXamarin,
+        '^(yosh?io|芳雄|よしお|ヨシオ|ヨタ)$':
         """:yos-1-1::yos-1-2::yos-1-3::yos-1-4:
 :yos-2-1::yos-2-2::yos-2-3::yos-2-4:
 :yos-3-1::yos-3-2::yos-3-3::yos-3-4:
 :yos-4-1::yos-4-2::yos-4-3::yos-4-4:
         """,
-        u'^(big|BIG|Big)( |　|-)?(takano32)$':
+        '^(big|BIG|Big)( |　|-)?(takano32)$':
         """:takano32-1-1::takano32-2-1::takano32-3-1::takano32-4-1:
 :takano32-1-2::takano32-2-2::takano32-3-2::takano32-4-2:
 :takano32-1-3::takano32-2-3::takano32-3-3::takano32-4-3:
 :takano32-1-4::takano32-2-4::takano32-3-4::takano32-4-4:
         """,
-        u'^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
-        u'\(ピザ\)': SubculturePizza,
+        '^(今年|去年|201[0-7]年)の漢字$': SubcultureKotoshinoKanji,
+        '\(ピザ\)': SubculturePizza,
         '^mineo$': SubcultureMineo,
     }
 
@@ -1325,11 +1338,10 @@ class NotSubculture(object):
 
     def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
         if self.httpheaderHasAlreadySent is False:
-            print(header)
             self.httpheaderHasAlreadySent = True
 
     def parse_slack_outgoing_webhooks(self, http_body):
-        params = urlparse.parse_qsl(http_body)
+        params = parse_qsl(http_body)
         params = dict(params)
 
         """ generate a *pseudo* message of Lingr """
@@ -1339,11 +1351,11 @@ class NotSubculture(object):
         self.message["events"][0]["message"] = {}
         self.message["events"][0]["message"]["id"] = -1
         self.message["events"][0]["message"]["type"] = "user"
-        self.message["events"][0]["message"]["speaker_id"] = params.get("user_name")
-        self.message["events"][0]["message"]["nickname"] = params.get("user_name")
-        self.message["events"][0]["message"]["text"] = params.get("text").decode("utf-8")
-        self.message["events"][0]["message"]["room"] = params.get("team_domain")
-        self.message["events"][0]["message"]["slack_channel"] = params.get("channel_name")  # extra
+        self.message["events"][0]["message"]["speaker_id"] = str(params.get("user_name"))
+        self.message["events"][0]["message"]["nickname"] = str(params.get("user_name"))
+        self.message["events"][0]["message"]["text"] = str(params.get("text"))
+        self.message["events"][0]["message"]["room"] = str(params.get("team_domain"))
+        self.message["events"][0]["message"]["slack_channel"] = str(params.get("channel_name"))  # extra
         d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
         self.message["events"][0]["message"]["timestamp"] = d + 'Z'
 
@@ -1375,9 +1387,9 @@ class NotSubculture(object):
     def acl(self, acl, ip_address):
         if type(acl) is not list:
             return False
-        ip = ipaddress.ip_address(unicode(ip_address))
+        ip = ipaddress.ip_address(ip_address)
         for address_block in acl:
-            block = ipaddress.IPv4Network(unicode(address_block))
+            block = ipaddress.IPv4Network(address_block)
             if ip in block:
                 return True
         return False
@@ -1475,7 +1487,7 @@ class NotSubculture(object):
                 if speaker in denied_bot_list:
                     return
 
-                for dict_k, dict_res in dic.iteritems():
+                for dict_k, dict_res in dic.items():
                     pattern = re.compile(dict_k)
                     if pattern.search(text):
 
@@ -1522,7 +1534,7 @@ class NotSubculture(object):
 
 
 if __name__ == '__main__':
-    sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
+    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
     no = NotSubculture()
     post_body = sys.stdin.read()
