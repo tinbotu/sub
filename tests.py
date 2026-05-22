@@ -5,25 +5,25 @@
 import unittest
 import os
 
-from sun import (
-    NotSubculture,
+from sun import NotSubculture
+from subculture import (
     Subculture,
-    SubcultureGyazoScraper,
-#    SubcultureTwitterScraper,
-    SubcultureMETAR,
-    SubcultureOmochi,
-    SubcultureStone,
-    SubcultureHitozuma,
+    GyazoScraperSubculture,
+#    TwitterScraperSubculture,
+    METARSubculture,
+    OmochiSubculture,
+    StoneSubculture,
+    HitozumaSubculture,
     AnotherIsMoreKnowerThanMe,
-    SubcultureKnowerLevel,
-    SubcultureGaishutsu,
-    SubcultureSilent,
-    SubcultureNogata,
-    SubcultureDogeDetailStatus,
-    SubcultureShowDogeSoku,
-    SubcultureSelfUpdate,
-    SubcultureTitleExtract,
-    SubcultureKotoshinoKanji,
+    KnowerLevelSubculture,
+    GaishutsuSubculture,
+    SilentSubculture,
+    NogataSubculture,
+    DogeDetailStatusSubculture,
+    ShowDogeSokuSubculture,
+    SelfUpdateSubculture,
+    TitleExtractSubculture,
+    KotoshinoKanjiSubculture,
 )
 
 
@@ -32,7 +32,7 @@ from sun import (
 #    twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
 #
 #    def setUp(self):
-#        self.g = SubcultureTwitterScraper()
+#        self.g = TwitterScraperSubculture()
 #
 #    def test_fetch(self):
 #        for url in self.twitter_url:
@@ -57,10 +57,10 @@ class TestGyazoScraper(unittest.TestCase):
     gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
-        self.g = SubcultureGyazoScraper()
+        self.g = GyazoScraperSubculture()
 
     def test_instance(self):
-        self.assertIsInstance(self.g, SubcultureGyazoScraper)
+        self.assertIsInstance(self.g, GyazoScraperSubculture)
 
     def test_fetch(self):
         for url in self.gyazo_url:
@@ -84,20 +84,20 @@ class TestGyazoScraper(unittest.TestCase):
             self.assertIsNone(r)
 
 
-class TestSubcultureKnowerLevel(unittest.TestCase):
+class TestKnowerLevelSubculture(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureKnowerLevel('', 'tests')
+        self.r = KnowerLevelSubculture('', 'tests')
 
     def test_levelup(self):
         self.assertRegex(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
 
 
-class TestSubcultureMETAR(unittest.TestCase):
+class TestMETARSubculture(unittest.TestCase):
     json_openweathermap = '{"coord":{"lon":139.69,"lat":35.69},"weather":[{"id":520,"main":"Rain","description":"light intensity shower rain","icon":"09d"}],"base":"stations","main":{"temp":292.38,"pressure":1018,"humidity":82,"temp_min":290.37,"temp_max":294.82},"visibility":10000,"wind":{"speed":3.6,"deg":180},"clouds":{"all":75},"dt":1557878829,"sys":{"type":1,"id":8077,"message":0.0073,"country":"JP","sunrise":1557862613,"sunset":1557913106},"id":1850147,"name":"Tokyo","cod":200}'
 
     def setUp(self):
-        self.r = SubcultureMETAR('', 'tests')
+        self.r = METARSubculture('', 'tests')
 
     def test_fetch(self):
         if os.uname()[1] != 'stingray':
@@ -116,10 +116,10 @@ class TestSubcultureMETAR(unittest.TestCase):
         self.assertEqual(res, u'light intensity shower rain (19.2\u2103; 1018\u3371; 82%)\nhttps://openweathermap.org/img/w/09d.png')
 
 
-class TestSubcultureOmochi(unittest.TestCase):
+class TestOmochiSubculture(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureOmochi('', 'tests')
+        self.r = OmochiSubculture('', 'tests')
 
     def test_response_flood(self):
         self.r.clear_flood_status(self.r.speaker)
@@ -138,10 +138,10 @@ class TestSubcultureOmochi(unittest.TestCase):
             self.assertRegex(res, r'^https?://')
 
 
-class TestSubcultureStone(unittest.TestCase):
+class TestStoneSubculture(unittest.TestCase):
 
     def setUp(self):
-        self.r = SubcultureStone('', 'tests')
+        self.r = StoneSubculture('', 'tests')
 
     def test_response_flood(self):
         self.r.clear_flood_status(self.r.speaker)
@@ -159,10 +159,10 @@ class TestSubcultureStone(unittest.TestCase):
             self.assertRegex(res, u'(西山石|https?://)')
 
 
-#class TestSubcultureHitozuma(unittest.TestCase):
+#class TestHitozumaSubculture(unittest.TestCase):
 #
 #    def setUp(self):
-#        self.r = SubcultureHitozuma('', 'tests')
+#        self.r = HitozumaSubculture('', 'tests')
 #
 #    def test_response(self):
 #        y = False
@@ -190,7 +190,7 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
             self.assertRegex(res, '^No, [A-Za-z0-9]+ culture.')
 
 
-class TestSubcultureSilent(unittest.TestCase):
+class TestSilentSubculture(unittest.TestCase):
     dic = {
         u'会いたい': u'^(:?私も|また)?会いたいな$',
         u'コピペしたい': u'^(:?私も|また)?コピペしたいな$',
@@ -201,7 +201,7 @@ class TestSubcultureSilent(unittest.TestCase):
     }
 
     def setUp(self):
-        self.r = SubcultureSilent('', 'tests')
+        self.r = SilentSubculture('', 'tests')
 
     def test_response(self):
         self.r.force = True
@@ -213,9 +213,9 @@ class TestSubcultureSilent(unittest.TestCase):
                 self.assertRegex(str(self.r.response()), r)
 
 
-class TestSubcultureDogeDetailStatus(unittest.TestCase):
+class TestDogeDetailStatusSubculture(unittest.TestCase):
     def setUp(self):
-        self.r = SubcultureDogeDetailStatus('', 'tests')
+        self.r = DogeDetailStatusSubculture('', 'tests')
 
     def test_return_status_expired(self):
         self.r.conn.delete('inu_soku')
@@ -230,19 +230,19 @@ class TestSubcultureDogeDetailStatus(unittest.TestCase):
         self.assertEqual(self.r.response(), u'クゥーン(soku: 5.22, internal_atencion: 1.23, internal_soku: 9.88)')
 
 
-class TestSubcultureShowDogeSoku(unittest.TestCase):
+class TestShowDogeSokuSubculture(unittest.TestCase):
     def setUp(self):
-        self.r = SubcultureShowDogeSoku('', 'tests')
+        self.r = ShowDogeSokuSubculture('', 'tests')
 
     def test_response(self):
         self.assertRegex(self.r.response(), '^https?://')
 
 
-class TestSubcultureNogata(unittest.TestCase):
+class TestNogataSubculture(unittest.TestCase):
     text = u'姫'
 
     def setUp(self):
-        self.nogata = SubcultureNogata(self.text)
+        self.nogata = NogataSubculture(self.text)
         self.nogata.PROBABLY = 200
 
     def test_response(self):
@@ -255,12 +255,12 @@ class TestSubcultureNogata(unittest.TestCase):
         self.assertIs(word, None)
 
 
-class TestSubcultureGaishutsu(unittest.TestCase):
+class TestGaishutsuSubculture(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'
     text = 'テスト http://docs.python.jp/2/howto/regex.html'
 
     def setUp(self):
-        self.r = SubcultureGaishutsu(self.text, 'tests')
+        self.r = GaishutsuSubculture(self.text, 'tests')
 
     def test_response_first(self):
         self.r.delete(self.url)
@@ -274,7 +274,7 @@ class TestSubcultureGaishutsu(unittest.TestCase):
     def test_response_say(self):
         self.r.anti_double = False
         res = self.r.response()
-        self.assertRegex(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
+        self.assertRegex(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\\s　#]*) は [0-9\\.]+ 日くらい前に tests により既出ですね')
 
 
 class TestNotSubculture(unittest.TestCase):
@@ -372,10 +372,10 @@ class TestNotSubculture(unittest.TestCase):
         self.assertIs(False, self.n.acl(self.access_control_list, '172.16.4.1'))
 
 
-class TestSubcultureSelfUpdate(unittest.TestCase):
+class TestSelfUpdateSubculture(unittest.TestCase):
     def test_create_instance(self):
-        instance = SubcultureSelfUpdate('', u'(犬転生)')
-        self.assertIsInstance(instance, SubcultureSelfUpdate)
+        instance = SelfUpdateSubculture('', u'(犬転生)')
+        self.assertIsInstance(instance, SelfUpdateSubculture)
 
     def test_import_git(self):
         import git
@@ -388,7 +388,7 @@ class TestPermission(unittest.TestCase):
         self.assertEqual(s.st_mode, 33261)  # -rwxr-xr-x
 
 
-class TestSubcultureSpontaneity(unittest.TestCase):
+class TestSpontaneitySubculture(unittest.TestCase):
     def setUp(self):
         self.s = Subculture()
 
@@ -414,9 +414,9 @@ class TestSubcultureSpontaneity(unittest.TestCase):
     def test_say(self):
         pass
 
-class TestSubcultureKotoshinoKanji(unittest.TestCase):
+class TestKotoshinoKanjiSubculture(unittest.TestCase):
     def setUp(self):
-        self.s = SubcultureKotoshinoKanji('', 'tests')
+        self.s = KotoshinoKanjiSubculture('', 'tests')
 
 
     def test_kanji_list(self):
@@ -424,9 +424,9 @@ class TestSubcultureKotoshinoKanji(unittest.TestCase):
         self.assertRegex(self.s.response(), r'^[0-9]+\ ')
 
 
-class TestSubcultureTitleExtract(unittest.TestCase):
+class TestTitleExtractSubculture(unittest.TestCase):
     def setUp(self):
-        self.s = SubcultureTitleExtract()
+        self.s = TitleExtractSubculture()
 
     def test_has_customdata_attr(self):
         self.s.text = 'http://www.gizmodo.jp/2016/09/billionaire-bought-dog-eight-iphone7.html'
