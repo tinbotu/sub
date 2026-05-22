@@ -6,5 +6,4 @@ mecab-python
 unidic
 GitPython
 PyYAML
-cchardet
 emoji

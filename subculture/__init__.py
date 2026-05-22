@@ -43,7 +43,6 @@ class Subculture(object):
             "User-Agent": r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
         }
         try:
-            import cchardet
             if payload:
                 r = requests.post(url, headers=headers, params=params, data=payload)
             else:
@@ -52,7 +51,7 @@ class Subculture(object):
                 self.content = r.content
                 self.content_headers = r.headers
                 if guess_encoding:
-                    self.content_encoding = cchardet.detect(r.content).get("encoding")
+                    self.content_encoding = r.apparent_encoding
                 else:
                     self.content_encoding = r.encoding
             else:
