@@ -3,7 +3,7 @@
 import random
 import MeCab
 from .redis import HitozumaSubculture, KCzumaSubculture
-from subculture import Subculture
+from .subculture import Subculture
 
 class NogataSubculture(Subculture):
     """ 姫 """
