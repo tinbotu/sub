@@ -2,7 +2,8 @@
 
 import random
 import MeCab
-from .base import Subculture, RedisSubculture
+from .redis import HitozumaSubculture, KCzumaSubculture
+from subculture import Subculture
 
 class NogataSubculture(Subculture):
     """ 姫 """
@@ -189,33 +190,8 @@ class HaiSubculture(Subculture):
         return res
 
 
-class HitozumaSubculture(RedisSubculture):
-    """ hitozuma """
-    def response(self):
-        random.seed()
-
-        res = None
-        if random.randrange(0, 500) < self.doge_soku():
-            if random.randrange(0, 100) > 0:
-                res = 'はい'
-            else:
-                res = 'いいえ'
-
-        return res
 
 
-class KCzumaSubculture(RedisSubculture):
-    """ KCzuma """
-    def response(self):
-        random.seed()
-
-        res = None
-        if random.randrange(0, 2000) < self.doge_soku():
-            if random.randrange(0, 100) > 0:
-                res = random.choice(['K', 'K', 'Y', 'N', 'E', 'P', 'D', 'H', 'U', 'T', 'S', 'O', 'V', ]) + 'C'
-            else:
-                res = 'KC'
-        return res
 
 class KCSubculture(Subculture):
     def response(self):

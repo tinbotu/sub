@@ -2,7 +2,7 @@
 
 import re
 import html
-from .base import Subculture, HTMLParserGetElementsByTag
+from subculture import Subculture, HTMLParserGetElementsByTag
 
 class TwitterScraperSubculture(Subculture):
     pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
