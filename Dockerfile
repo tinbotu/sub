@@ -1,15 +1,23 @@
-FROM python:2.7.18-buster
-# FROM python:3.12-slim
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NOWARNINGS=yes
 
 RUN apt-get update
-RUN apt-get install -y libmecab-dev
+RUN apt-get install -y build-essential
+RUN apt-get install -y python3 python3-venv
+RUN apt-get install -y libpython3-dev libmecab-dev
+RUN apt-get install -y git screen redis
 
 COPY . /sub
 WORKDIR /sub
-RUN virtualenv --python=$(which python2) .venv
-# RUN python -m venv .venv
-RUN /sub/.venv/bin/pip install -U pip
-RUN /sub/.venv/bin/pip install -r requirements.txt
+RUN python3 -m venv /venv
+RUN /venv/bin/pip install -U pip
+RUN /venv/bin/pip install -r requirements.txt
+RUN /venv/bin/python -m unidic download
 
-ENTRYPOINT ["./.venv/bin/python", "tests.py"]
+COPY ./docker-entrypoint.sh /entrypoint.sh
+RUN chmod 755 /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
