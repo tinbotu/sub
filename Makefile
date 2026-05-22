@@ -7,7 +7,7 @@ clean:
 	find . -name "*.py[co]" -delete
 
 setup:
-	virtualenv --python=$(which python2) .
+	virtualenv --python=$(which python3) .
 	./bin/pip install -r requirements.txt
 
 update_packages:

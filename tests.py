@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
-import json
 import unittest
 import os
 
@@ -66,18 +65,18 @@ class TestGyazoScraper(unittest.TestCase):
     def test_fetch(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
-            self.assertRegexpMatches(self.g.content, self.g.pick_re)
+            self.assertRegex(self.g.content.decode(), self.g.pick_re)
 
     def test_fetch_false(self):
         for url in self.gyazo_url_false:
             self.g.fetch(url)
-            self.assertNotRegexpMatches(self.g.content, self.g.pick_re)
+            self.assertNotRegex(str(self.g.content), self.g.pick_re)
 
     def test_get_image_url(self):
         for url in self.gyazo_url:
             self.g.fetch(url)
             r = self.g.response()
-            self.assertRegexpMatches(r, r'https?://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
+            self.assertRegex(r, r'https?://i.gyazo.com/[0-9a-z]+\.(png|jpg)')
 
         for url in self.gyazo_url_false:
             self.g.fetch(url)
@@ -91,7 +90,7 @@ class TestSubcultureKnowerLevel(unittest.TestCase):
         self.r = SubcultureKnowerLevel('', 'tests')
 
     def test_levelup(self):
-        self.assertRegexpMatches(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
+        self.assertRegex(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
 
 
 class TestSubcultureMETAR(unittest.TestCase):
@@ -127,16 +126,16 @@ class TestSubcultureOmochi(unittest.TestCase):
         self.r.enable_flood_check = True
 
         res = self.r.response()
-        self.assertRegexpMatches(res, r'^https?://')
+        self.assertRegex(res, r'^https?://')
         res = self.r.response()
         self.assertIs(res, None)
 
     def test_response(self):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = False
-        for i in xrange(100):
+        for i in range(100):
             res = self.r.response()
-            self.assertRegexpMatches(res, r'^https?://')
+            self.assertRegex(res, r'^https?://')
 
 
 class TestSubcultureStone(unittest.TestCase):
@@ -148,16 +147,16 @@ class TestSubcultureStone(unittest.TestCase):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = True
         res = self.r.response()
-        self.assertRegexpMatches(res, u'(西山石|https?://)')
+        self.assertRegex(res, u'(西山石|https?://)')
         res = self.r.response()
         self.assertIs(res, None)
 
     def test_response(self):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = False
-        for i in xrange(500):
+        for i in range(500):
             res = self.r.response()
-            self.assertRegexpMatches(res, u'(西山石|https?://)')
+            self.assertRegex(res, u'(西山石|https?://)')
 
 
 #class TestSubcultureHitozuma(unittest.TestCase):
@@ -169,7 +168,7 @@ class TestSubcultureStone(unittest.TestCase):
 #        y = False
 #        n = False
 #
-#        for i in xrange(100 * 100 * 10):
+#        for i in range(100 * 100 * 10):
 #            res = self.r.response()
 #            if res == u'はい':
 #                y = True
@@ -186,9 +185,9 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
         self.r = AnotherIsMoreKnowerThanMe('', 'tests')
 
     def test_response(self):
-        for i in xrange(100):
+        for i in range(100):
             res = self.r.response()
-            self.assertRegexpMatches(res, '^No, [A-Za-z0-9]+ culture.')
+            self.assertRegex(res, '^No, [A-Za-z0-9]+ culture.')
 
 
 class TestSubcultureSilent(unittest.TestCase):
@@ -206,12 +205,12 @@ class TestSubcultureSilent(unittest.TestCase):
 
     def test_response(self):
         self.r.force = True
-        for c, r in self.dic.iteritems():
+        for c, r in self.dic.items():
             self.r.text = c
             if r is None:
                 self.assertIsNone(self.r.response())
             else:
-                self.assertRegexpMatches(self.r.response(), r)
+                self.assertRegex(str(self.r.response()), r)
 
 
 class TestSubcultureDogeDetailStatus(unittest.TestCase):
@@ -236,7 +235,7 @@ class TestSubcultureShowDogeSoku(unittest.TestCase):
         self.r = SubcultureShowDogeSoku('', 'tests')
 
     def test_response(self):
-        self.assertRegexpMatches(self.r.response(), '^https?://')
+        self.assertRegex(self.r.response(), '^https?://')
 
 
 class TestSubcultureNogata(unittest.TestCase):
@@ -258,7 +257,7 @@ class TestSubcultureNogata(unittest.TestCase):
 
 class TestSubcultureGaishutsu(unittest.TestCase):
     url = 'http://docs.python.jp/2/howto/regex.html'
-    text = u'テスト http://docs.python.jp/2/howto/regex.html'
+    text = 'テスト http://docs.python.jp/2/howto/regex.html'
 
     def setUp(self):
         self.r = SubcultureGaishutsu(self.text, 'tests')
@@ -275,7 +274,7 @@ class TestSubcultureGaishutsu(unittest.TestCase):
     def test_response_say(self):
         self.r.anti_double = False
         res = self.r.response()
-        self.assertRegexpMatches(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
+        self.assertRegex(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\s　#]*) は [0-9\.]+ 日くらい前に tests により既出ですね')
 
 
 class TestNotSubculture(unittest.TestCase):
@@ -422,7 +421,7 @@ class TestSubcultureKotoshinoKanji(unittest.TestCase):
 
     def test_kanji_list(self):
         self.s.text = ''
-        self.assertRegexpMatches(self.s.response(), r'^[0-9]+\ ')
+        self.assertRegex(self.s.response(), r'^[0-9]+\ ')
 
 
 class TestSubcultureTitleExtract(unittest.TestCase):
@@ -451,11 +450,11 @@ class TestSubcultureTitleExtract(unittest.TestCase):
 
     def test_instagram(self):
         self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
-        self.assertRegexpMatches(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
+        self.assertRegex(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
 
     def test_googlephotos(self):
         self.s.text = 'https://photos.app.goo.gl/MobEewnGYii7epwN9'
-        self.assertRegexpMatches(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
+        self.assertRegex(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
 
 
 if __name__ == '__main__':
