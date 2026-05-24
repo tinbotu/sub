@@ -5,8 +5,8 @@ import html
 from .base import HTMLParserGetElementsByTag, Subculture
 
 class TwitterScraperSubculture(Subculture):
-    pick_re = 'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
-    url_re = "(https?://twitter.com/(?:[0-9A-Za-z_/.]+))[^>\s]?"
+    pick_re = r'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
+    url_re = r"(https?://twitter.com/(?:[0-9A-Za-z_/.]+))[^>\s]?"
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
