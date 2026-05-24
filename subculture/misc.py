@@ -2,7 +2,7 @@
 
 import random
 from .redis import METARSubculture, MineoSubculture, GaishutsuSubculture
-from .subculture import Subculture
+from .base import Subculture
 
 
 

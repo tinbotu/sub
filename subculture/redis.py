@@ -11,7 +11,7 @@ import time
 import git
 import redis
 
-from .subculture import DogeAwayMessage, Subculture
+from .base import DogeAwayMessage, Subculture
 
 class RedisSubculture(Subculture):
     __redis_db = 14  # don't change me if changes will cause collision other app

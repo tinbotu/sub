@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .subculture import (
+from .base import (
     Subculture,
     HTMLParserGetElementsByTag,
     DogeAwayMessage,
