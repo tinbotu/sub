@@ -78,7 +78,7 @@ class NotSubculture(object):
     dic_base = {
         'https?://gyazo.com': GyazoScraperSubculture,
         'https?': TitleExtractSubculture,
-        # 'https://twitter.com/': TwitterScraperSubculture,
+        # 'https://x.com/': TwitterScraperSubculture,
     }
 
     dic_extend = {

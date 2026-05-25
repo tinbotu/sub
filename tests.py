@@ -28,8 +28,8 @@ from subculture import (
 
 
 #class TestTwitterScraper(unittest.TestCase):
-#    twitter_url = ['https://twitter.com/esehara/status/567342138640171009', 'https://twitter.com/saki61204/status/917000652655534081', ]
-#    twitter_url_false = ['https://twitter.com/esehara/status/567294583281709057']
+#    twitter_url = ['https://x.com/esehara/status/567342138640171009', 'https://x.com/saki61204/status/917000652655534081', ]
+#    twitter_url_false = ['https://x.com/esehara/status/567294583281709057']
 #
 #    def setUp(self):
 #        self.g = TwitterScraperSubculture()
@@ -41,14 +41,14 @@ from subculture import (
 #
 #    def test_inner_url(self):
 #        texts = [
-#            "@niryuu https://twitter.com/ah_hpc/status/567754030638964736",
-#            "https://twitter.com/ah_hpc/status/567754030638964736",
-#            "https://twitter.com/ah_hpc/status/567754030638964736 @niryuu"]
+#            "@niryuu https://x.com/ah_hpc/status/567754030638964736",
+#            "https://x.com/ah_hpc/status/567754030638964736",
+#            "https://x.com/ah_hpc/status/567754030638964736 @niryuu"]
 #        for text in texts:
 #            self.assertRegexpMatches(self.g.get_twitter_url(text), self.g.url_re)
 #
 #    def test_img(self):
-#        self.g.fetch("https://twitter.com/DJWILDPARTY/status/707433573142413317/")
+#        self.g.fetch("https://x.com/DJWILDPARTY/status/707433573142413317/")
 #        self.assertEqual(self.g.response(), "https://pbs.twimg.com/media/CdFPCH5W8AAwRk0.jpg")
 
 

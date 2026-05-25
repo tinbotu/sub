@@ -6,7 +6,7 @@ from .base import HTMLParserGetElementsByTag, Subculture
 
 class TwitterScraperSubculture(Subculture):
     pick_re = r'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
-    url_re = r"(https?://twitter.com/(?:[0-9A-Za-z_/.]+))[^>\s]?"
+    url_re = r"(https?://x.com/(?:[0-9A-Za-z_/.]+))[^>\s]?"
 
     def __init__(self, text=None, speaker=None):
         self.pick_re = re.compile(self.pick_re)
@@ -46,7 +46,7 @@ class GyazoScraperSubculture(Subculture):
 
 class TitleExtractSubculture(Subculture):
     """ <title> extract very quickhack """
-    url_blacklist = ['twitter.com', 'gyazo.com', '.png', '.jpg', 'slack.com', ]
+    url_blacklist = ['x.com', 'gyazo.com', '.png', '.jpg', 'slack.com', ]
 
     def get_element_title(self, url=None):
         h = None
@@ -56,7 +56,7 @@ class TitleExtractSubculture(Subculture):
 
         og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
-        og_description = ['twitter.com', 'facebook.com', ]
+        og_description = ['x.com', 'facebook.com', ]
         if url is not None and True in [u in url for u in og_image]:
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
         elif url is not None and True in [u in url for u in og_image_postfix_jpg]:

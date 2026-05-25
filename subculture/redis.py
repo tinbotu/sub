@@ -527,10 +527,10 @@ class KimotiYorokobiSubculture(KimotiSubculture):
 class CMDSubculture(RedisSubculture):
 
     def response(self):
-        cmd = ['https://twitter.com/chomado/status/1164468142195662850',
+        cmd = ['https://x.com/chomado/status/1164468142195662850',
                '(*ﾟ▽ﾟ* っ)З', '(((o(*ﾟ▽ﾟ*)o)))', '┌（┌ *ﾟ▽ﾟ*）┐',
                '(((o===(*ﾟ▽ﾟ*)===o)))', '┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', 'Xamarinはいいぞ',
-               'https://twitter.com/loadlimits/status/1124773878872416256']
+               'https://x.com/loadlimits/status/1124773878872416256']
 
         if self.check_flood(self.speaker, 30) is False:
             return None
