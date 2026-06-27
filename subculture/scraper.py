@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import re
 import html
 from .base import HTMLParserGetElementsByTag, Subculture
+
 
 class TwitterScraperSubculture(Subculture):
     pick_re = r'og\:image" content="(https://pbs.twimg.com/media/(?:.+(?:\.png|\.jpg)))'
@@ -21,7 +20,7 @@ class TwitterScraperSubculture(Subculture):
 
     def response(self):
         match = self.pick_re.findall(self.content)
-        if type(match) is list:
+        if isinstance(match, list):
             return "\n".join(match)
         else:
             return None
@@ -57,12 +56,12 @@ class TitleExtractSubculture(Subculture):
         og_image = ['instagram.com', 'flickr.com/photos/', 'flic.kr', ]
         og_image_postfix_jpg = ['photos.google.com', 'goo.gl/photos', 'photos.app.goo.gl', ]
         og_description = ['x.com', 'facebook.com', ]
-        if url is not None and True in [u in url for u in og_image]:
+        if url is not None and any(u in url for u in og_image):
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
-        elif url is not None and True in [u in url for u in og_image_postfix_jpg]:
+        elif url is not None and any(u in url for u in og_image_postfix_jpg):
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:image')
             postfix = '#.jpg'
-        elif url is not None and True in [u in url for u in og_description]:
+        elif url is not None and any(u in url for u in og_description):
             h = HTMLParserGetElementsByTag('meta', target_meta_property='og:description')
         else:
             prefix = 'Title: '
@@ -82,7 +81,7 @@ class TitleExtractSubculture(Subculture):
         if match and "goo" in text:
             text = match.group(1) + "=s1600"
 
-        return prefix + text + postfix
+        return f"{prefix}{text}{postfix}"
 
     def response(self):
         url_re = re.compile(r'<?(https?:\/\/[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+\/*[^\s>　]*)>?')

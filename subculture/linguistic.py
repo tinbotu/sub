@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import random
 import MeCab
 from .redis import HitozumaSubculture, KCzumaSubculture
 from .base import Subculture
+
 
 class NogataSubculture(Subculture):
     """ 姫 """
@@ -146,7 +145,7 @@ class SilentSubculture(Subculture):
         if self.speaker in ["niryuu", "tinbotu"]:
             self.PROBABLY = 100
         random.seed()
-        return (self.force is not True
+        return (not self.force
                 and random.randrange(0, 100) > self.PROBABLY)
 
     @property
@@ -173,7 +172,7 @@ class SilentSubculture(Subculture):
                     continue
             if do:
                 me = ['私も', '私も', '私も', 'また', '私も', ]
-                return '%s%sたいな' % (me[random.randrange(0, len(me))], do)
+                return f'{random.choice(me)}{do}たいな'
 
 
 class HaiSubculture(Subculture):

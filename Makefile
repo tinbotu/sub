@@ -7,8 +7,10 @@ clean:
 	find . -name "*.py[co]" -delete
 
 setup:
-	virtualenv --python=$(which python3) .
+	python3 -m venv .
+	./bin/pip install --upgrade pip
 	./bin/pip install -r requirements.txt
+	./bin/python -m unidic download
 
 update_packages:
 	./bin/pip install -r requirements.txt
@@ -17,5 +19,5 @@ status:
 	sudo service redis-server status
 
 lint:
-	./bin/flake8 sun.cgi
+	./bin/flake8 sun.py subculture tests.py
 

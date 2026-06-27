@@ -1,5 +1,4 @@
 #!./bin/python
-# -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
 import unittest
@@ -54,7 +53,7 @@ from subculture import (
 
 class TestGyazoScraper(unittest.TestCase):
     gyazo_url = ['http://gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2', 'https://gyazo.com/6726d79c07efbb2ff6ab20cd90b789c9', 'https://gyazo.com/033c02612a1911a84554d89b29462628', 'https://gyazo.com/a1b0199e874b1b23a021883e30182fa6', ]
-    gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', u'http://gyazo.comｇｙａｚｏ', '::1', ]
+    gyazo_url_false = ['http://i.gyazo.com/8814b3cbed0a6e8b0a5cbb7203eaaed2.png', 'http://example.com', 'http://gyazo.comｇｙａｚｏ', '::1', ]
 
     def setUp(self):
         self.g = GyazoScraperSubculture()
@@ -90,7 +89,7 @@ class TestKnowerLevelSubculture(unittest.TestCase):
         self.r = KnowerLevelSubculture('', 'tests')
 
     def test_levelup(self):
-        self.assertRegex(self.r.response(), u'おっ、分かり度 [0-9]+ ですか')
+        self.assertRegex(self.r.response(), 'おっ、分かり度 [0-9]+ ですか')
 
 
 class TestMETARSubculture(unittest.TestCase):
@@ -108,12 +107,12 @@ class TestMETARSubculture(unittest.TestCase):
         self.assertLess(self.r.temp_c, 50)
         self.assertGreater(self.r.pressure, 800)
         self.assertIsNotNone(self.r.humidity)
-        self.assertIs(type(self.r.weather), unicode)
+        self.assertIs(type(self.r.weather), str)
 
     def test_response(self):
         self.r.content = self.json_openweathermap
         res = self.r.response()
-        self.assertEqual(res, u'light intensity shower rain (19.2\u2103; 1018\u3371; 82%)\nhttps://openweathermap.org/img/w/09d.png')
+        self.assertEqual(res, 'light intensity shower rain (19.2\u2103; 1018\u3371; 82%)\nhttps://openweathermap.org/img/w/09d.png')
 
 
 class TestOmochiSubculture(unittest.TestCase):
@@ -147,7 +146,7 @@ class TestStoneSubculture(unittest.TestCase):
         self.r.clear_flood_status(self.r.speaker)
         self.r.enable_flood_check = True
         res = self.r.response()
-        self.assertRegex(res, u'(西山石|https?://)')
+        self.assertRegex(res, '(西山石|https?://)')
         res = self.r.response()
         self.assertIs(res, None)
 
@@ -156,7 +155,7 @@ class TestStoneSubculture(unittest.TestCase):
         self.r.enable_flood_check = False
         for i in range(500):
             res = self.r.response()
-            self.assertRegex(res, u'(西山石|https?://)')
+            self.assertRegex(res, '(西山石|https?://)')
 
 
 #class TestHitozumaSubculture(unittest.TestCase):
@@ -170,9 +169,9 @@ class TestStoneSubculture(unittest.TestCase):
 #
 #        for i in range(100 * 100 * 10):
 #            res = self.r.response()
-#            if res == u'はい':
+#            if res == 'はい':
 #                y = True
-#            elif res == u'いいえ':
+#            elif res == 'いいえ':
 #                n = True
 #
 #        self.assertTrue(y)
@@ -192,12 +191,12 @@ class TestAnotherIsMoreKnowerThanMe(unittest.TestCase):
 
 class TestSilentSubculture(unittest.TestCase):
     dic = {
-        u'会いたい': u'^(:?私も|また)?会いたいな$',
-        u'コピペしたい': u'^(:?私も|また)?コピペしたいな$',
-        u'観測をしたい': u'^(:?私も|また)?観測をしたいな$',
-        u'何がしたいんだ': None,
-        u'言わんとしたいことはわかる': None,
-        u'撮りたいものがはっきりして': None,
+        '会いたい': '^(:?私も|また)?会いたいな$',
+        'コピペしたい': '^(:?私も|また)?コピペしたいな$',
+        '観測をしたい': '^(:?私も|また)?観測をしたいな$',
+        '何がしたいんだ': None,
+        '言わんとしたいことはわかる': None,
+        '撮りたいものがはっきりして': None,
     }
 
     def setUp(self):
@@ -221,13 +220,13 @@ class TestDogeDetailStatusSubculture(unittest.TestCase):
         self.r.conn.delete('inu_soku')
         self.r.conn.delete('inu_internal_atencion')
         self.r.conn.delete('inu_internal_soku')
-        self.assertEqual(self.r.response(), u'クゥーン(soku: 0.00, internal_atencion: 0.00, internal_soku: 0.00)')
+        self.assertEqual(self.r.response(), 'クゥーン(soku: 0.00, internal_atencion: 0.00, internal_soku: 0.00)')
 
     def test_return_status(self):
         self.r.conn.set('inu_soku', 5.219039183)
         self.r.conn.set('inu_internal_atencion', 1.2345678)
         self.r.conn.set('inu_internal_soku', 9.87654)
-        self.assertEqual(self.r.response(), u'クゥーン(soku: 5.22, internal_atencion: 1.23, internal_soku: 9.88)')
+        self.assertEqual(self.r.response(), 'クゥーン(soku: 5.22, internal_atencion: 1.23, internal_soku: 9.88)')
 
 
 class TestShowDogeSokuSubculture(unittest.TestCase):
@@ -239,7 +238,7 @@ class TestShowDogeSokuSubculture(unittest.TestCase):
 
 
 class TestNogataSubculture(unittest.TestCase):
-    text = u'姫'
+    text = '姫'
 
     def setUp(self):
         self.nogata = NogataSubculture(self.text)
@@ -247,10 +246,10 @@ class TestNogataSubculture(unittest.TestCase):
 
     def test_response(self):
         word = self.nogata.response()
-        self.assertEqual(word, u'姫')
+        self.assertEqual(word, '姫')
 
     def test_nogata(self):
-        self.nogata.text = u'おっ'
+        self.nogata.text = 'おっ'
         word = self.nogata.response()
         self.assertIs(word, None)
 
@@ -274,12 +273,12 @@ class TestGaishutsuSubculture(unittest.TestCase):
     def test_response_say(self):
         self.r.anti_double = False
         res = self.r.response()
-        self.assertRegex(res, u'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\\s　#]*) は [0-9\\.]+ 日くらい前に tests により既出ですね')
+        self.assertRegex(res, 'おっ その (https?://[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+/*[^\\s　#]*) は [0-9\\.]+ 日くらい前に tests により既出ですね')
 
 
 class TestNotSubculture(unittest.TestCase):
 
-    dic = {u'サブでは': '?', u'はい': u'はい', u'拝承': u'拝復', }
+    dic = {'サブでは': '?', 'はい': 'はい', '拝承': '拝復', }
 
     json_official_sample = """{"status":"ok",
  "counter":208,
@@ -374,7 +373,7 @@ class TestNotSubculture(unittest.TestCase):
 
 class TestSelfUpdateSubculture(unittest.TestCase):
     def test_create_instance(self):
-        instance = SelfUpdateSubculture('', u'(犬転生)')
+        instance = SelfUpdateSubculture('', '(犬転生)')
         self.assertIsInstance(instance, SelfUpdateSubculture)
 
     def test_import_git(self):
@@ -430,23 +429,23 @@ class TestTitleExtractSubculture(unittest.TestCase):
 
     def test_has_customdata_attr(self):
         self.s.text = 'http://www.gizmodo.jp/2016/09/billionaire-bought-dog-eight-iphone7.html'
-        self.assertEqual(self.s.response(), u'Title: 中国の富豪、犬のためにiPhone 7を8個買う | ギズモード・ジャパン')
+        self.assertEqual(self.s.response(), 'Title: 中国の富豪、犬のためにiPhone 7を8個買う | ギズモード・ジャパン')
 
     def test_cp932(self):
         self.s.text = 'http://nomenclator.la.coocan.jp/perl/shiftjis.htm'
-        self.assertEqual(self.s.response(), u'Title: Shift-JISテキストを正しく扱う')
+        self.assertEqual(self.s.response(), 'Title: Shift-JISテキストを正しく扱う')
 
     def test_euc(self):
         self.s.text = 'https://www.freebsd.org/doc/ja_JP.eucJP/books/handbook/'
-        self.assertEqual(self.s.response(), u'Title: FreeBSD ハンドブック')
+        self.assertEqual(self.s.response(), 'Title: FreeBSD ハンドブック')
 
     def test_utf8(self):
         self.s.text = 'http://www.google.com'
-        self.assertEqual(self.s.response(), u'Title: Google')
+        self.assertEqual(self.s.response(), 'Title: Google')
 
     def test_utf8_withlazycrlf(self):
         self.s.text = 'http://jp.reuters.com/article/us-theater-shooting-idJPKCN0QA2O720150805'
-        self.assertEqual(self.s.response(), u'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
+        self.assertEqual(self.s.response(), 'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
 
     def test_instagram(self):
         self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'

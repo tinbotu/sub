@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import json
 import math
-import os
 import pickle
 import random
 import re
+import subprocess
 import time
 
 import git
@@ -24,17 +22,17 @@ class RedisSubculture(Subculture):
             try:
                 self._conn.ping()
             except redis.exceptions.ResponseError as e:
-                if e.message == 'NOAUTH Authentication required.':
+                if str(e) == 'NOAUTH Authentication required.':
                     self._conn.execute_command("AUTH", self.settings["redis_auth"])
                 else:
                     raise
         return self._conn
 
     def check_flood(self, speaker='', sec=30):
-        if self.enable_flood_check is False:
+        if not self.enable_flood_check:
             return True
 
-        key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
+        key = f'flood_{self.__class__.__name__}__{speaker}'
         if self.conn.get(key) is not None:
             return False
 
@@ -44,7 +42,7 @@ class RedisSubculture(Subculture):
         return True
 
     def clear_flood_status(self, speaker='', sec=30):
-        key = 'flood_%s__%s' % (self.__class__.__name__, speaker)
+        key = f'flood_{self.__class__.__name__}__{speaker}'
         self.conn.delete(key)
 
     def check_doge_away(self):
@@ -83,8 +81,8 @@ class RedisSubculture(Subculture):
 class KnowerLevelSubculture(RedisSubculture):
 
     def response(self):
-        level = self.conn.incr("knower-%s" % self.speaker, 1)
-        return "おっ、分かり度 %d ですか" % level
+        level = self.conn.incr(f"knower-{self.speaker}", 1)
+        return f"おっ、分かり度 {level} ですか"
 
 
 class KnowerLevelUpSubculture(RedisSubculture):
@@ -100,7 +98,7 @@ class KnowerLevelGetSubculture(RedisSubculture):
 
         for s in speakers:
             if s not in speakers_blacklist:
-                res += "%s: %s\n" % (s, self.conn.get(s))
+                res += f"{s}: {self.conn.get(s)}\n"
 
         return res
 
@@ -117,14 +115,14 @@ class AnotherIsMoreKnowerThanMe(RedisSubculture):
             res = 'kuzuha culture'
         else:
             random.seed()
-            res = 'No, %s culture.' % knower[random.randrange(0, len(knower))]
+            res = f'No, {random.choice(knower)} culture.'
 
         return res
 
 
 class RetirementLevelUpSubculture(RedisSubculture):
     def response(self):
-        self.conn.incr("retirement-%s" % self.speaker, 1)
+        self.conn.incr(f"retirement-{self.speaker}", 1)
         return None
 
 
@@ -137,7 +135,7 @@ class RetirementLevelGetSubculture(RedisSubculture):
 
         for s in speakers:
             if s not in speakers_blacklist:
-                res += "%s: %s\n" % (s, self.conn.get(s))
+                res += f"{s}: {self.conn.get(s)}\n"
 
         return res
 
@@ -268,8 +266,9 @@ class DogeDetailStatusSubculture(RedisSubculture):
         inu_internal_atencion = float(max(in_at, 0))
         inu_internal_soku = float(max(in_soku, 0))
 
-        return 'クゥーン(soku: %.2f, internal_atencion: %.2f, internal_soku: %.2f)' % (
-            inu_soku, inu_internal_atencion, inu_internal_soku)
+        return (f'クゥーン(soku: {inu_soku:.2f}, '
+                f'internal_atencion: {inu_internal_atencion:.2f}, '
+                f'internal_soku: {inu_internal_soku:.2f})')
 
 
 class SelfUpdateSubculture(RedisSubculture):
@@ -284,13 +283,12 @@ class SelfUpdateSubculture(RedisSubculture):
         if repo.head.commit.hexsha == previous_head:
             return '?'
         else:
-            os.system("make update_packages 1>deploy.log 2>&1")
-            url = 'https://github.com/tinbotu/sub/commit/%s' % (repo.head.commit.hexsha,)
-            msg = 'ニャーン %s %s %s\n%s' % (repo.head.commit.hexsha,
-                                                  repo.head.commit.committer,
-                                                  repo.head.commit.message,
-                                                  url)
-            return msg
+            with open("deploy.log", "w") as log:
+                subprocess.run(["make", "update_packages"],
+                               stdout=log, stderr=subprocess.STDOUT, check=False)
+            commit = repo.head.commit
+            url = f'https://github.com/tinbotu/sub/commit/{commit.hexsha}'
+            return f'ニャーン {commit.hexsha} {commit.committer} {commit.message}\n{url}'
 
 
 class ShowDogeSokuSubculture(RedisSubculture):
@@ -311,10 +309,10 @@ class ShowDogeSokuSubculture(RedisSubculture):
         try:
             doge_soku = float(self.conn.get("inu_soku"))
             doge_index = int(doge_soku/2.)
-            if doge_index >= 0 and doge_index < len(doge2048):
-                ret = "http://doge2048.com/img/114/%s" % (doge2048[doge_index])
+            if 0 <= doge_index < len(doge2048):
+                ret = f"http://doge2048.com/img/114/{doge2048[doge_index]}"
             else:
-                ret = "http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg\n%d" % (doge_soku)
+                ret = f"http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg\n{int(doge_soku)}"
         except Exception:
             ret = "http://weknowmemes.com/wp-content/uploads/2013/11/doge-sun-meme.jpg"
         return ret
@@ -325,7 +323,7 @@ class DogeGoAwaySubculture(RedisSubculture):
     def response(self):
         random.seed()
         if '逃がす' in self.text:
-            if self.check_doge_away() is False:
+            if not self.check_doge_away():
                 self.doge_away(expire_sec=60*60)
                 raise DogeAwayMessage('(自由)')
         elif '捕' in self.text:
@@ -374,7 +372,7 @@ class OmochiSubculture(RedisSubculture):
         ]
 
         # dont response within 30 seconds
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -435,7 +433,7 @@ class StoneSubculture(RedisSubculture):
             '西山石\nhttp://i.gyazo.com/ed7b4e6adaa018c4a8212c7590a98ab3.png',
         ]
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -450,7 +448,7 @@ class WaterFallSubculture(RedisSubculture):
             'http://i.gyazo.com/684523b240128b6f0eb21825e52f5c6c.png',
         ]
 
-        if self.check_flood(self.speaker, 10) is False:
+        if not self.check_flood(self.speaker, 10):
             return None
 
         return '\n'.join(urls)
@@ -510,7 +508,7 @@ class KimotiSubculture(RedisSubculture):
             "https://i.gyazo.com/80ef198057bd98d23d5d625cd7ef312e.png",
         ]
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -519,7 +517,7 @@ class KimotiSubculture(RedisSubculture):
 
 class KimotiYorokobiSubculture(KimotiSubculture):
     def response(self):
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
         return "https://i.gyazo.com/03c62c50700976b4486f8a80b487f7f9.jpg"
 
@@ -532,7 +530,7 @@ class CMDSubculture(RedisSubculture):
                '(((o===(*ﾟ▽ﾟ*)===o)))', '┌（┌ *ﾟ▽ﾟ*）┐(*ﾟ▽ﾟ* っ)З', 'Xamarinはいいぞ',
                'https://x.com/loadlimits/status/1124773878872416256']
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -562,7 +560,7 @@ class TMDSubculture(RedisSubculture):
         ]
 
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -574,7 +572,7 @@ class XamarinSubculture(RedisSubculture):
     def response(self):
         words = ['人脈♪', 'Xamarinはいいぞ', ]
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -592,7 +590,7 @@ class PizzaSubculture(RedisSubculture):
         ]
 
 
-        if self.check_flood(self.speaker, 30) is False:
+        if not self.check_flood(self.speaker, 30):
             return None
 
         random.seed()
@@ -601,18 +599,17 @@ class PizzaSubculture(RedisSubculture):
 
 class METARSubculture(RedisSubculture):
     """ Weather METARs """
-    url = 'http://api.openweathermap.org/data/2.5/weather?id=1850147&APPID=%s'
 
     def fetch_openweathermap(self):
         apikey = self.settings.get('openweathermap_apikey')
-        self.url = self.url % apikey
+        self.url = f'http://api.openweathermap.org/data/2.5/weather?id=1850147&APPID={apikey}'
         self.fetch(self.url)
 
     def parse_openweathermap(self):
         w = json.loads(self.content)
         self.weather = w["weather"][0]["description"]
         self.temp_c = float(w["main"]["temp"]) - 273.15  # kelvin
-        self.icon_url =  ("https://openweathermap.org/img/w/%s.png" % w["weather"][0]["icon"])
+        self.icon_url = f'https://openweathermap.org/img/w/{w["weather"][0]["icon"]}.png'
         self.pressure = int(w["main"]["pressure"])
         self.humidity = w["main"]["humidity"]
 
@@ -622,7 +619,8 @@ class METARSubculture(RedisSubculture):
         self.parse_openweathermap()
 
         if self.weather is not None:
-            return '%s (%.1f\u2103; %d\u3371; %s%%)\n%s' % (self.weather, self.temp_c, self.pressure, self.humidity, self.icon_url)
+            return (f'{self.weather} ({self.temp_c:.1f}\u2103; '
+                    f'{self.pressure}\u3371; {self.humidity}%)\n{self.icon_url}')
 
 
 class MineoSubculture(RedisSubculture):
@@ -648,8 +646,8 @@ class GaishutsuSubculture(RedisSubculture):
             ago_sec = time.time() - float(r.get("first_seen"))
             if self.anti_double and ago_sec < 30:
                 return ""  # dont respond within 30 sec
-            ago = ' %.1f 日くらい前に' % (ago_sec / (60*60*24))
-        return 'おっ その %s は%s %s により既出ですね' % (url, ago, r.get('speaker'))
+            ago = f' {ago_sec / (60*60*24):.1f} 日くらい前に'
+        return f"おっ その {url} は{ago} {r.get('speaker')} により既出ですね"
 
     def update(self, key, count=1):
         r = {}
@@ -664,7 +662,7 @@ class GaishutsuSubculture(RedisSubculture):
 
     def get_key(self, url):
         # plase dont pollute url
-        return "%s__URI__%s" % (self.__class__.__name__, url)
+        return f"{self.__class__.__name__}__URI__{url}"
 
     def response(self):
         url_re = re.compile(r'<?(https?:\/\/[-_.!~*\'()a-zA-Z0-9;:&=+$,%]+\/*[^\s>　]*)>?')

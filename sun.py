@@ -1,5 +1,4 @@
 #!./bin/python
-# -*- coding: utf-8 -*-
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
 # 絡み方が悪質
@@ -64,7 +63,7 @@ from subculture import (
 
 
 
-class NotSubculture(object):
+class NotSubculture:
     """ main """
     debug = True
     body = None
@@ -178,27 +177,30 @@ class NotSubculture(object):
         self.httpheaderHasAlreadySent = False
 
     def httpheader(self, header="Content-Type: text/plain; charset=UTF-8\n"):
-        if self.httpheaderHasAlreadySent is False:
+        if not self.httpheaderHasAlreadySent:
             self.httpheaderHasAlreadySent = True
 
     def parse_slack_outgoing_webhooks(self, http_body):
-        params = parse_qsl(http_body)
-        params = dict(params)
+        params = dict(parse_qsl(http_body))
 
-        """ generate a *pseudo* message of Lingr """
-        self.message = {}
-        self.message["events"] = []
-        self.message["events"].append({})
-        self.message["events"][0]["message"] = {}
-        self.message["events"][0]["message"]["id"] = -1
-        self.message["events"][0]["message"]["type"] = "user"
-        self.message["events"][0]["message"]["speaker_id"] = str(params.get("user_name"))
-        self.message["events"][0]["message"]["nickname"] = str(params.get("user_name"))
-        self.message["events"][0]["message"]["text"] = str(params.get("text"))
-        self.message["events"][0]["message"]["room"] = str(params.get("team_domain"))
-        self.message["events"][0]["message"]["slack_channel"] = str(params.get("channel_name"))  # extra
-        d = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
-        self.message["events"][0]["message"]["timestamp"] = d + 'Z'
+        # generate a *pseudo* message of Lingr
+        timestamp = datetime.datetime.fromtimestamp(float(params.get("timestamp"))).isoformat()
+        self.message = {
+            "events": [
+                {
+                    "message": {
+                        "id": -1,
+                        "type": "user",
+                        "speaker_id": str(params.get("user_name")),
+                        "nickname": str(params.get("user_name")),
+                        "text": str(params.get("text")),
+                        "room": str(params.get("team_domain")),
+                        "slack_channel": str(params.get("channel_name")),  # extra
+                        "timestamp": timestamp + 'Z',
+                    }
+                }
+            ]
+        }
 
 
 
@@ -206,7 +208,7 @@ class NotSubculture(object):
         if self.body is None and method == 'POST':
             self.body = http_post_body
 
-            if type(user_agent) is str and user_agent.find("Slackbot") != -1:
+            if isinstance(user_agent, str) and "Slackbot" in user_agent:
                 self.is_slack = True
                 return self.parse_slack_outgoing_webhooks(self.body)
 
@@ -219,14 +221,14 @@ class NotSubculture(object):
                     sys.exit(0)
                 else:
                     self.httpheader()
-                    print("json decode error:" + self.body)
+                    print(f"json decode error:{self.body}")
                     sys.exit(0)
         else:
             print("Status: 400 Bad request\n\n400")
             sys.exit(0)
 
     def acl(self, acl, ip_address):
-        if type(acl) is not list:
+        if not isinstance(acl, list):
             return False
         ip = ipaddress.ip_address(ip_address)
         for address_block in acl:
@@ -239,12 +241,12 @@ class NotSubculture(object):
         remote_addr = None
 
         xff = os.environ.get('HTTP_X_FORWARDED_FOR')
-        if type(xff) is str:
+        if isinstance(xff, str):
             remote_addr = xff.split(',')[-1].strip()
         else:
             remote_addr = os.environ.get('REMOTE_ADDR')
 
-        if type(remote_addr) is str:
+        if isinstance(remote_addr, str):
             return self.acl(acl, remote_addr)
         return False
 
@@ -255,7 +257,7 @@ class NotSubculture(object):
         else:
             self.httpheader()
 
-        if os.path.exists("quiet") or type(self.message) is not dict:
+        if os.path.exists("quiet") or not isinstance(self.message, dict):
             return
 
         sub = RedisSubculture()
@@ -285,13 +287,13 @@ class NotSubculture(object):
         denied_bot_list = ['slackbot', ]
 
         # 自発的発言
-        if self.message.get('events') is None and sub.doge_is_away is not True:
+        if self.message.get('events') is None and not sub.doge_is_away:
             token = sub.spontaneous(name=self.message.get('name'), key=self.message.get('key'))
             t = 15
-            if type(token) is dict:
+            if isinstance(token, dict):
                 try:
                     t = int(max(self.message.get('anti_double_sec'), token.get("antidouble")))
-                except:
+                except Exception:
                     pass
                 sub.say_lingr(self.message.get('body'), self.message.get('name'), t)
                 sub.say_slack(self.message.get('body'), self.message.get('name'), t)
@@ -299,7 +301,7 @@ class NotSubculture(object):
                 print("401 Unauthorized")
             return
 
-        if self.enable_acl is True and self.is_slack is False and self.check_acl(sub.settings.get("hosts_allow_lingr")) is False:
+        if self.enable_acl and not self.is_slack and not self.check_acl(sub.settings.get("hosts_allow_lingr")):
             print("403 Forbidden")
             return
 
@@ -334,11 +336,11 @@ class NotSubculture(object):
 
                         try:
                             if inspect.isclass(dict_res):
-                                I = dict_res(text, speaker)
-                                r = I.response()
-                                if sub.doge_is_away is not True and r:
+                                handler = dict_res(text, speaker)
+                                r = handler.response()
+                                if not sub.doge_is_away and r:
                                     yield r
-                            elif sub.doge_is_away is not True:
+                            elif not sub.doge_is_away:
                                 # 修飾子を見て返事するか決める
                                 threshold = 1.
                                 prob_m = response_modifier_re.search(dict_res)
