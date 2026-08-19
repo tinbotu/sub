@@ -2,7 +2,7 @@ flake8
 redis
 requests
 mecab-python
-unidic
+ipadic
 GitPython
 PyYAML
 emoji

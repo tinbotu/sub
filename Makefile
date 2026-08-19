@@ -10,7 +10,6 @@ setup:
 	python3 -m venv .
 	./bin/pip install --upgrade pip
 	./bin/pip install -r requirements.txt
-	./bin/python -m unidic download
 
 update_packages:
 	./bin/pip install -r requirements.txt

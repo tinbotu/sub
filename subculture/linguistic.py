@@ -1,5 +1,6 @@
 import random
 import MeCab
+import ipadic
 from .base import Subculture
 
 
@@ -11,7 +12,7 @@ class NogataSubculture(Subculture):
     def response(self):
         if random.randint(0, 200) > self.PROBABLY:
             return None
-        mecab = MeCab.Tagger().parse(self.text)
+        mecab = MeCab.Tagger(ipadic.MECAB_ARGS).parse(self.text)
         node = mecab.split("\n")
         noword = []
         for line in node:
@@ -156,7 +157,7 @@ class SilentSubculture(Subculture):
         if self.is_not_response:
             return None
 
-        m = MeCab.Tagger()
+        m = MeCab.Tagger(ipadic.MECAB_ARGS)
         node = m.parse(self.text)
         node = node.split("\n")
         word = []
