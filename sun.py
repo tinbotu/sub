@@ -308,7 +308,8 @@ class NotSubculture:
 
         random.seed()
         for n in self.message['events']:
-            if 'text' in n['message']:
+            # Slack/Lingr のペイロードは "text": null で来ることがある
+            if isinstance(n['message'].get('text'), str):
                 speaker = n['message']['speaker_id']
                 text = n['message']['text']
 
