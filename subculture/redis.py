@@ -1,6 +1,5 @@
 import json
 import math
-import pickle
 import random
 import re
 import subprocess
@@ -638,7 +637,7 @@ class GaishutsuSubculture(RedisSubculture):
     url_blacklist = ['gyazo.com', '.png', '.jpg', ]
 
     def build_message(self, url, body):
-        r = pickle.loads(body)
+        r = json.loads(body)
         ago = ''
         if r.get('speaker') == self.speaker and self.speaker != 'tests':
             return ""
@@ -656,7 +655,7 @@ class GaishutsuSubculture(RedisSubculture):
         r['first_seen'] = time.time()
         r['last_seen'] = time.time()
         r['count'] = count
-        self.conn.set(key, pickle.dumps(r))
+        self.conn.set(key, json.dumps(r))
 
     def delete(self, url):
         self.conn.delete(self.get_key(url))
@@ -679,9 +678,15 @@ class GaishutsuSubculture(RedisSubculture):
                 continue
 
             key = self.get_key(url)
-            value = self.conn.get(key)
+            try:
+                value = self.conn.get(key)
+            except UnicodeDecodeError:
+                value = None  # legacy binary pickle entry; overwrite below
             if value is not None:
-                res += self.build_message(url, value)
+                try:
+                    res += self.build_message(url, value)
+                except ValueError:
+                    self.update(key)  # legacy/corrupt entry; overwrite
             else:
                 self.update(key)
 
