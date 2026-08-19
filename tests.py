@@ -1,6 +1,8 @@
 #!./bin/python
 # vim: ts=4 sw=4 sts=4 ff=unix ft=python expandtab
 
+import http.server
+import threading
 import unittest
 import os
 
@@ -434,8 +436,31 @@ class TestTitleExtractSubculture(unittest.TestCase):
     #     self.assertEqual(self.s.response(), 'Title: 中国の富豪、犬のためにiPhone 7を8個買う | ギズモード・ジャパン')
 
     def test_cp932(self):
-        self.s.text = 'http://nomenclator.la.coocan.jp/perl/shiftjis.htm'
-        self.assertEqual(self.s.response(), 'Title: Shift-JISテキストを正しく扱う')
+        # nomenclator.la.coocan.jp is unreachable from CI runners,
+        # so serve an equivalent Shift-JIS page from localhost
+        page = ('<html><head><title>Shift-JISテキストを正しく扱う</title></head>'
+                '<body>日本語の文字コードには歴史的な経緯からさまざまな種類があり、'
+                'シフトJISはそのなかでも広く使われてきた符号化方式のひとつです。'
+                'ファイルを読み書きするときには文字コードを正しく指定しないと、'
+                'いわゆる文字化けが発生してしまいます。</body></html>').encode('cp932')
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header('Content-Type', 'text/html')
+                self.end_headers()
+                self.wfile.write(page)
+
+            def log_message(self, *args):
+                pass
+
+        httpd = http.server.HTTPServer(('127.0.0.1', 0), Handler)
+        threading.Thread(target=httpd.serve_forever, daemon=True).start()
+        try:
+            self.s.text = f'http://127.0.0.1:{httpd.server_port}/shiftjis.htm'
+            self.assertEqual(self.s.response(), 'Title: Shift-JISテキストを正しく扱う')
+        finally:
+            httpd.shutdown()
 
     def test_euc(self):
         self.s.text = 'https://www.freebsd.org/doc/ja_JP.eucJP/books/handbook/'
