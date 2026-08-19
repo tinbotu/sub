@@ -15,10 +15,10 @@ class NogataSubculture(Subculture):
         mecab = MeCab.Tagger().parse(self.text)
         node = mecab.split("\n")
         noword = []
-        for l in node:
-            if l == 'EOS' or l == '':
+        for line in node:
+            if line == 'EOS' or line == '':
                 break
-            word, wordclass = l.split("\t")
+            word, wordclass = line.split("\t")
             wordclass = wordclass.split(",")
             if wordclass[0] == "名詞":
                 noword.append(word)
@@ -26,6 +26,7 @@ class NogataSubculture(Subculture):
         if len(noword) > 0:
             return noword.pop()
         return None
+
 
 class SilentSubculture(Subculture):
     """ me too """
@@ -145,8 +146,7 @@ class SilentSubculture(Subculture):
         if self.speaker in ["niryuu", "tinbotu"]:
             self.PROBABLY = 100
         random.seed()
-        return (not self.force
-                and random.randrange(0, 100) > self.PROBABLY)
+        return not self.force and random.randrange(0, 100) > self.PROBABLY
 
     @property
     def is_not_response(self):

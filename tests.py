@@ -8,11 +8,11 @@ from sun import NotSubculture
 from subculture import (
     Subculture,
     GyazoScraperSubculture,
-#    TwitterScraperSubculture,
+    # TwitterScraperSubculture,
     METARSubculture,
     OmochiSubculture,
     StoneSubculture,
-    HitozumaSubculture,
+    # HitozumaSubculture,
     AnotherIsMoreKnowerThanMe,
     KnowerLevelSubculture,
     GaishutsuSubculture,
@@ -26,7 +26,7 @@ from subculture import (
 )
 
 
-#class TestTwitterScraper(unittest.TestCase):
+# class TestTwitterScraper(unittest.TestCase):
 #    twitter_url = ['https://x.com/esehara/status/567342138640171009', 'https://x.com/saki61204/status/917000652655534081', ]
 #    twitter_url_false = ['https://x.com/esehara/status/567294583281709057']
 #
@@ -158,7 +158,7 @@ class TestStoneSubculture(unittest.TestCase):
             self.assertRegex(res, '(西山石|https?://)')
 
 
-#class TestHitozumaSubculture(unittest.TestCase):
+# class TestHitozumaSubculture(unittest.TestCase):
 #
 #    def setUp(self):
 #        self.r = HitozumaSubculture('', 'tests')
@@ -412,6 +412,7 @@ class TestSpontaneitySubculture(unittest.TestCase):
 
     def test_say(self):
         pass
+
 
 class TestKotoshinoKanjiSubculture(unittest.TestCase):
     def setUp(self):

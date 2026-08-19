@@ -11,6 +11,7 @@ import redis
 
 from .base import DogeAwayMessage, Subculture
 
+
 class RedisSubculture(Subculture):
     __redis_db = 14  # don't change me if changes will cause collision other app
     _conn = None
@@ -503,7 +504,7 @@ class KimotiSubculture(RedisSubculture):
 
             # takano32
             "https://i.gyazo.com/93cf8f0354831e42cc8fd83e3c5a005c.png",
-            
+
             # pha
             "https://i.gyazo.com/80ef198057bd98d23d5d625cd7ef312e.png",
         ]

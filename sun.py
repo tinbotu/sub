@@ -7,7 +7,6 @@ import copy
 import datetime
 import inspect
 import json
-import math
 import os
 import random
 import re
@@ -21,16 +20,13 @@ from urllib.parse import parse_qsl
 
 
 from subculture import (
-    Subculture,
     RedisSubculture,
     DogeAwayMessage,
     KnowerLevelSubculture,
-    KnowerLevelUpSubculture,
     KnowerLevelGetSubculture,
     AnotherIsMoreKnowerThanMe,
     RetirementLevelUpSubculture,
     RetirementLevelGetSubculture,
-    TwitterScraperSubculture,
     GyazoScraperSubculture,
     TitleExtractSubculture,
     AtencionSubculture,
@@ -347,7 +343,7 @@ class NotSubculture:
                                 if prob_m:
                                     dict_res = prob_m.groups()[0]
                                     for m in list(prob_m.groups()[1]):
-                                        if not m in response_modifier:
+                                        if m not in response_modifier:
                                             continue
                                         if m.islower():
                                             threshold *= response_modifier[m]
