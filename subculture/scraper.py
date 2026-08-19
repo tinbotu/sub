@@ -67,7 +67,8 @@ class TitleExtractSubculture(Subculture):
             prefix = 'Title: '
             h = HTMLParserGetElementsByTag('title', count=1)
 
-        h.feed(str(self.content.decode()).replace("\n", ""))
+        encoding = getattr(self, 'content_encoding', None) or 'utf-8'
+        h.feed(self.content.decode(encoding, errors='replace').replace("\n", ""))
 
         h.close()
 

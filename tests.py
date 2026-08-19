@@ -428,9 +428,10 @@ class TestTitleExtractSubculture(unittest.TestCase):
     def setUp(self):
         self.s = TitleExtractSubculture()
 
-    def test_has_customdata_attr(self):
-        self.s.text = 'http://www.gizmodo.jp/2016/09/billionaire-bought-dog-eight-iphone7.html'
-        self.assertEqual(self.s.response(), 'Title: 中国の富豪、犬のためにiPhone 7を8個買う | ギズモード・ジャパン')
+    # dead link (404)
+    # def test_has_customdata_attr(self):
+    #     self.s.text = 'http://www.gizmodo.jp/2016/09/billionaire-bought-dog-eight-iphone7.html'
+    #     self.assertEqual(self.s.response(), 'Title: 中国の富豪、犬のためにiPhone 7を8個買う | ギズモード・ジャパン')
 
     def test_cp932(self):
         self.s.text = 'http://nomenclator.la.coocan.jp/perl/shiftjis.htm'
@@ -438,23 +439,26 @@ class TestTitleExtractSubculture(unittest.TestCase):
 
     def test_euc(self):
         self.s.text = 'https://www.freebsd.org/doc/ja_JP.eucJP/books/handbook/'
-        self.assertEqual(self.s.response(), 'Title: FreeBSD ハンドブック')
+        self.assertEqual(self.s.response(), 'Title: FreeBSD ハンドブック | FreeBSD Documentation Portal')
 
     def test_utf8(self):
         self.s.text = 'http://www.google.com'
         self.assertEqual(self.s.response(), 'Title: Google')
 
-    def test_utf8_withlazycrlf(self):
-        self.s.text = 'http://jp.reuters.com/article/us-theater-shooting-idJPKCN0QA2O720150805'
-        self.assertEqual(self.s.response(), 'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
+    # dead link (401)
+    # def test_utf8_withlazycrlf(self):
+    #     self.s.text = 'http://jp.reuters.com/article/us-theater-shooting-idJPKCN0QA2O720150805'
+    #     self.assertEqual(self.s.response(), 'Title: 「マッドマックス」上映中の米映画館で発砲、51歳の容疑者射殺 | ロイター')
 
-    def test_instagram(self):
-        self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
-        self.assertRegex(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
+    # requires login now
+    # def test_instagram(self):
+    #     self.s.text = 'https://www.instagram.com/p/BGkLvRujk5m/'
+    #     self.assertRegex(self.s.response(), r'https://[a-z0-9\-]*?\.cdninstagram.com/[a-zA-Z0-9\/]*?/t51.2885-15/e35/13397618_1803858326514633_1716463464_n.jpg.*')
 
-    def test_googlephotos(self):
-        self.s.text = 'https://photos.app.goo.gl/MobEewnGYii7epwN9'
-        self.assertRegex(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
+    # dead link (404)
+    # def test_googlephotos(self):
+    #     self.s.text = 'https://photos.app.goo.gl/MobEewnGYii7epwN9'
+    #     self.assertRegex(self.s.response(), r'https://lh[0-9]\.googleusercontent\.com/[a-zA-Z0-9\-_]+=s1600#.jpg')
 
 
 if __name__ == '__main__':
