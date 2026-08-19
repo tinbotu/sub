@@ -1,6 +1,5 @@
 import random
 import MeCab
-from .redis import HitozumaSubculture, KCzumaSubculture
 from .base import Subculture
 
 
