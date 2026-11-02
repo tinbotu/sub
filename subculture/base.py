@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import hashlib
 import json
 import traceback
@@ -10,7 +8,7 @@ import requests
 import yaml
 
 
-class Subculture(object):
+class Subculture:
     """ abstract """
     content = None
     speaker = None
@@ -66,17 +64,15 @@ class Subculture(object):
     def read_bot_api(self, filename='bot_secret.yaml'):
         if self.api_secret is not None:
             return
-        yaml_file = open(filename)
-        content = yaml_file.read()
-        yaml_file.close()
-        self.api_secret = yaml.safe_load(content)
+        with open(filename) as yaml_file:
+            self.api_secret = yaml.safe_load(yaml_file)
 
     @property
     def settings(self):
         if self._settings is not None:
             return self._settings
-        fp = open(self.settings_filename).read()
-        self._settings = yaml.safe_load(fp)
+        with open(self.settings_filename) as fp:
+            self._settings = yaml.safe_load(fp)
         return self._settings
 
     def build_say_payload(self, room, bot, text, apikey):
@@ -87,7 +83,7 @@ class Subculture(object):
             'room': room,
             'bot': bot,
             'text': demoji,
-            'bot_verifier': hashlib.sha1(str(bot + apikey).encode()).hexdigest(),
+            'bot_verifier': hashlib.sha1(f"{bot}{apikey}".encode()).hexdigest(),
         }
 
     def say_lingr(self, message, speaker='doge', anti_double_sec=15, anti_double=True):
@@ -99,7 +95,7 @@ class Subculture(object):
            self.api_secret.get("room") is None:
             return
 
-        if anti_double and self.check_flood("bot_say_"+speaker, anti_double_sec) is False:
+        if anti_double and not self.check_flood(f"bot_say_{speaker}", anti_double_sec):
             print("301 Flood")
             return
 
@@ -114,14 +110,15 @@ class Subculture(object):
         if self.api_secret.get("slack_webhook_url") is None:
             return
 
-        if anti_double and self.check_flood("bot_say_slack_"+speaker, anti_double_sec) is False:
+        if anti_double and not self.check_flood(f"bot_say_slack_{speaker}", anti_double_sec):
             print("301 Flood")
             return
 
-        payload = {}
-        payload["text"] = message
-        payload["channel"] = "#general"
-        payload["username"] = "main"
+        payload = {
+            "text": message,
+            "channel": "#general",
+            "username": "main",
+        }
         self.fetch(self.api_secret.get("slack_webhook_url"), payload=json.dumps(payload))
 
     def doge_soku(self):
@@ -146,14 +143,14 @@ class HTMLParserGetElementsByTag(HTMLParser):
     _count = 0
 
     def __init__(self, target_tag, target_meta_property=None, count=None):
-        HTMLParser.__init__(self)
+        super().__init__()
         self.target_tag = target_tag
         self.target_meta_property = target_meta_property
         self.countlimit = count
         self._content = ''
 
     def handle_starttag(self, tag, attrs):
-        if type(self.countlimit) is int and self._count >= self.countlimit:
+        if isinstance(self.countlimit, int) and self._count >= self.countlimit:
             return
 
         attrs = dict(attrs)
@@ -169,12 +166,6 @@ class HTMLParserGetElementsByTag(HTMLParser):
 
     def handle_data(self, data):
         self.concat_content(data)
-
-    def handle_charref(self, data):
-        self.concat_content(self.unescape('&#'+data+';'))
-
-    def handle_entityref(self, data):
-        self.concat_content(self.unescape('&'+data+';'))
 
     def handle_endtag(self, tag):
         if tag == self.target_tag:

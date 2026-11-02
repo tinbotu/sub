@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
 import random
-from .redis import METARSubculture, MineoSubculture, GaishutsuSubculture
 from .base import Subculture
 
 

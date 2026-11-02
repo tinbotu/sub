@@ -53,11 +53,22 @@ docs/_build/
 # PyBuilder
 target/
 
-# virtualenv
+# virtualenv / venv
 bin/
 include/
 local/
 share/
+.venv/
+pyvenv.cfg
+CACHEDIR.TAG
+
+# pytest
+.pytest_cache/
+
+# runtime artifacts
+deploy.log
+quiet
+dogehouse.txt
 
 # vagrant
 .vagrant

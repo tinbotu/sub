@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import random
 import MeCab
-from .redis import HitozumaSubculture, KCzumaSubculture
+import ipadic
 from .base import Subculture
+
 
 class NogataSubculture(Subculture):
     """ 姫 """
@@ -13,13 +12,13 @@ class NogataSubculture(Subculture):
     def response(self):
         if random.randint(0, 200) > self.PROBABLY:
             return None
-        mecab = MeCab.Tagger().parse(self.text)
+        mecab = MeCab.Tagger(ipadic.MECAB_ARGS).parse(self.text)
         node = mecab.split("\n")
         noword = []
-        for l in node:
-            if l == 'EOS' or l == '':
+        for line in node:
+            if line == 'EOS' or line == '':
                 break
-            word, wordclass = l.split("\t")
+            word, wordclass = line.split("\t")
             wordclass = wordclass.split(",")
             if wordclass[0] == "名詞":
                 noword.append(word)
@@ -27,6 +26,7 @@ class NogataSubculture(Subculture):
         if len(noword) > 0:
             return noword.pop()
         return None
+
 
 class SilentSubculture(Subculture):
     """ me too """
@@ -146,8 +146,7 @@ class SilentSubculture(Subculture):
         if self.speaker in ["niryuu", "tinbotu"]:
             self.PROBABLY = 100
         random.seed()
-        return (self.force is not True
-                and random.randrange(0, 100) > self.PROBABLY)
+        return not self.force and random.randrange(0, 100) > self.PROBABLY
 
     @property
     def is_not_response(self):
@@ -158,7 +157,7 @@ class SilentSubculture(Subculture):
         if self.is_not_response:
             return None
 
-        m = MeCab.Tagger()
+        m = MeCab.Tagger(ipadic.MECAB_ARGS)
         node = m.parse(self.text)
         node = node.split("\n")
         word = []
@@ -173,7 +172,7 @@ class SilentSubculture(Subculture):
                     continue
             if do:
                 me = ['私も', '私も', '私も', 'また', '私も', ]
-                return '%s%sたいな' % (me[random.randrange(0, len(me))], do)
+                return f'{random.choice(me)}{do}たいな'
 
 
 class HaiSubculture(Subculture):
