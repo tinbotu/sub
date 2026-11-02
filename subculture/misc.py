@@ -19,7 +19,8 @@ class KotoshinoKanjiSubculture(Subculture):
 2020 終
 2021 蟄
 2022 葬
-2023 隠"""
+2023 隠
+2026 漏"""
 
 
 
