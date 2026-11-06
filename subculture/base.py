@@ -38,7 +38,7 @@ class Subculture:
     def fetch(self, url, params=None, guess_encoding=False, payload=None):
         self.content = None
         headers = {
-            "User-Agent": r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.116 Safari/537.36',
+            "User-Agent": r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36',
         }
         try:
             if payload:
